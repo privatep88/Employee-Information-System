@@ -69,14 +69,18 @@
          display: block;
       }
 
-      /* Webkit specific centering for date inputs */
+      /* Webkit specific centering for date inputs - Force width 100% to ensure centering works */
       input[type="date"]::-webkit-date-and-time-value,
       input[type="month"]::-webkit-date-and-time-value,
       input[type="week"]::-webkit-date-and-time-value,
       input[type="time"]::-webkit-date-and-time-value,
       input[type="datetime-local"]::-webkit-date-and-time-value {
         text-align: center;
-        display: inline-block; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 0 auto; 
       }
 
       /* Hide default calendar icon in Chrome/Edge/Safari to use our custom one without overlap */
