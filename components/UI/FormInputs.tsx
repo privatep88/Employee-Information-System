@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 interface InputBaseProps {
   label: React.ReactNode;
@@ -11,22 +11,35 @@ interface TextInputProps extends InputBaseProps, Omit<React.InputHTMLAttributes<
   icon?: string;
 }
 
-export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon, className, labelClassName, ...props }) => {
+export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon, className, labelClassName, dir, ...props }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  
   // Logic to handle placeholder color for date inputs which don't support ::placeholder pseudo-element styling for the mask
   const isDateType = ['date', 'month', 'week', 'time', 'datetime-local'].includes(props.type || '');
   const hasValue = props.value !== '' && props.value !== undefined && props.value !== null;
   const isDatePlaceholder = isDateType && !hasValue;
 
-  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    // If it's a date input, try to open the picker programmatically on click
-    if (isDateType) {
+  // Force LTR for date types to ensure Western Arabic Numerals (English numbers)
+  const direction = isDateType ? 'ltr' : dir;
+
+  const openPicker = () => {
+    if (inputRef.current) {
       try {
-        if (typeof (e.currentTarget as any).showPicker === 'function') {
-          (e.currentTarget as any).showPicker();
+        if (typeof (inputRef.current as any).showPicker === 'function') {
+          (inputRef.current as any).showPicker();
+        } else {
+          inputRef.current.focus();
         }
-      } catch (error) {
-        // Fallback or ignore if prevented
+      } catch (err) {
+        // Fallback gracefully
+        inputRef.current.focus();
       }
+    }
+  };
+
+  const handleInputClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    if (isDateType) {
+      openPicker();
     }
     props.onClick?.(e);
   };
@@ -35,21 +48,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
     e.preventDefault();
     e.stopPropagation();
     if (isDateType) {
-      // Find the sibling input
-      const container = e.currentTarget.closest('.group');
-      const input = container?.querySelector('input') as HTMLInputElement | null;
-      if (input) {
-        try {
-          if (typeof (input as any).showPicker === 'function') {
-            (input as any).showPicker();
-          } else {
-            input.focus();
-            input.click();
-          }
-        } catch (err) {
-          input.focus();
-        }
-      }
+      openPicker();
     }
   };
 
@@ -67,7 +66,9 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
             {icon}
           </span>
           <input
+            ref={inputRef}
             id={id}
+            dir={direction}
             className={`w-full rounded-lg border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:border-primary focus:ring-primary/20 h-11 px-12 placeholder:text-slate-400 placeholder:text-sm transition-all shadow-sm font-semibold text-center ${isDatePlaceholder ? 'text-slate-400 text-sm' : 'text-slate-900 text-base'} ${className || ''}`}
             onClick={handleInputClick}
             {...props}
@@ -75,7 +76,9 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
         </div>
       ) : (
         <input
+          ref={inputRef}
           id={id}
+          dir={direction}
           className={`w-full rounded-lg border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:border-primary focus:ring-primary/20 h-11 px-4 placeholder:text-slate-400 placeholder:text-sm transition-all shadow-sm font-semibold text-center ${isDatePlaceholder ? 'text-slate-400 text-sm' : 'text-slate-900 text-base'} ${className || ''}`}
           onClick={handleInputClick}
           {...props}

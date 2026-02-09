@@ -273,6 +273,7 @@ const App: React.FC = () => {
                 value={formData.emp_id}
                 onChange={handleInputChange}
                 required
+                dir="ltr"
               />
               <SelectInput
                 id="nationality"
@@ -391,7 +392,7 @@ const App: React.FC = () => {
                 onChange={handleInputChange}
                 required
                 icon="call"
-                style={{ direction: 'ltr' }}
+                dir="ltr"
               />
                <TextInput
                 id="email"
@@ -557,7 +558,7 @@ const App: React.FC = () => {
                     placeholder="05xxxxxxxx"
                     value={formData.emergency_phone}
                     onChange={handleInputChange}
-                    style={{ direction: 'ltr' }}
+                    dir="ltr"
                     labelClassName="min-h-[2.5rem] flex items-end pb-1"
                 />
                </div>
