@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Information System | نظام معلومات الموظفين</title>
+    
+    <!-- Google Fonts: Almarai (Matching the requested style) & Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#137fec",
+              "primary-hover": "#1d4ed8",
+              "background-main": "#f8fafc",
+              "surface-white": "#ffffff",
+              "border-subtle": "#e2e8f0",
+              "text-main": "#1e293b",
+              "text-secondary": "#64748b",
+              "input-bg": "#ffffff",
+            },
+            fontFamily: {
+              sans: ["'Almarai'", "'Roboto'", "sans-serif"],
+              arabic: ["'Almarai'", "sans-serif"],
+              english: ["'Roboto'", "sans-serif"]
+            },
+            boxShadow: {
+              soft: "0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)",
+              card: "0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)"
+            }
+          }
+        }
+      };
+    </script>
+    <style>
+      body {
+        background-color: #f8fafc;
+        font-family: 'Almarai', 'Roboto', sans-serif;
+      }
+      /* Custom scrollbar to match design */
+      ::-webkit-scrollbar {
+          width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+          background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+      }
+      
+      /* Strictly center alignment for date inputs and hide native picker icon */
+      input[type="date"], input[type="month"], input[type="week"], input[type="time"], input[type="datetime-local"] {
+         text-align: center;
+         min-height: 2.75rem;
+         display: block;
+      }
+
+      /* Webkit specific centering for date inputs */
+      input[type="date"]::-webkit-date-and-time-value,
+      input[type="month"]::-webkit-date-and-time-value,
+      input[type="week"]::-webkit-date-and-time-value,
+      input[type="time"]::-webkit-date-and-time-value,
+      input[type="datetime-local"]::-webkit-date-and-time-value {
+        text-align: center;
+        display: inline-block; 
+      }
+
+      /* Hide default calendar icon in Chrome/Edge/Safari to use our custom one without overlap */
+      input[type="date"]::-webkit-calendar-picker-indicator,
+      input[type="month"]::-webkit-calendar-picker-indicator,
+      input[type="week"]::-webkit-calendar-picker-indicator,
+      input[type="time"]::-webkit-calendar-picker-indicator,
+      input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        display: none;
+        -webkit-appearance: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+  }
+}
+</script>
+</head>
+  <body class="bg-background-main text-text-main antialiased selection:bg-primary/10 selection:text-primary">
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+  </body>
+</html>
