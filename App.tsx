@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { INITIAL_STATE, EmployeeFormData } from './types';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import FormCard from './components/UI/FormCard';
 import { TextInput, SelectInput } from './components/UI/FormInputs';
 import FileUpload from './components/UI/FileUpload';
+import ProfileUpload from './components/UI/ProfileUpload';
 
 // Comprehensive list of nationalities
 const NATIONALITIES = [
@@ -202,6 +203,18 @@ const NATIONALITIES = [
 
 const App: React.FC = () => {
   const [formData, setFormData] = useState<EmployeeFormData>(INITIAL_STATE);
+  
+  // Date Logic: Capture current date for display and record keeping
+  const [currentDate] = useState(new Date());
+
+  const formattedDate = currentDate.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).split('/').join(' / '); // 25 / 10 / 2023 format
+
+  const dayNameAr = currentDate.toLocaleDateString('ar-AE', { weekday: 'long' });
+  const dayNameEn = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -217,13 +230,34 @@ const App: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files && files[0]) {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+      const file = files[0];
+      // 5MB limit (5 * 1024 * 1024 bytes)
+      const maxSize = 5 * 1024 * 1024;
+      
+      if (file.size > maxSize) {
+        alert('حجم الملف يتجاوز 5 ميجابايت. يرجى اختيار ملف أصغر.\nFile size exceeds 5MB limit. Please choose a smaller file.');
+        e.target.value = ''; // Reset the input to allow re-selecting
+        return;
+      }
+      
+      setFormData(prev => ({ ...prev, [name]: file }));
     }
+  };
+
+  const handleRemoveProfilePicture = () => {
+    setFormData(prev => ({ ...prev, profile_picture: null }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form Submitted with Data:', formData);
+    
+    // Include the actual submission date in the data payload
+    const submissionData = {
+        ...formData,
+        submission_date: currentDate.toISOString()
+    };
+    
+    console.log('Form Submitted with Data:', submissionData);
     alert('Data logged to console successfully.');
   };
 
@@ -240,18 +274,31 @@ const App: React.FC = () => {
       <main className="flex-1 flex justify-center py-10 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-5xl flex flex-col gap-10">
           
-          {/* Page Title Section */}
-          <div className="flex flex-col gap-3 pb-6 border-b border-slate-200">
-            <h1 className="text-2xl md:text-3xl font-extrabold leading-tight tracking-tight text-slate-900">
-              نموذج بيانات الموظف | Employee Data Form
-            </h1>
-            <div className="w-fit max-w-2xl">
-                <p className="text-slate-500 text-base font-medium leading-relaxed text-justify [text-align-last:justify]">
-                  قم بتعبأة النموذج أدناه بدقة عالية لضمان تحديث السجلات بإدارة الموارد البشرية.
-                </p>
-                <p className="text-slate-400 text-base mt-1 text-left" dir="ltr">
-                  Please fill out the form below accurately to ensure HR records are updated correctly.
-                </p>
+          {/* Page Title & Date Section */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
+            <div className="flex flex-col gap-3 w-full max-w-2xl">
+              <h1 className="text-2xl md:text-3xl font-extrabold leading-tight tracking-tight text-slate-900">
+                نموذج بيانات الموظف | Employee Data Form
+              </h1>
+              <div className="w-full">
+                  <p className="text-slate-500 text-lg font-medium leading-relaxed">
+                    قم بتعبأة النموذج أدناه بدقة عالية لضمان تحديث السجلات بإدارة الموارد البشرية .
+                  </p>
+                  <p className="text-slate-400 text-base mt-1 text-right" dir="ltr">
+                    Please fill out the form below accurately to ensure HR records are updated correctly.
+                  </p>
+              </div>
+            </div>
+
+            {/* Date Display Card */}
+            <div className="shrink-0 flex flex-col items-center justify-center bg-white p-4 rounded-2xl border border-slate-200 shadow-soft min-w-[200px]">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">تاريخ اليوم | Today's Date</span>
+                <div className="text-2xl font-black text-primary font-sans" dir="ltr">
+                    {formattedDate}
+                </div>
+                <div className="text-sm font-bold text-slate-600 mt-1">
+                    {dayNameAr} | {dayNameEn}
+                </div>
             </div>
           </div>
 
@@ -264,6 +311,14 @@ const App: React.FC = () => {
               icon="person"
               iconBgClass="bg-blue-50"
               iconColorClass="text-primary"
+              headerContent={
+                <ProfileUpload
+                    name="profile_picture"
+                    currentFile={formData.profile_picture}
+                    onFileSelect={handleFileChange}
+                    onRemove={handleRemoveProfilePicture}
+                />
+              }
             >
               <TextInput
                 id="emp_id"
@@ -283,6 +338,7 @@ const App: React.FC = () => {
                 value={formData.nationality}
                 onChange={handleInputChange}
                 options={NATIONALITIES}
+                required
               />
               <TextInput
                 id="name_ar"
@@ -317,6 +373,7 @@ const App: React.FC = () => {
                   { value: 'widowed', label: 'أرمل/أرملة | Widowed' },
                   { value: 'other', label: 'أخرى | Other' },
                 ]}
+                required
               />
               <TextInput
                 id="dob"
@@ -327,6 +384,7 @@ const App: React.FC = () => {
                 onChange={handleInputChange}
                 className="appearance-none cursor-pointer"
                 icon="calendar_month"
+                required
               />
             </FormCard>
 
@@ -354,6 +412,7 @@ const App: React.FC = () => {
                   { value: 'ma', label: 'ماجستير | Master' },
                   { value: 'phd', label: 'دكتوراه | PhD' },
                 ]}
+                required
               />
               <TextInput
                 id="specialization"
@@ -362,6 +421,7 @@ const App: React.FC = () => {
                 placeholder="مثال: هندسة برمجيات | e.g. Software Engineering"
                 value={formData.specialization}
                 onChange={handleInputChange}
+                // Optional as requested
               />
               <div className="md:col-span-2">
                 <FileUpload
@@ -370,6 +430,7 @@ const App: React.FC = () => {
                     icon="upload_file"
                     currentFile={formData.education_certificate_file}
                     onFileSelect={handleFileChange}
+                    // Optional as requested
                 />
               </div>
             </FormCard>
@@ -404,6 +465,7 @@ const App: React.FC = () => {
                 onChange={handleInputChange}
                 icon="mail"
                 dir="ltr"
+                // Optional as requested
               />
             </FormCard>
 
@@ -425,6 +487,7 @@ const App: React.FC = () => {
                   onChange={handleInputChange}
                   dir="ltr"
                   labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                  required
                 />
                 <TextInput
                   id="passport_expiry"
@@ -436,6 +499,7 @@ const App: React.FC = () => {
                   className="cursor-pointer"
                   labelClassName="min-h-[2.5rem] flex items-end pb-1"
                   icon="calendar_month"
+                  required
                 />
                 <TextInput
                   id="gcc_id"
@@ -446,6 +510,7 @@ const App: React.FC = () => {
                   onChange={handleInputChange}
                   dir="ltr"
                   labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                  // Optional as requested
                 />
                 <TextInput
                   id="emirates_id"
@@ -456,6 +521,7 @@ const App: React.FC = () => {
                   onChange={handleInputChange}
                   dir="ltr"
                   labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                  required
                 />
                 <TextInput
                   id="emirates_expiry"
@@ -467,6 +533,7 @@ const App: React.FC = () => {
                   className="cursor-pointer"
                   labelClassName="min-h-[2.5rem] flex items-end pb-1"
                   icon="calendar_month"
+                  required
                 />
                 <SelectInput
                   id="license_type"
@@ -483,6 +550,7 @@ const App: React.FC = () => {
                     { value: 'none', label: 'لا يوجد | None' },
                   ]}
                   labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                  required
                 />
               </div>
               
@@ -492,6 +560,7 @@ const App: React.FC = () => {
                   icon="upload_file"
                   currentFile={formData.passport_file}
                   onFileSelect={handleFileChange}
+                  required
               />
               <FileUpload
                   id="eid_file"
@@ -499,6 +568,7 @@ const App: React.FC = () => {
                   icon="id_card"
                   currentFile={formData.eid_file}
                   onFileSelect={handleFileChange}
+                  required
               />
               <FileUpload
                   id="gcc_id_file"
@@ -506,6 +576,7 @@ const App: React.FC = () => {
                   icon="badge"
                   currentFile={formData.gcc_id_file}
                   onFileSelect={handleFileChange}
+                  // Optional as requested
               />
               <FileUpload
                   id="license_file"
@@ -513,6 +584,7 @@ const App: React.FC = () => {
                   icon="directions_car"
                   currentFile={formData.license_file}
                   onFileSelect={handleFileChange}
+                  required
               />
             </FormCard>
 
@@ -533,6 +605,7 @@ const App: React.FC = () => {
                     value={formData.emergency_name}
                     onChange={handleInputChange}
                     labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                    required
                 />
                 <SelectInput
                     id="emergency_relation"
@@ -549,6 +622,7 @@ const App: React.FC = () => {
                     { value: 'other', label: 'أخرى | Other' },
                     ]}
                     labelClassName="min-h-[2.5rem] flex items-center pb-1"
+                    required
                 />
                 <TextInput
                     id="emergency_phone"
@@ -560,6 +634,7 @@ const App: React.FC = () => {
                     onChange={handleInputChange}
                     dir="ltr"
                     labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                    required
                 />
                </div>
             </FormCard>

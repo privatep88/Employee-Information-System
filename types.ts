@@ -1,6 +1,7 @@
 export interface EmployeeFormData {
   // Personal Info
   emp_id: string;
+  profile_picture: File | null;
   nationality: string;
   name_ar: string;
   name_en: string;
@@ -39,6 +40,7 @@ export interface EmployeeFormData {
 
 export const INITIAL_STATE: EmployeeFormData = {
   emp_id: '',
+  profile_picture: null,
   nationality: '',
   name_ar: '',
   name_en: '',

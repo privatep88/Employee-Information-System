@@ -7,6 +7,7 @@ interface FileUploadProps {
   icon: string;
   helperText?: string;
   currentFile: File | null;
+  required?: boolean;
   onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -17,11 +18,14 @@ const FileUpload: React.FC<FileUploadProps> = ({
   icon,
   helperText = "PDF, JPG, PNG (Max 5MB)",
   currentFile,
+  required,
   onFileSelect
 }) => {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-bold text-slate-700">{label}</label>
+      <label className="text-sm font-bold text-slate-700">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
       <div className="relative group">
         <input
           type="file"
