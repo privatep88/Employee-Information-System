@@ -12,6 +12,16 @@ const getLabel = (value: string, options: { value: string; label: string }[]) =>
   return option ? option.label : value;
 };
 
+// Helper to display dates nicely (YYYY-MM-DD to DD/MM/YYYY)
+const formatDateDisplay = (dateStr: string) => {
+    if (!dateStr) return '-';
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return dateStr;
+};
+
 const InfoField: React.FC<{ label: string; value: string | React.ReactNode; dir?: 'rtl' | 'ltr' }> = ({ label, value, dir }) => (
   <div className="flex flex-col gap-1 border-b border-slate-100 pb-2 last:border-0">
     <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">{label}</span>
@@ -137,7 +147,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                 >
                     <InfoField label="الجنسية | Nationality" value={getLabel(emp.nationality, NATIONALITIES)} />
                     <InfoField label="الحالة الاجتماعية | Marital Status" value={getLabel(emp.marital_status, MARITAL_STATUSES)} />
-                    <InfoField label="تاريخ الميلاد | Date of Birth" value={emp.dob} />
+                    <InfoField label="تاريخ الميلاد | Date of Birth" value={formatDateDisplay(emp.dob)} />
                     <InfoField label="رقم الهاتف | Phone" value={emp.phone} dir="ltr" />
                     <InfoField label="البريد الإلكتروني | Email" value={emp.email} dir="ltr" />
                 </FormCard>
@@ -166,10 +176,10 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                     iconColorClass="text-amber-700"
                 >
                     <InfoField label="رقم جواز السفر | Passport No" value={emp.passport_no} dir="ltr" />
-                    <InfoField label="انتهاء الجواز | Expiry" value={emp.passport_expiry} />
+                    <InfoField label="انتهاء الجواز | Expiry" value={formatDateDisplay(emp.passport_expiry)} />
                     
                     <InfoField label="رقم الهوية | Emirates ID" value={emp.emirates_id} dir="ltr" />
-                    <InfoField label="انتهاء الهوية | Expiry" value={emp.emirates_expiry} />
+                    <InfoField label="انتهاء الهوية | Expiry" value={formatDateDisplay(emp.emirates_expiry)} />
                     
                     <InfoField label="رقم الهوية (خليجي) | GCC ID" value={emp.gcc_id} dir="ltr" />
                     <InfoField label="نوع الرخصة | License Type" value={getLabel(emp.license_type, LICENSE_TYPES)} />
