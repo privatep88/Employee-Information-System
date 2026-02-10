@@ -61,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: '
         <div className="container mx-auto px-4 md:px-8 py-3 flex items-center justify-between whitespace-nowrap">
           {/* System Title */}
           <div className="flex items-center gap-3 text-text-main">
-            <div className="w-1 h-8 bg-primary rounded-full shadow-sm"></div>
+            <span className="material-symbols-outlined text-[#163a6e] text-[32px]">assignment_ind</span>
             <div>
               <h2 className="text-lg font-bold leading-tight text-[#163a6e]">
                 نظام معلومات الموظفين <span className="hidden sm:inline text-[#163a6e] opacity-50 mx-2">|</span> <span className="block sm:inline font-english text-base font-medium text-[#163a6e]">Employee Information System</span>

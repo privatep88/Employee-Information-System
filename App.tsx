@@ -168,23 +168,36 @@ const App: React.FC = () => {
             <div className="flex flex-col gap-2 w-full max-w-2xl">
               <h1 className="text-2xl md:text-3xl font-extrabold leading-tight tracking-normal text-slate-800">
                 {activeTab === 'home' ? (
-                    <><span className="text-[#1e4b8a]">نموذج بيانات الموظف</span> <span className="text-[#1e4b8a] font-light mx-2">|</span> <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">Employee Data Form</span></>
+                    <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-[#1e4b8a] text-[32px] md:text-[36px]">badge</span>
+                        <div>
+                            <span className="text-[#1e4b8a]">نموذج بيانات الموظف</span> <span className="text-[#1e4b8a] font-light mx-2">|</span> <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">Employee Data Form</span>
+                        </div>
+                    </div>
                 ) : (
-                    <>سجلات الموظفين <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Employee Records</span></>
+                    <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-slate-600 text-[32px] md:text-[36px]">folder_shared</span>
+                        <div>
+                             <span>سجلات الموظفين</span> <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Employee Records</span>
+                        </div>
+                    </div>
                 )}
               </h1>
-              <div className="w-full pl-2 border-r-4 border-secondary pr-3">
-                  <p className="text-slate-600 text-base font-medium leading-relaxed">
-                    {activeTab === 'home' ? "يرجى تعبئة النموذج أدناه بدقة لضمان تحديث السجلات." : "قائمة بجميع بيانات الموظفين التي تم إدخالها وحفظها في النظام."}
-                  </p>
-                  <p className="text-slate-500 text-sm mt-0.5 text-right font-english" dir="ltr">
-                    {activeTab === 'home' ? "Please fill out the form accurately to ensure records update." : "List of all employee data entered and saved in the system."}
-                  </p>
+              <div className="w-full flex items-start gap-3">
+                  <span className="material-symbols-outlined text-[#7688a3] text-2xl mt-1 shrink-0">info</span>
+                  <div>
+                    <p className="text-[#7688a3] text-base font-medium leading-relaxed">
+                        {activeTab === 'home' ? "يرجى تعبئة النموذج أدناه بدقة عالية لضمان تحديث السجلات." : "قائمة بجميع بيانات الموظفين التي تم إدخالها وحفظها في النظام."}
+                    </p>
+                    <p className="text-[#7688a3] text-sm mt-0.5 text-right font-english" dir="ltr">
+                        {activeTab === 'home' ? "Please fill out the form accurately to ensure records update." : "List of all employee data entered and saved in the system."}
+                    </p>
+                  </div>
               </div>
             </div>
 
             {/* Date Display Card - Elegant Official Style */}
-            <div className="shrink-0 relative bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden flex flex-row items-stretch min-w-[220px] group hover:border-blue-300 transition-colors">
+            <div className="shrink-0 relative bg-white rounded-xl border border-blue-100 shadow-card overflow-hidden flex flex-row items-stretch min-w-[220px] group hover:border-blue-300 transition-colors">
                 {/* Accent Strip */}
                 <div className="w-1.5 bg-primary shrink-0"></div>
                 
@@ -514,7 +527,7 @@ const App: React.FC = () => {
             </FormCard>
 
             {/* Declaration & Actions - Legal Style */}
-            <div className="bg-blue-50 border border-blue-200 p-6 rounded-md flex flex-col gap-6 mt-2 relative">
+            <div className="bg-blue-50 border border-blue-200 p-6 rounded-md flex flex-col gap-6 mt-2 relative shadow-card">
               <div className="absolute top-0 right-0 w-1 h-full bg-blue-600 rounded-r-md"></div>
               
               <div className="flex flex-col gap-2">
@@ -536,7 +549,7 @@ const App: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex flex-col gap-1.5 flex-1">
-                    <span className="text-sm font-bold text-slate-800 leading-relaxed text-justify">
+                    <span className="text-sm font-bold text-[#1e3a8a] leading-relaxed text-justify">
                       «أقرّ أنا الموظف بأن جميع البيانات التي قمت بإدخالها صحيحة ودقيقة، وأتعهد بتحديث هذه البيانات متى ما تطلّب الأمر ذلك.»
                     </span>
                     <span className="text-xs font-medium text-slate-500 leading-relaxed text-right font-english" dir="ltr">
@@ -549,7 +562,7 @@ const App: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-full sm:w-auto h-11 px-6 rounded border border-blue-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:text-red-700 hover:border-red-200 transition-colors"
+                  className="w-full sm:w-auto h-11 px-6 rounded border border-blue-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:text-red-700 hover:border-red-200 transition-colors shadow-sm"
                 >
                   إلغاء العملية | Cancel
                 </button>

@@ -80,7 +80,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
 
   if (employees.length === 0) {
     return (
-        <div className="flex flex-col items-center justify-center py-24 bg-white rounded-card shadow-soft text-center border border-slate-200">
+        <div className="flex flex-col items-center justify-center py-24 bg-white rounded-card shadow-card text-center border border-slate-200">
             <div className="size-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-slate-300 border border-slate-100">
                 <span className="material-symbols-outlined text-[48px]">folder_open</span>
             </div>

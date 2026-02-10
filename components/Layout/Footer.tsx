@@ -12,9 +12,12 @@ const Footer: React.FC = () => {
         
         {/* Copyright Section */}
         <div className="text-center md:text-start flex flex-col gap-1 md:w-1/3">
-             <p className="font-bold text-white text-sm">
-              جميع الحقوق محفوظة {currentYear} ©
-            </p>
+             <div className="flex items-center justify-center md:justify-start gap-2">
+                <span className="material-symbols-outlined text-[20px] text-blue-400">copyright</span>
+                <p className="font-bold text-white text-sm">
+                  جميع الحقوق محفوظة {currentYear}
+                </p>
+             </div>
         </div>
 
         {/* Center Credits */}
@@ -25,10 +28,13 @@ const Footer: React.FC = () => {
        
         {/* Links Section */}
         <div className="flex flex-wrap justify-center md:justify-end gap-4 md:gap-8 text-sm md:w-1/3 order-2 md:order-3">
-          <a href="#" className="text-white hover:text-blue-200 transition-colors font-semibold flex items-center gap-1 group">
-             <span className="group-hover:translate-y-px transition-transform">الدعم الفني</span>
-             <span className="text-white">|</span>
-             <span className="font-english text-xs uppercase tracking-wider group-hover:translate-y-px transition-transform">Support</span>
+          <a href="#" className="text-white hover:text-blue-200 transition-colors font-semibold flex items-center gap-2 group">
+             <span className="material-symbols-outlined text-[20px] text-blue-400 group-hover:text-blue-200 transition-colors">headset_mic</span>
+             <div className="flex items-center gap-1 group-hover:translate-y-px transition-transform">
+                <span>الدعم الفني</span>
+                <span className="text-slate-600 mx-1">|</span>
+                <span className="font-english text-xs uppercase tracking-wider">Support</span>
+             </div>
           </a>
         </div>
       </div>
