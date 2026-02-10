@@ -81,15 +81,17 @@ const Header: React.FC = () => {
               </a>
               <a
                 href="#"
-                className="text-slate-600 hover:text-blue-700 hover:bg-white px-5 py-2 rounded-md text-sm font-semibold transition-all"
+                className="flex items-center gap-2 text-slate-600 hover:text-blue-700 hover:bg-white px-5 py-2 rounded-md text-sm font-semibold transition-all"
               >
-                بيانات الموظفين | Employees Data
+                <span className="material-symbols-outlined text-[20px]">group</span>
+                <span>بيانات الموظفين | Employees Data</span>
               </a>
               <a
                 href="#"
-                className="text-slate-600 hover:text-blue-700 hover:bg-white px-5 py-2 rounded-md text-sm font-semibold transition-all"
+                className="flex items-center gap-2 text-slate-600 hover:text-blue-700 hover:bg-white px-5 py-2 rounded-md text-sm font-semibold transition-all"
               >
-                التقارير | Reports
+                <span className="material-symbols-outlined text-[20px]">bar_chart</span>
+                <span>التقارير | Reports</span>
               </a>
             </nav>
           </div>
