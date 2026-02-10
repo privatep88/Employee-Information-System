@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { INITIAL_STATE, EmployeeFormData } from './types';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
@@ -6,6 +6,7 @@ import FormCard from './components/UI/FormCard';
 import { TextInput, SelectInput } from './components/UI/FormInputs';
 import FileUpload from './components/UI/FileUpload';
 import ProfileUpload from './components/UI/ProfileUpload';
+import ConfirmationDialog from './components/UI/ConfirmationDialog';
 
 // Comprehensive list of nationalities
 const NATIONALITIES = [
@@ -203,6 +204,8 @@ const NATIONALITIES = [
 
 const App: React.FC = () => {
   const [formData, setFormData] = useState<EmployeeFormData>(INITIAL_STATE);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   
   // Date Logic: Capture current date for display and record keeping
   const [currentDate] = useState(new Date());
@@ -248,9 +251,14 @@ const App: React.FC = () => {
     setFormData(prev => ({ ...prev, profile_picture: null }));
   };
 
+  // Called when user clicks "Save & Submit"
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setShowConfirmDialog(true);
+  };
+
+  // Called when user confirms inside the dialog
+  const handleConfirmSubmission = () => {
     // Include the actual submission date in the data payload
     const submissionData = {
         ...formData,
@@ -258,7 +266,11 @@ const App: React.FC = () => {
     };
     
     console.log('Form Submitted with Data:', submissionData);
-    alert('Data logged to console successfully.');
+    
+    setShowConfirmDialog(false);
+    setTimeout(() => {
+        setShowSuccessDialog(true);
+    }, 300);
   };
 
   const handleReset = () => {
@@ -678,7 +690,7 @@ const App: React.FC = () => {
                   className={`w-full sm:w-auto h-12 px-10 rounded-xl bg-primary text-white font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-3 transform active:scale-95 ${!formData.declaration_accepted ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-hover hover:shadow-blue-500/30'}`}
                 >
                   <span className="material-symbols-outlined text-[20px]">save</span>
-                  حفظ البيانات | SAVE DATA
+                  حفظ وإرسال البيانات | Save & Submit Data
                 </button>
               </div>
             </div>
@@ -688,6 +700,43 @@ const App: React.FC = () => {
       </main>
       
       <Footer />
+
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={showConfirmDialog}
+        onClose={() => setShowConfirmDialog(false)}
+        onConfirm={handleConfirmSubmission}
+        title="تأكيد حفظ البيانات"
+        message={
+            <div className="flex flex-col gap-2">
+                <p>هل أنت متأكد من مراجعة البيانات بشكل دقيق وترغب في حفظ وإرسال النموذج؟</p>
+                <p className="text-sm font-english opacity-80" dir="ltr">Are you sure you reviewed the data accurately and want to save and submit the form?</p>
+            </div>
+        }
+        confirmLabel="نعم، إرسال | Yes, Submit"
+        cancelLabel="تراجع | Cancel"
+        variant="warning"
+        icon="help"
+      />
+
+      {/* Success Dialog */}
+      <ConfirmationDialog
+        isOpen={showSuccessDialog}
+        onClose={() => setShowSuccessDialog(false)}
+        onConfirm={() => setShowSuccessDialog(false)}
+        title="تم الإرسال بنجاح"
+        message={
+            <div className="flex flex-col gap-2">
+                <p>تم حفظ وإرسال بياناتك بنجاح إلى قسم الموارد البشرية.</p>
+                <p className="text-sm font-english opacity-80" dir="ltr">Your data has been successfully saved and submitted to the HR department.</p>
+            </div>
+        }
+        confirmLabel="حسناً | OK"
+        showCancel={false}
+        variant="success"
+        icon="check_circle"
+      />
+
     </div>
   );
 };
