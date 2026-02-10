@@ -485,35 +485,43 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
 
         {/* Table/List View */}
         <div className="bg-white rounded-lg shadow-card border border-slate-200 overflow-hidden">
-            {/* Table Header - RTL Ordered */}
-            <div className="grid grid-cols-12 bg-slate-50 py-4 px-6 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                 <div className="col-span-2 text-center">
-                    <div className="font-english mb-0.5">EMPLOYEE ID</div>
-                    <div className="text-[10px]">الرقم الوظيفي</div>
+            {/* Table Header - Custom Grid Template */}
+            <div className="grid grid-cols-[2rem_6rem_3fr_1.5fr_1.5fr_1.2fr_5rem] bg-slate-50 py-4 px-6 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                 {/* Sequence */}
+                 <div className="text-center border-l border-slate-200/60">
+                    <div className="font-english mb-0.5">#</div>
+                    <div className="text-[10px]">م</div>
                 </div>
-                 <div className="col-span-3 text-right">
+
+                 {/* ID */}
+                 <div className="text-center">
+                    <div className="font-english mb-0.5">ID</div>
+                    <div className="text-[10px]">الرقم</div>
+                </div>
+
+                 <div className="text-right">
                     <div className="font-english mb-0.5">FULL NAME</div>
                     <div className="text-[10px]">الاسم الكامل</div>
                 </div>
-                <div className="col-span-2 text-center">
+                <div className="text-center">
                     <div className="font-english mb-0.5">NATIONALITY</div>
                     <div className="text-[10px]">الجنسية</div>
                 </div>
-                <div className="col-span-2 text-center">
+                <div className="text-center">
                     <div className="font-english mb-0.5">QUALIFICATION</div>
                     <div className="text-[10px]">المؤهل العلمي</div>
                 </div>
-                <div className="col-span-2 text-center">
+                <div className="text-center">
                     <div className="font-english mb-0.5">DATE</div>
                     <div className="text-[10px]">تاريخ الإدخال</div>
                 </div>
-                <div className="col-span-1 text-center">
+                <div className="text-center">
                     <div className="mb-0.5">ACTIONS</div>
                     <div className="text-[10px]">الإجراءات</div>
                 </div>
             </div>
 
-            {/* Table Rows - RTL Ordered */}
+            {/* Table Rows - Custom Grid Template */}
             {currentTableData.length > 0 ? (
                 <div className="divide-y divide-slate-100">
                     {currentTableData.map((emp, idx) => {
@@ -525,44 +533,51 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
                         const colorClass = colors[idx % colors.length];
 
                         return (
-                            <div key={idx} className="grid grid-cols-12 items-center py-4 px-6 hover:bg-slate-50 transition-colors group">
+                            <div key={idx} className="grid grid-cols-[2rem_6rem_3fr_1.5fr_1.5fr_1.2fr_5rem] items-center py-4 px-6 hover:bg-slate-50 transition-colors group">
+                                {/* Sequence */}
+                                <div className="flex justify-center border-l border-slate-100/60">
+                                    <span className="text-xs font-bold text-slate-400 font-english">
+                                        {startIndex + idx + 1}
+                                    </span>
+                                </div>
+
                                 {/* ID */}
-                                <div className="col-span-2 flex justify-center">
-                                    <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-slate-100 text-primary font-bold text-xs border border-slate-200 font-english" dir="ltr">
+                                <div className="flex justify-center">
+                                    <span className="inline-flex items-center justify-center px-1.5 py-1 rounded-md bg-slate-100 text-primary font-bold text-[10px] border border-slate-200 font-english min-w-[50px] truncate" dir="ltr" title={emp.emp_id}>
                                         {emp.emp_id}
                                     </span>
                                 </div>
 
                                 {/* Full Name */}
-                                <div className="col-span-3 flex items-center justify-start gap-3 text-right">
+                                <div className="flex items-center justify-start gap-3 text-right">
                                     <div className={`size-9 rounded-full flex items-center justify-center text-xs font-bold tracking-wider shrink-0 ${colorClass}`}>
                                         {initials}
                                     </div>
                                     <div className="flex flex-col min-w-0">
-                                        <span className="font-bold text-slate-800 truncate" title={emp.name_ar}>{emp.name_ar}</span>
-                                        <span className="text-xs text-slate-500 font-medium font-english truncate" dir="ltr" title={emp.name_en}>{emp.name_en}</span>
+                                        <span className="font-bold text-slate-800 break-words leading-snug">{emp.name_ar}</span>
+                                        <span className="text-xs text-slate-500 font-medium font-english break-words leading-snug" dir="ltr">{emp.name_en}</span>
                                     </div>
                                 </div>
 
                                 {/* Nationality */}
-                                <div className="col-span-2 text-center text-sm font-semibold text-slate-700 flex flex-col justify-center">
-                                    <span className="truncate">{getLabel(emp.nationality, NATIONALITIES)}</span>
-                                    <span className="text-xs text-slate-400 font-english truncate">{getEnglishLabel(emp.nationality, NATIONALITIES)}</span>
+                                <div className="text-center text-sm font-semibold text-slate-700 flex flex-col justify-center">
+                                    <span className="break-words leading-tight">{getLabel(emp.nationality, NATIONALITIES)}</span>
+                                    <span className="text-xs text-slate-400 font-english break-words leading-tight">{getEnglishLabel(emp.nationality, NATIONALITIES)}</span>
                                 </div>
 
                                 {/* Qualification */}
-                                <div className="col-span-2 text-center text-sm font-semibold text-slate-700 flex flex-col justify-center">
-                                    <span className="truncate">{getLabel(emp.degree, DEGREES)}</span>
-                                    <span className="text-xs text-slate-400 font-english truncate">{getEnglishLabel(emp.degree, DEGREES)}</span>
+                                <div className="text-center text-sm font-semibold text-slate-700 flex flex-col justify-center">
+                                    <span className="break-words leading-tight">{getLabel(emp.degree, DEGREES)}</span>
+                                    <span className="text-xs text-slate-400 font-english break-words leading-tight">{getEnglishLabel(emp.degree, DEGREES)}</span>
                                 </div>
 
                                 {/* Submission Date */}
-                                <div className="col-span-2 text-center text-xs font-bold text-slate-500 font-english">
+                                <div className="text-center text-xs font-bold text-slate-500 font-english">
                                     {emp.submission_date ? new Date(emp.submission_date).toLocaleDateString('en-GB') : '-'}
                                 </div>
 
                                 {/* Actions */}
-                                <div className="col-span-1 flex items-center justify-center gap-2">
+                                <div className="flex items-center justify-center gap-2">
                                     <button 
                                         onClick={() => onEdit(emp)}
                                         className="text-blue-500 hover:bg-blue-50 p-1.5 rounded-full transition-colors" 

@@ -394,6 +394,10 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                     <table className="w-full text-right">
                         <thead>
                             <tr className="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">
+                                <th className="px-4 py-4 text-center w-12 bg-slate-100/50">
+                                    <div className="font-english mb-1">#</div>
+                                    <div>م</div>
+                                </th>
                                 <th className="px-6 py-4 text-center">
                                     <div className="font-english mb-1">ID</div>
                                     <div>الرقم الوظيفي</div>
@@ -423,6 +427,9 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                         <tbody className="divide-y divide-slate-100">
                             {filteredExpiredRecords.map((record, idx) => (
                                 <tr key={idx} className="hover:bg-red-50/30 transition-colors">
+                                    <td className="px-4 py-4 text-center font-bold text-slate-400 text-xs bg-slate-50/30">
+                                        {idx + 1}
+                                    </td>
                                     <td className="px-6 py-4 text-center">
                                         <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 font-bold text-[11px] border border-slate-200 font-english" dir="ltr">
                                             {record.emp_id}
