@@ -6,6 +6,7 @@ interface InputBaseProps {
   id: string;
   required?: boolean;
   labelClassName?: string;
+  containerClassName?: string;
 }
 
 interface TextInputProps extends InputBaseProps, Omit<React.InputHTMLAttributes<HTMLInputElement>, 'id'> {
@@ -43,7 +44,7 @@ const formatDisplayToISO = (displayDate: string): string | null => {
   return `${year}-${month}-${day}`;
 };
 
-export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon, className, labelClassName, dir, ...props }) => {
+export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon, className, labelClassName, containerClassName, dir, ...props }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const datePickerRef = useRef<HTMLInputElement>(null);
   const { inputFocusClass, fileText } = useFormCardTheme();
@@ -156,7 +157,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
   };
 
   return (
-    <div className="flex flex-col gap-1.5 group relative">
+    <div className={`flex flex-col gap-1.5 group relative ${containerClassName || ''}`}>
       <label className={`text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1 ${labelClassName || ''}`} htmlFor={id}>
         {required && <span className="text-red-600 text-sm leading-none pt-1">*</span>}
         {label}
@@ -233,13 +234,14 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   value,
   className,
   labelClassName,
+  containerClassName,
   ...props
 }) => {
   const isPlaceholder = !value;
   const { inputFocusClass } = useFormCardTheme();
 
   return (
-    <div className="flex flex-col gap-1.5 group">
+    <div className={`flex flex-col gap-1.5 group ${containerClassName || ''}`}>
       <label className={`text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1 ${labelClassName || ''}`} htmlFor={id}>
          {required && <span className="text-red-600 text-sm leading-none pt-1">*</span>}
          {label}

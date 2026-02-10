@@ -27,7 +27,9 @@ export interface EmployeeFormData {
   emirates_id: string;
   emirates_expiry: string;
   gcc_id: string;
+  gcc_id_expiry: string;
   license_type: string;
+  license_expiry: string;
   passport_file: File | null;
   eid_file: File | null;
   license_file: File | null;
@@ -60,7 +62,9 @@ export const INITIAL_STATE: EmployeeFormData = {
   emirates_id: '',
   emirates_expiry: '',
   gcc_id: '',
+  gcc_id_expiry: '',
   license_type: '',
+  license_expiry: '',
   passport_file: null,
   eid_file: null,
   license_file: null,

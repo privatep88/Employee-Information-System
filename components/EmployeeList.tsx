@@ -30,6 +30,18 @@ const formatDateDisplay = (dateStr: string) => {
     return dateStr;
 };
 
+// Helper to download file
+const downloadFile = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+};
+
 const InfoField: React.FC<{ label: string; value: string | React.ReactNode; dir?: 'rtl' | 'ltr' }> = ({ label, value, dir }) => (
   <div className="flex flex-col gap-1 border-b border-slate-100 pb-2 last:border-0 text-right">
     <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">{label}</span>
@@ -39,7 +51,7 @@ const InfoField: React.FC<{ label: string; value: string | React.ReactNode; dir?
   </div>
 );
 
-const FileDisplay: React.FC<{ label: string; file: File | null }> = ({ label, file }) => {
+const FileDisplay: React.FC<{ label: string; file: File | null; onView: (file: File) => void }> = ({ label, file, onView }) => {
     const [preview, setPreview] = useState<string | null>(null);
 
     useEffect(() => {
@@ -51,6 +63,11 @@ const FileDisplay: React.FC<{ label: string; file: File | null }> = ({ label, fi
         setPreview(null);
     }, [file]);
 
+    const handleDownloadClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (file) downloadFile(file);
+    };
+
     if (!file) return (
          <div className="flex flex-col gap-1 border-b border-slate-100 pb-2 last:border-0 text-right">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">{label}</span>
@@ -59,29 +76,114 @@ const FileDisplay: React.FC<{ label: string; file: File | null }> = ({ label, fi
     );
 
     return (
-        <div className="flex flex-col gap-2 border rounded-md p-3 bg-slate-50/50 mt-2 text-right">
-            <span className="text-xs font-bold text-slate-500">{label}</span>
+        <div className="flex flex-col gap-2 border rounded-md p-3 bg-slate-50/50 mt-2 text-right group hover:bg-slate-100 transition-colors">
+            <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-500">{label}</span>
+                <button 
+                    onClick={handleDownloadClick}
+                    className="text-slate-400 hover:text-primary transition-colors p-1 rounded-full hover:bg-white"
+                    title="تحميل الملف | Download File"
+                >
+                    <span className="material-symbols-outlined text-[20px]">download</span>
+                </button>
+            </div>
+            
             <div className="flex items-center gap-2 justify-end">
                 <span className="text-[10px] text-slate-400 font-english">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-                <span className="text-xs font-bold text-slate-700 truncate" title={file.name}>{file.name}</span>
+                <span className="text-xs font-bold text-slate-700 truncate max-w-[150px]" title={file.name}>{file.name}</span>
                 <span className="material-symbols-outlined text-primary text-[20px]">
                     {file.type.startsWith('image/') ? 'image' : 'description'}
                 </span>
             </div>
-            {preview && (
-                <div className="mt-2 relative h-32 w-full overflow-hidden rounded border border-slate-200 bg-white">
-                    <img src={preview} alt={label} className="h-full w-full object-contain" />
+            
+            {/* Clickable Preview Area */}
+            <div 
+                className="mt-2 relative h-32 w-full overflow-hidden rounded border border-slate-200 bg-white cursor-pointer"
+                onClick={() => onView(file)}
+            >
+                {preview ? (
+                    <img src={preview} alt={label} className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105" />
+                ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2">
+                         <span className="material-symbols-outlined text-[32px]">picture_as_pdf</span>
+                         <span className="text-[10px] font-bold">اضغط للعرض | Click to View</span>
+                    </div>
+                )}
+                
+                {/* Overlay on Hover */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 flex items-center justify-center transition-colors">
+                    <span className="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 bg-black/30 rounded-full p-2 backdrop-blur-sm transition-opacity">visibility</span>
                 </div>
-            )}
+            </div>
         </div>
     )
 }
+
+// Full Screen File Viewer Modal
+const FileViewerModal: React.FC<{ file: File; onClose: () => void }> = ({ file, onClose }) => {
+    const [url, setUrl] = useState<string>('');
+
+    useEffect(() => {
+        const objectUrl = URL.createObjectURL(file);
+        setUrl(objectUrl);
+        return () => URL.revokeObjectURL(objectUrl);
+    }, [file]);
+
+    const isImage = file.type.startsWith('image/');
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            {/* Close Button */}
+            <button 
+                onClick={onClose}
+                className="absolute top-4 right-4 size-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-colors z-50 backdrop-blur-md"
+            >
+                <span className="material-symbols-outlined">close</span>
+            </button>
+
+            {/* Content Container */}
+            <div className="relative w-full h-full max-w-6xl max-h-[90vh] flex flex-col bg-transparent rounded-lg overflow-hidden">
+                
+                {/* Header Actions */}
+                <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none">
+                    <div className="pointer-events-auto bg-black/50 backdrop-blur-md text-white px-4 py-2 rounded-lg flex items-center gap-3">
+                        <span className="material-symbols-outlined">
+                            {isImage ? 'image' : 'description'}
+                        </span>
+                        <div className="flex flex-col">
+                             <span className="text-sm font-bold truncate max-w-[200px]">{file.name}</span>
+                             <span className="text-[10px] opacity-75 font-english">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                        </div>
+                    </div>
+
+                    <button 
+                        onClick={() => downloadFile(file)}
+                        className="pointer-events-auto bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg transition-colors font-bold text-sm"
+                    >
+                        <span>تنزيل</span>
+                        <span className="material-symbols-outlined text-[18px]">download</span>
+                    </button>
+                </div>
+
+                {/* Main Content */}
+                <div className="flex-1 flex items-center justify-center overflow-auto p-2 pt-16">
+                    {isImage ? (
+                        <img src={url} alt="Full View" className="max-w-full max-h-full object-contain shadow-2xl rounded" />
+                    ) : (
+                        <iframe src={url} className="w-full h-full bg-white rounded shadow-2xl" title="File Preview"></iframe>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
   const [selectedEmp, setSelectedEmp] = useState<EmployeeFormData | null>(null);
   const [selectedEmpIndex, setSelectedEmpIndex] = useState<number>(-1);
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
+  const [viewingFile, setViewingFile] = useState<File | null>(null);
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -163,6 +265,14 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
   // --- DETAILED VIEW RENDER ---
   if (viewMode === 'detail' && selectedEmp) {
       return (
+        <>
+        {viewingFile && (
+            <FileViewerModal 
+                file={viewingFile} 
+                onClose={() => setViewingFile(null)} 
+            />
+        )}
+        
         <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-300">
             {/* Back Button */}
             <div className="flex items-center justify-between">
@@ -243,7 +353,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
                     <InfoField label="المؤهل العلمي | Degree" value={getLabel(selectedEmp.degree, DEGREES)} />
                     <InfoField label="التخصص | Specialization" value={selectedEmp.specialization} />
                     <div className="md:col-span-2">
-                         <FileDisplay label="صورة المؤهل العلمي | Education Certificate" file={selectedEmp.education_certificate_file} />
+                         <FileDisplay label="صورة المؤهل العلمي | Education Certificate" file={selectedEmp.education_certificate_file} onView={setViewingFile} />
                     </div>
                 </FormCard>
 
@@ -262,13 +372,16 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
                     <InfoField label="انتهاء الهوية | Expiry" value={formatDateDisplay(selectedEmp.emirates_expiry)} />
                     
                     <InfoField label="رقم الهوية (خليجي) | GCC ID" value={selectedEmp.gcc_id} dir="ltr" />
+                    <InfoField label="انتهاء الهوية (خليجي) | GCC ID Expiry" value={formatDateDisplay(selectedEmp.gcc_id_expiry)} />
+
                     <InfoField label="نوع الرخصة | License Type" value={getLabel(selectedEmp.license_type, LICENSE_TYPES)} />
+                    <InfoField label="انتهاء الرخصة | License Expiry" value={formatDateDisplay(selectedEmp.license_expiry)} />
 
                     <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                         <FileDisplay label="صورة جواز السفر | Passport Copy" file={selectedEmp.passport_file} />
-                         <FileDisplay label="صورة الهوية الإماراتية | EID Copy" file={selectedEmp.eid_file} />
-                         <FileDisplay label="صورة الهوية الخليجية | GCC ID Copy" file={selectedEmp.gcc_id_file} />
-                         <FileDisplay label="صورة الرخصة | License Copy" file={selectedEmp.license_file} />
+                         <FileDisplay label="صورة جواز السفر | Passport Copy" file={selectedEmp.passport_file} onView={setViewingFile} />
+                         <FileDisplay label="صورة الهوية الإماراتية | EID Copy" file={selectedEmp.eid_file} onView={setViewingFile} />
+                         <FileDisplay label="صورة الهوية الخليجية | GCC ID Copy" file={selectedEmp.gcc_id_file} onView={setViewingFile} />
+                         <FileDisplay label="صورة الرخصة | License Copy" file={selectedEmp.license_file} onView={setViewingFile} />
                     </div>
                 </FormCard>
 
@@ -292,6 +405,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
                  <div className="h-px bg-slate-300 flex-1"></div>
             </div>
         </div>
+        </>
       );
   }
 

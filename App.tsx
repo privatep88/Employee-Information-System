@@ -25,6 +25,7 @@ const REQUIRED_FIELD_LABELS: Record<string, string> = {
   emirates_id: "رقم الهوية الإماراتية | Emirates ID",
   emirates_expiry: "انتهاء الهوية الإماراتية | Emirates ID Expiry",
   license_type: "نوع الرخصة | License Type",
+  license_expiry: "تاريخ انتهاء الرخصة | License Expiry",
   passport_file: "صورة جواز السفر | Passport Copy",
   eid_file: "صورة الهوية الإماراتية | Emirates ID Copy",
   license_file: "صورة رخصة القيادة | Driving License Copy",
@@ -109,8 +110,8 @@ const App: React.FC = () => {
     const errors: string[] = [];
     
     Object.entries(REQUIRED_FIELD_LABELS).forEach(([key, label]) => {
-      // Conditional validation: Driving license file is only required if license type is not "none"
-      if (key === 'license_file' && formData.license_type === 'none') {
+      // Conditional validation: Driving license file/expiry is only required if license type is not "none"
+      if ((key === 'license_file' || key === 'license_expiry') && formData.license_type === 'none') {
         return;
       }
 
@@ -438,17 +439,6 @@ const App: React.FC = () => {
                   required
                 />
                 <TextInput
-                  id="gcc_id"
-                  name="gcc_id"
-                  label="رقم الهوية (خليجي) | GCC ID"
-                  placeholder="GCC ID Number"
-                  value={formData.gcc_id}
-                  onChange={handleInputChange}
-                  dir="ltr"
-                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
-                  // Optional as requested
-                />
-                <TextInput
                   id="emirates_id"
                   name="emirates_id"
                   label="رقم الهوية الإماراتية | Emirates ID"
@@ -471,6 +461,29 @@ const App: React.FC = () => {
                   icon="calendar_today"
                   required
                 />
+                <TextInput
+                  id="gcc_id"
+                  name="gcc_id"
+                  label="رقم الهوية (خليجي) | GCC ID"
+                  placeholder="GCC ID Number"
+                  value={formData.gcc_id}
+                  onChange={handleInputChange}
+                  dir="ltr"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
+                  // Optional as requested
+                />
+                <TextInput
+                  id="gcc_id_expiry"
+                  name="gcc_id_expiry"
+                  type="date"
+                  label="تاريخ انتهاء الهوية (خليجي) | GCC ID Expiry"
+                  value={formData.gcc_id_expiry}
+                  onChange={handleInputChange}
+                  className="cursor-pointer"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
+                  icon="calendar_today"
+                  // Optional as requested
+                />
                 <SelectInput
                   id="license_type"
                   name="license_type"
@@ -481,6 +494,20 @@ const App: React.FC = () => {
                   options={LICENSE_TYPES}
                   labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
                   required
+                />
+                <TextInput
+                  id="license_expiry"
+                  name="license_expiry"
+                  type="date"
+                  label="تاريخ انتهاء الرخصة | License Expiry"
+                  value={formData.license_expiry}
+                  onChange={handleInputChange}
+                  className="cursor-pointer"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
+                  icon="calendar_today"
+                  required={formData.license_type !== 'none'}
+                  disabled={formData.license_type === 'none'}
+                  containerClassName="md:col-span-2"
                 />
               </div>
               
