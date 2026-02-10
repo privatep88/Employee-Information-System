@@ -41,13 +41,16 @@ const Header: React.FC = () => {
 
           {/* Contact Us - Absolute Left on Desktop (End in RTL) */}
           <div className="md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mt-6 md:mt-0 flex items-center order-3 md:order-none z-20">
-            <button className="group relative flex items-center gap-3 pl-1 pr-4 py-1.5 rounded-full bg-slate-800/50 border border-slate-700 hover:border-blue-500/50 hover:bg-slate-800 transition-all cursor-pointer">
-              <div className="size-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-white text-[20px]">headset_mic</span>
+            <button className="group relative flex items-center gap-3 pr-1.5 pl-5 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/30 transition-all duration-300 cursor-pointer backdrop-blur-sm shadow-sm hover:shadow-lg hover:shadow-blue-900/20">
+              {/* Icon Circle - Matching Logo Style (White BG, Black Icon) */}
+              <div className="size-10 rounded-full bg-white flex items-center justify-center shadow-lg shadow-white/10 group-hover:scale-105 transition-all duration-300">
+                <span className="material-symbols-outlined text-slate-900 text-[24px] animate-in zoom-in duration-300">support_agent</span>
               </div>
-              <div className="flex flex-col items-start">
-                <span className="text-xs font-bold text-white leading-none group-hover:text-blue-100 transition-colors">تواصل معنا</span>
-                <span className="text-[10px] uppercase tracking-wider text-slate-400 font-english leading-none mt-1 group-hover:text-blue-300 transition-colors">Contact Us</span>
+              
+              {/* Text Group */}
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="text-sm font-bold text-white leading-none group-hover:text-blue-50 transition-colors">تواصل معنا</span>
+                <span className="text-[10px] uppercase tracking-widest text-slate-300 font-english leading-none group-hover:text-white transition-colors">Contact Us</span>
               </div>
             </button>
           </div>

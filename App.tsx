@@ -202,11 +202,38 @@ const NATIONALITIES = [
   { value: 'ZWE', label: 'زيمبابوي | Zimbabwe' }
 ];
 
+// Map internal keys to display labels for validation messages
+const REQUIRED_FIELD_LABELS: Record<string, string> = {
+  emp_id: "الرقم الوظيفي | Employee ID",
+  nationality: "الجنسية | Nationality",
+  name_ar: "الاسم الكامل (عربي) | Full Name (Arabic)",
+  name_en: "الاسم الكامل (إنجليزي) | Full Name (English)",
+  marital_status: "الحالة الاجتماعية | Marital Status",
+  dob: "تاريخ الميلاد | Date of Birth",
+  degree: "المؤهل العلمي | Educational Qualification",
+  phone: "رقم الهاتف | Phone Number",
+  passport_no: "رقم جواز السفر | Passport Number",
+  passport_expiry: "انتهاء جواز السفر | Passport Expiry",
+  emirates_id: "رقم الهوية الإماراتية | Emirates ID",
+  emirates_expiry: "انتهاء الهوية الإماراتية | Emirates ID Expiry",
+  license_type: "نوع الرخصة | License Type",
+  passport_file: "صورة جواز السفر | Passport Copy",
+  eid_file: "صورة الهوية الإماراتية | Emirates ID Copy",
+  license_file: "صورة رخصة القيادة | Driving License Copy",
+  emergency_name: "اسم شخص للطوارئ | Emergency Contact Name",
+  emergency_relation: "صلة القرابة | Relationship",
+  emergency_phone: "رقم التواصل للطوارئ | Emergency Contact Number",
+};
+
 const App: React.FC = () => {
   const [formData, setFormData] = useState<EmployeeFormData>(INITIAL_STATE);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   
+  // Validation State
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
   // Date Logic: Capture current date for display and record keeping
   const [currentDate] = useState(new Date());
 
@@ -251,9 +278,34 @@ const App: React.FC = () => {
     setFormData(prev => ({ ...prev, profile_picture: null }));
   };
 
+  // Validate all required fields
+  const validateForm = () => {
+    const errors: string[] = [];
+    
+    Object.entries(REQUIRED_FIELD_LABELS).forEach(([key, label]) => {
+      const value = formData[key as keyof EmployeeFormData];
+      if (!value) {
+        errors.push(label);
+      }
+    });
+
+    return errors;
+  };
+
   // Called when user clicks "Save & Submit"
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check validation manually
+    const errors = validateForm();
+    
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      setShowErrorDialog(true);
+      return; // Stop submission
+    }
+
+    // If valid, show confirmation
     setShowConfirmDialog(true);
   };
 
@@ -276,6 +328,7 @@ const App: React.FC = () => {
   const handleReset = () => {
     if(confirm('Are you sure you want to reset the form?')) {
         setFormData(INITIAL_STATE);
+        setValidationErrors([]);
     }
   }
 
@@ -314,7 +367,8 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+          {/* Form has noValidate to suppress browser popups and allow custom dialog */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-8" noValidate>
             
             {/* 1. Personal Information */}
             <FormCard
@@ -717,6 +771,32 @@ const App: React.FC = () => {
         cancelLabel="تراجع | Cancel"
         variant="warning"
         icon="help"
+      />
+
+      {/* Error / Validation Dialog */}
+      <ConfirmationDialog
+        isOpen={showErrorDialog}
+        onClose={() => setShowErrorDialog(false)}
+        onConfirm={() => setShowErrorDialog(false)}
+        title="بيانات ناقصة | Missing Information"
+        message={
+            <div className="flex flex-col gap-4 text-start">
+                <p className="font-bold text-red-600">يرجى تعبئة الحقول الإلزامية التالية قبل المتابعة:</p>
+                <p className="font-bold text-red-600 text-sm font-english" dir="ltr">Please fill in the following required fields before proceeding:</p>
+                
+                <div className="bg-red-50 p-4 rounded-lg border border-red-100 max-h-[40vh] overflow-y-auto">
+                    <ul className="list-disc list-inside space-y-1 text-sm font-semibold text-slate-700">
+                        {validationErrors.map((err, index) => (
+                            <li key={index}>{err}</li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        }
+        confirmLabel="حسناً، سأقوم بتعبئتها | OK, I'll fill them"
+        showCancel={false}
+        variant="error"
+        icon="error"
       />
 
       {/* Success Dialog */}

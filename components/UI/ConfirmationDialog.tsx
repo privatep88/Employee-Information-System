@@ -9,7 +9,7 @@ interface ConfirmationDialogProps {
   confirmLabel?: string;
   cancelLabel?: string;
   icon?: string;
-  variant?: 'info' | 'success' | 'warning';
+  variant?: 'info' | 'success' | 'warning' | 'error';
   showCancel?: boolean;
 }
 
@@ -45,6 +45,12 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
         iconColor: 'text-amber-600',
         buttonBg: 'bg-amber-600 hover:bg-amber-700',
         barColor: 'bg-amber-500'
+    },
+    error: {
+        iconBg: 'bg-red-50',
+        iconColor: 'text-red-600',
+        buttonBg: 'bg-red-600 hover:bg-red-700',
+        barColor: 'bg-red-500'
     }
   }[variant];
 
@@ -57,24 +63,24 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       ></div>
 
       {/* Dialog Card */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
         {/* Top Accent Bar */}
-        <div className={`h-1.5 w-full ${styles.barColor}`}></div>
+        <div className={`h-1.5 w-full shrink-0 ${styles.barColor}`}></div>
 
-        <div className="p-8 flex flex-col items-center text-center">
+        <div className="p-8 flex flex-col items-center text-center overflow-y-auto">
             {/* Icon */}
-            <div className={`size-16 rounded-2xl ${styles.iconBg} ${styles.iconColor} flex items-center justify-center mb-6 shadow-sm ring-4 ring-white`}>
+            <div className={`size-16 rounded-2xl ${styles.iconBg} ${styles.iconColor} flex items-center justify-center mb-6 shadow-sm ring-4 ring-white shrink-0`}>
                 <span className="material-symbols-outlined text-[36px]">{icon}</span>
             </div>
 
             {/* Content */}
             <h3 className="text-xl font-black text-slate-900 mb-2 leading-tight">{title}</h3>
-            <div className="text-slate-500 font-medium leading-relaxed mb-8 text-base">
+            <div className="text-slate-500 font-medium leading-relaxed mb-8 text-base w-full">
                 {message}
             </div>
 
             {/* Actions */}
-            <div className={`grid gap-3 w-full ${showCancel ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            <div className={`grid gap-3 w-full shrink-0 ${showCancel ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 {showCancel && (
                   <button
                       onClick={onClose}
@@ -88,7 +94,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                     className={`h-12 rounded-xl text-white font-bold shadow-lg shadow-blue-500/20 transition-all active:scale-95 flex items-center justify-center gap-2 ${styles.buttonBg}`}
                 >
                     <span>{confirmLabel}</span>
-                    {!showCancel && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}
+                    {!showCancel && variant !== 'error' && <span className="material-symbols-outlined text-[18px]">arrow_forward</span>}
                 </button>
             </div>
         </div>
