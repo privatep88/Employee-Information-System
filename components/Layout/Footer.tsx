@@ -25,9 +25,9 @@ const Footer: React.FC = () => {
        
         {/* Links Section */}
         <div className="flex flex-wrap justify-center md:justify-end gap-4 md:gap-8 text-sm md:w-1/3 order-2 md:order-3">
-          <a href="#" className="text-slate-400 hover:text-white transition-colors font-semibold flex items-center gap-1 group">
+          <a href="#" className="text-white hover:text-blue-200 transition-colors font-semibold flex items-center gap-1 group">
              <span className="group-hover:translate-y-px transition-transform">الدعم الفني</span>
-             <span className="text-slate-600">|</span>
+             <span className="text-white">|</span>
              <span className="font-english text-xs uppercase tracking-wider group-hover:translate-y-px transition-transform">Support</span>
           </a>
         </div>

@@ -39,6 +39,19 @@ const Header: React.FC = () => {
             <div className="text-base md:text-lg font-semibold text-blue-200">قسم شؤون الموظفين</div>
           </div>
 
+          {/* Contact Us - Absolute Left on Desktop (End in RTL) */}
+          <div className="md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mt-6 md:mt-0 flex items-center order-3 md:order-none z-20">
+            <button className="group relative flex items-center gap-3 pl-1 pr-4 py-1.5 rounded-full bg-slate-800/50 border border-slate-700 hover:border-blue-500/50 hover:bg-slate-800 transition-all cursor-pointer">
+              <div className="size-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-white text-[20px]">headset_mic</span>
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="text-xs font-bold text-white leading-none group-hover:text-blue-100 transition-colors">تواصل معنا</span>
+                <span className="text-[10px] uppercase tracking-wider text-slate-400 font-english leading-none mt-1 group-hover:text-blue-300 transition-colors">Contact Us</span>
+              </div>
+            </button>
+          </div>
+
         </div>
       </div>
 
