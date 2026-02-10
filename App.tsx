@@ -172,7 +172,7 @@ const App: React.FC = () => {
                   <p className="text-slate-600 text-base font-medium leading-relaxed">
                     {activeTab === 'home' ? "يرجى تعبئة النموذج أدناه بدقة لضمان تحديث السجلات." : "قائمة بجميع بيانات الموظفين التي تم إدخالها وحفظها في النظام."}
                   </p>
-                  <p className="text-slate-500 text-sm mt-0.5 text-start font-english" dir="ltr">
+                  <p className="text-slate-500 text-sm mt-0.5 text-right font-english" dir="ltr">
                     {activeTab === 'home' ? "Please fill out the form accurately to ensure records update." : "List of all employee data entered and saved in the system."}
                   </p>
               </div>
