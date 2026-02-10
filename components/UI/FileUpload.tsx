@@ -22,9 +22,10 @@ const FileUpload: React.FC<FileUploadProps> = ({
   onFileSelect
 }) => {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-bold text-slate-700">
-        {label} {required && <span className="text-red-500">*</span>}
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1">
+        {required && <span className="text-red-600 text-sm leading-none pt-1">*</span>}
+        {label}
       </label>
       <div className="relative group">
         <input
@@ -37,27 +38,33 @@ const FileUpload: React.FC<FileUploadProps> = ({
         />
         <label
           htmlFor={id}
-          className={`flex flex-col items-center justify-center w-full h-32 md:h-36 border-2 border-dashed rounded-xl bg-slate-50 hover:bg-white hover:border-primary transition-all cursor-pointer group-hover:shadow-sm ${currentFile ? 'border-primary/50 bg-blue-50/30' : 'border-slate-200'}`}
+          className={`flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-md transition-all cursor-pointer group-hover:bg-slate-50 ${
+            currentFile 
+            ? 'border-primary bg-blue-50/50' 
+            : 'border-slate-300 bg-white hover:border-slate-400'
+          }`}
         >
-          <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4 text-center">
-            <span className={`material-symbols-outlined transition-colors text-2xl md:text-3xl mb-2 ${currentFile ? 'text-primary' : 'text-slate-400 group-hover:text-primary'}`}>
-              {currentFile ? 'check_circle' : icon}
-            </span>
-            {currentFile ? (
-               <p className="text-sm text-primary font-bold truncate max-w-[200px]">
-                 {currentFile.name}
-               </p>
-            ) : (
-              <>
-                <p className="text-sm text-slate-600 font-bold">
-                  اسحب الملف أو <span className="text-primary underline">تصفح</span> | Upload or{' '}
-                  <span className="text-primary underline">Browse</span>
-                </p>
-                {helperText && (
-                  <p className="text-xs text-slate-400 mt-1 font-medium">{helperText}</p>
-                )}
-              </>
-            )}
+          <div className="flex items-center gap-3 px-4">
+            <div className={`size-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${currentFile ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400 group-hover:text-slate-600'}`}>
+                <span className="material-symbols-outlined text-[20px]">
+                {currentFile ? 'check' : icon}
+                </span>
+            </div>
+            <div className="flex flex-col text-start">
+                 {currentFile ? (
+                    <>
+                        <span className="text-xs font-bold text-primary truncate max-w-[150px] sm:max-w-[200px]">{currentFile.name}</span>
+                        <span className="text-[10px] text-green-600 font-bold">تم إرفاق الملف بنجاح</span>
+                    </>
+                 ) : (
+                    <>
+                        <span className="text-xs font-bold text-slate-700 group-hover:text-black">
+                            اضغط لرفع المستند
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium font-english">{helperText}</span>
+                    </>
+                 )}
+            </div>
           </div>
         </label>
       </div>

@@ -336,32 +336,31 @@ const App: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
       
-      <main className="flex-1 flex justify-center py-10 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-5xl flex flex-col gap-10">
+      <main className="flex-1 flex justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-5xl flex flex-col gap-8">
           
-          {/* Page Title & Date Section */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
-            <div className="flex flex-col gap-3 w-full max-w-2xl">
-              <h1 className="text-2xl md:text-3xl font-extrabold leading-tight tracking-tight text-slate-900">
-                نموذج بيانات الموظف | Employee Data Form
+          {/* Page Title & Date Section - Simplified for official look */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-300">
+            <div className="flex flex-col gap-2 w-full max-w-2xl">
+              <h1 className="text-2xl md:text-3xl font-extrabold leading-tight tracking-normal text-slate-800">
+                نموذج بيانات الموظف <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Employee Data Form</span>
               </h1>
-              <div className="w-full">
-                  <p className="text-slate-500 text-lg font-medium leading-relaxed">
-                    قم بتعبأة النموذج أدناه بدقة عالية لضمان تحديث السجلات بإدارة الموارد البشرية .
+              <div className="w-full pl-2 border-r-4 border-secondary pr-3">
+                  <p className="text-slate-600 text-base font-medium leading-relaxed">
+                    يرجى تعبئة النموذج أدناه بدقة لضمان تحديث السجلات.
                   </p>
-                  <p className="text-slate-400 text-base mt-1 text-right" dir="ltr">
-                    Please fill out the form below accurately to ensure HR records are updated correctly.
+                  <p className="text-slate-500 text-sm mt-0.5 text-start font-english" dir="ltr">
+                    Please fill out the form accurately to ensure records update.
                   </p>
               </div>
             </div>
 
-            {/* Date Display Card */}
-            <div className="shrink-0 flex flex-col items-center justify-center bg-white p-4 rounded-2xl border border-slate-200 shadow-soft min-w-[200px]">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">تاريخ اليوم | Today's Date</span>
-                <div className="text-2xl font-black text-primary font-sans" dir="ltr">
+            {/* Date Display Card - Compact Official Style */}
+            <div className="shrink-0 flex flex-col items-center justify-center bg-white p-3 rounded border border-slate-300 shadow-sm min-w-[180px]">
+                <div className="text-lg font-bold text-slate-800 font-sans tracking-widest" dir="ltr">
                     {formattedDate}
                 </div>
-                <div className="text-sm font-bold text-slate-600 mt-1">
+                <div className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full mt-1">
                     {dayNameAr} | {dayNameEn}
                 </div>
             </div>
@@ -400,7 +399,7 @@ const App: React.FC = () => {
                 id="nationality"
                 name="nationality"
                 label="الجنسية | Nationality"
-                placeholder="اختر الجنسية | Select Nationality"
+                placeholder="--- اختر الجنسية ---"
                 value={formData.nationality}
                 onChange={handleInputChange}
                 options={NATIONALITIES}
@@ -429,7 +428,7 @@ const App: React.FC = () => {
                 id="marital_status"
                 name="marital_status"
                 label="الحالة الاجتماعية | Marital Status"
-                placeholder="اختر الحالة | Select Status"
+                placeholder="--- اختر الحالة ---"
                 value={formData.marital_status}
                 onChange={handleInputChange}
                 options={[
@@ -448,8 +447,8 @@ const App: React.FC = () => {
                 label="تاريخ الميلاد | Date of Birth"
                 value={formData.dob}
                 onChange={handleInputChange}
-                className="appearance-none cursor-pointer"
-                icon="calendar_month"
+                className="cursor-pointer"
+                icon="calendar_today"
                 required
               />
             </FormCard>
@@ -460,13 +459,13 @@ const App: React.FC = () => {
               subtitle="الشهادات والدرجات الأكاديمية | Academic certificates and degrees"
               icon="school"
               iconBgClass="bg-emerald-50"
-              iconColorClass="text-emerald-600"
+              iconColorClass="text-secondary"
             >
               <SelectInput
                 id="degree"
                 name="degree"
                 label="المؤهل العلمي | Educational Qualification"
-                placeholder="اختر الدرجة | Select Degree"
+                placeholder="--- اختر المؤهل ---"
                 value={formData.degree}
                 onChange={handleInputChange}
                 options={[
@@ -484,7 +483,7 @@ const App: React.FC = () => {
                 id="specialization"
                 name="specialization"
                 label="التخصص | Specialization"
-                placeholder="مثال: هندسة برمجيات | e.g. Software Engineering"
+                placeholder="مثال: هندسة برمجيات"
                 value={formData.specialization}
                 onChange={handleInputChange}
                 // Optional as requested
@@ -507,7 +506,7 @@ const App: React.FC = () => {
               subtitle="وسائل التواصل المباشرة | Direct contact methods"
               icon="contact_phone"
               iconBgClass="bg-purple-50"
-              iconColorClass="text-purple-600"
+              iconColorClass="text-purple-700"
             >
                <TextInput
                 id="phone"
@@ -541,7 +540,7 @@ const App: React.FC = () => {
               subtitle="أرقام الهوية والجوازات | ID and Passport numbers"
               icon="folder_shared"
               iconBgClass="bg-amber-50"
-              iconColorClass="text-amber-600"
+              iconColorClass="text-amber-700"
             >
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <TextInput
@@ -552,60 +551,60 @@ const App: React.FC = () => {
                   value={formData.passport_no}
                   onChange={handleInputChange}
                   dir="ltr"
-                  labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
                   required
                 />
                 <TextInput
                   id="passport_expiry"
                   name="passport_expiry"
                   type="date"
-                  label="تاريخ انتهاء جواز السفر | Passport Expiry Date"
+                  label="تاريخ الانتهاء | Expiry Date"
                   value={formData.passport_expiry}
                   onChange={handleInputChange}
                   className="cursor-pointer"
-                  labelClassName="min-h-[2.5rem] flex items-end pb-1"
-                  icon="calendar_month"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
+                  icon="calendar_today"
                   required
                 />
                 <TextInput
                   id="gcc_id"
                   name="gcc_id"
-                  label="رقم البطاقة الشخصية (خليجي) | GCC ID Number"
+                  label="رقم الهوية (خليجي) | GCC ID"
                   placeholder="GCC ID Number"
                   value={formData.gcc_id}
                   onChange={handleInputChange}
                   dir="ltr"
-                  labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
                   // Optional as requested
                 />
                 <TextInput
                   id="emirates_id"
                   name="emirates_id"
-                  label="رقم الهوية الإماراتية | Emirates ID Number"
+                  label="رقم الهوية الإماراتية | Emirates ID"
                   placeholder="784-xxxx-xxxxxxx-x"
                   value={formData.emirates_id}
                   onChange={handleInputChange}
                   dir="ltr"
-                  labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
                   required
                 />
                 <TextInput
                   id="emirates_expiry"
                   name="emirates_expiry"
                   type="date"
-                  label="تاريخ انتهاء الهوية الإماراتية | Emirates ID Expiry"
+                  label="تاريخ الانتهاء | Expiry Date"
                   value={formData.emirates_expiry}
                   onChange={handleInputChange}
                   className="cursor-pointer"
-                  labelClassName="min-h-[2.5rem] flex items-end pb-1"
-                  icon="calendar_month"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
+                  icon="calendar_today"
                   required
                 />
                 <SelectInput
                   id="license_type"
                   name="license_type"
                   label="نوع الرخصة | License Type"
-                  placeholder="اختر نوع الرخصة | Select License Type"
+                  placeholder="--- اختر النوع ---"
                   value={formData.license_type}
                   onChange={handleInputChange}
                   options={[
@@ -615,7 +614,7 @@ const App: React.FC = () => {
                     { value: 'bus', label: 'حافلة | Bus' },
                     { value: 'none', label: 'لا يوجد | None' },
                   ]}
-                  labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
                   required
                 />
               </div>
@@ -660,24 +659,24 @@ const App: React.FC = () => {
               subtitle="للاتصال عند الضرورة القصوى | For urgent contact only"
               icon="emergency"
               iconBgClass="bg-rose-50"
-              iconColorClass="text-rose-600"
+              iconColorClass="text-rose-700"
             >
                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <TextInput
                     id="emergency_name"
                     name="emergency_name"
-                    label="اسم شخص للطوارئ | Emergency Contact Name"
+                    label="الاسم الكامل | Full Name"
                     placeholder="Contact Name"
                     value={formData.emergency_name}
                     onChange={handleInputChange}
-                    labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                    labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
                     required
                 />
                 <SelectInput
                     id="emergency_relation"
                     name="emergency_relation"
                     label="صلة القرابة | Relationship"
-                    placeholder="اختر الصلة | Select Relationship"
+                    placeholder="--- اختر الصلة ---"
                     value={formData.emergency_relation}
                     onChange={handleInputChange}
                     options={[
@@ -687,32 +686,39 @@ const App: React.FC = () => {
                     { value: 'friend', label: 'صديق | Friend' },
                     { value: 'other', label: 'أخرى | Other' },
                     ]}
-                    labelClassName="min-h-[2.5rem] flex items-center pb-1"
+                    labelClassName="min-h-[1.5rem] flex items-center pb-0.5"
                     required
                 />
                 <TextInput
                     id="emergency_phone"
                     name="emergency_phone"
                     type="tel"
-                    label="رقم التواصل في حالات الطوارئ | Emergency Contact Number"
+                    label="رقم الهاتف | Phone Number"
                     placeholder="05xxxxxxxx"
                     value={formData.emergency_phone}
                     onChange={handleInputChange}
                     dir="ltr"
-                    labelClassName="min-h-[2.5rem] flex items-end pb-1"
+                    labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
                     required
                 />
                </div>
             </FormCard>
 
-            {/* Declaration & Actions */}
-            <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-8 flex flex-col gap-6 mt-4">
-              <label className="flex items-start gap-3 cursor-pointer group">
+            {/* Declaration & Actions - Legal Style */}
+            <div className="bg-slate-50 border border-slate-300 p-6 rounded-md flex flex-col gap-6 mt-2 relative">
+              <div className="absolute top-0 right-0 w-1 h-full bg-slate-400 rounded-r-md"></div>
+              
+              <div className="flex flex-col gap-2">
+                 <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">إقرار وتعهد | Declaration</h3>
+                 <p className="text-xs text-slate-500">يرجى قراءة النص أدناه والموافقة عليه للمتابعة.</p>
+              </div>
+
+              <label className="flex items-start gap-4 cursor-pointer group bg-white p-4 border border-slate-200 rounded hover:border-slate-300 transition-colors">
                 <div className="relative flex items-center pt-1">
                   <input
                     type="checkbox"
                     name="declaration_accepted"
-                    className="peer size-5 cursor-pointer appearance-none rounded border border-slate-300 bg-white checked:border-primary checked:bg-primary transition-all shadow-sm"
+                    className="peer size-5 cursor-pointer appearance-none rounded border border-slate-400 bg-white checked:border-primary checked:bg-primary transition-all shadow-sm"
                     checked={formData.declaration_accepted}
                     onChange={handleInputChange}
                   />
@@ -720,31 +726,31 @@ const App: React.FC = () => {
                     check
                   </span>
                 </div>
-                <div className="flex flex-col gap-1 flex-1">
-                    <span className="text-base font-semibold text-slate-700 leading-relaxed select-none group-hover:text-slate-900 transition-colors">
+                <div className="flex flex-col gap-1.5 flex-1">
+                    <span className="text-sm font-bold text-slate-800 leading-relaxed text-justify">
                       «أقرّ أنا الموظف بأن جميع البيانات التي قمت بإدخالها صحيحة ودقيقة، وأتعهد بتحديث هذه البيانات متى ما تطلّب الأمر ذلك.»
                     </span>
-                    <span className="text-base font-semibold text-slate-900 leading-relaxed select-none transition-colors text-right" dir="ltr">
+                    <span className="text-xs font-medium text-slate-500 leading-relaxed text-right font-english" dir="ltr">
                       I hereby declare that all the information entered is accurate and correct, and I undertake to update this information whenever required.
                     </span>
                 </div>
               </label>
 
-              <div className="flex flex-col sm:flex-row items-center gap-4 justify-end pt-6 border-t border-blue-100">
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-end pt-4 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-full sm:w-auto h-12 px-8 rounded-xl border border-slate-200 bg-white text-slate-600 font-extrabold text-sm uppercase tracking-wider hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300 transition-all shadow-sm"
+                  className="w-full sm:w-auto h-11 px-6 rounded border border-slate-300 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:text-red-700 hover:border-red-200 transition-colors"
                 >
-                  إلغاء العملية | CANCEL PROCESS
+                  إلغاء العملية | Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!formData.declaration_accepted}
-                  className={`w-full sm:w-auto h-12 px-10 rounded-xl bg-primary text-white font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-3 transform active:scale-95 ${!formData.declaration_accepted ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-hover hover:shadow-blue-500/30'}`}
+                  className={`w-full sm:w-auto h-11 px-8 rounded bg-primary text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 ${!formData.declaration_accepted ? 'opacity-50 cursor-not-allowed bg-slate-400' : 'hover:bg-primary-hover hover:shadow'}`}
                 >
-                  <span className="material-symbols-outlined text-[20px]">save</span>
-                  حفظ وإرسال البيانات | Save & Submit Data
+                  <span className="material-symbols-outlined text-[18px]">save</span>
+                  حفظ البيانات | Save Data
                 </button>
               </div>
             </div>
@@ -784,8 +790,8 @@ const App: React.FC = () => {
                 <p className="font-bold text-red-600">يرجى تعبئة الحقول الإلزامية التالية قبل المتابعة:</p>
                 <p className="font-bold text-red-600 text-sm font-english" dir="ltr">Please fill in the following required fields before proceeding:</p>
                 
-                <div className="bg-red-50 p-4 rounded-lg border border-red-100 max-h-[40vh] overflow-y-auto">
-                    <ul className="list-disc list-inside space-y-1 text-sm font-semibold text-slate-700">
+                <div className="bg-red-50 p-4 rounded border border-red-200 max-h-[40vh] overflow-y-auto">
+                    <ul className="list-disc list-inside space-y-1 text-sm font-semibold text-slate-800">
                         {validationErrors.map((err, index) => (
                             <li key={index}>{err}</li>
                         ))}
@@ -793,7 +799,7 @@ const App: React.FC = () => {
                 </div>
             </div>
         }
-        confirmLabel="حسناً، سأقوم بتعبئتها | OK, I'll fill them"
+        confirmLabel="موافق | OK"
         showCancel={false}
         variant="error"
         icon="error"
@@ -811,7 +817,7 @@ const App: React.FC = () => {
                 <p className="text-sm font-english opacity-80" dir="ltr">Your data has been successfully saved and submitted to the HR department.</p>
             </div>
         }
-        confirmLabel="حسناً | OK"
+        confirmLabel="إغلاق | Close"
         showCancel={false}
         variant="success"
         icon="check_circle"

@@ -20,13 +20,15 @@
         theme: {
           extend: {
             colors: {
-              primary: "#137fec",
-              "primary-hover": "#1d4ed8",
-              "background-main": "#f8fafc",
+              // Governmental Official Palette
+              primary: "#1e4b8a", // Official Navy Blue
+              "primary-hover": "#163a6e", // Darker Navy
+              "secondary": "#107a68", // Institutional Green
+              "background-main": "#f1f5f9", // Slate 100 (Official Document BG)
               "surface-white": "#ffffff",
-              "border-subtle": "#e2e8f0",
-              "text-main": "#1e293b",
-              "text-secondary": "#64748b",
+              "border-subtle": "#cbd5e1", // Slate 300
+              "text-main": "#0f172a", // Slate 900 (High contrast)
+              "text-secondary": "#475569", // Slate 600
               "input-bg": "#ffffff",
             },
             fontFamily: {
@@ -35,8 +37,12 @@
               english: ["'Roboto'", "sans-serif"]
             },
             boxShadow: {
-              soft: "0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)",
-              card: "0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)"
+              soft: "0 2px 4px 0 rgba(0, 0, 0, 0.05)",
+              card: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)",
+              elevated: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)"
+            },
+            borderRadius: {
+              'card': '0.5rem', // 8px - More formal than 2xl
             }
           }
         }
@@ -44,7 +50,7 @@
     </script>
     <style>
       body {
-        background-color: #f8fafc;
+        background-color: #f1f5f9;
         font-family: 'Almarai', 'Roboto', sans-serif;
       }
       /* Custom scrollbar to match design */
@@ -52,14 +58,14 @@
           width: 8px;
       }
       ::-webkit-scrollbar-track {
-          background: #f1f5f9;
+          background: #e2e8f0;
       }
       ::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
+          background: #94a3b8;
           border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
+          background: #64748b;
       }
       
       /* Strictly center alignment for date inputs and hide native picker icon */
@@ -103,7 +109,7 @@
 }
 </script>
 </head>
-  <body class="bg-background-main text-text-main antialiased selection:bg-primary/10 selection:text-primary">
+  <body class="bg-background-main text-text-main antialiased selection:bg-primary/20 selection:text-primary">
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
   </body>

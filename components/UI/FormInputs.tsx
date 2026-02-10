@@ -14,12 +14,10 @@ interface TextInputProps extends InputBaseProps, Omit<React.InputHTMLAttributes<
 export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon, className, labelClassName, dir, ...props }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   
-  // Logic to handle placeholder color for date inputs which don't support ::placeholder pseudo-element styling for the mask
+  // Logic to handle placeholder color for date inputs
   const isDateType = ['date', 'month', 'week', 'time', 'datetime-local'].includes(props.type || '');
   const hasValue = props.value !== '' && props.value !== undefined && props.value !== null;
   const isDatePlaceholder = isDateType && !hasValue;
-
-  // Force LTR for date types to ensure Western Arabic Numerals (English numbers)
   const direction = isDateType ? 'ltr' : dir;
 
   const openPicker = () => {
@@ -31,7 +29,6 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
           inputRef.current.focus();
         }
       } catch (err) {
-        // Fallback gracefully
         inputRef.current.focus();
       }
     }
@@ -53,14 +50,15 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className={`text-sm font-bold text-slate-700 ${labelClassName || ''}`} htmlFor={id}>
-        {label} {required && <span className="text-red-500">*</span>}
+    <div className="flex flex-col gap-1.5 group">
+      <label className={`text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1 ${labelClassName || ''}`} htmlFor={id}>
+        {required && <span className="text-red-600 text-sm leading-none pt-1">*</span>}
+        {label}
       </label>
       {icon ? (
-        <div className="relative group">
+        <div className="relative">
           <span 
-            className={`absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors material-symbols-outlined text-lg z-10 ${isDateType ? 'cursor-pointer hover:text-primary' : 'pointer-events-none'}`}
+            className={`absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors material-symbols-outlined text-[20px] z-10 ${isDateType ? 'cursor-pointer hover:text-primary' : 'pointer-events-none'}`}
             onClick={isDateType ? handleIconClick : undefined}
           >
             {icon}
@@ -69,7 +67,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
             ref={inputRef}
             id={id}
             dir={direction}
-            className={`w-full rounded-lg border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:border-primary focus:ring-primary/20 h-11 px-12 placeholder:text-slate-400 placeholder:text-sm transition-all shadow-sm font-semibold text-center ${isDatePlaceholder ? 'text-slate-400 text-sm' : 'text-slate-900 text-base'} ${className || ''}`}
+            className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-10 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm text-slate-900 ${isDatePlaceholder ? 'text-slate-400' : ''} ${className || ''}`}
             onClick={handleInputClick}
             {...props}
           />
@@ -79,7 +77,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
           ref={inputRef}
           id={id}
           dir={direction}
-          className={`w-full rounded-lg border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:border-primary focus:ring-primary/20 h-11 px-4 placeholder:text-slate-400 placeholder:text-sm transition-all shadow-sm font-semibold text-center ${isDatePlaceholder ? 'text-slate-400 text-sm' : 'text-slate-900 text-base'} ${className || ''}`}
+          className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-3 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm text-slate-900 ${isDatePlaceholder ? 'text-slate-400' : ''} ${className || ''}`}
           onClick={handleInputClick}
           {...props}
         />
@@ -104,31 +102,34 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   labelClassName,
   ...props
 }) => {
-  // Determine if the current value is empty to style it like a placeholder
   const isPlaceholder = !value;
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className={`text-sm font-bold text-slate-700 ${labelClassName || ''}`} htmlFor={id}>
-        {label} {required && <span className="text-red-500">*</span>}
+    <div className="flex flex-col gap-1.5 group">
+      <label className={`text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1 ${labelClassName || ''}`} htmlFor={id}>
+         {required && <span className="text-red-600 text-sm leading-none pt-1">*</span>}
+         {label}
       </label>
-      <select
-        id={id}
-        value={value}
-        className={`w-full rounded-lg border-slate-200 bg-slate-50 hover:bg-white focus:bg-white focus:border-primary focus:ring-primary/20 h-11 px-4 transition-all shadow-sm cursor-pointer font-semibold text-center ${
-          isPlaceholder ? 'text-slate-400 text-sm' : 'text-slate-900 text-base'
-        } ${className || ''}`}
-        {...props}
-      >
-        <option value="" disabled>
-          {placeholder || 'Select...'}
-        </option>
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value} className="text-slate-900">
-            {opt.label}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+            id={id}
+            value={value}
+            className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-3 transition-colors shadow-sm cursor-pointer font-semibold text-center text-sm appearance-none ${
+            isPlaceholder ? 'text-slate-400' : 'text-slate-900'
+            } ${className || ''}`}
+            {...props}
+        >
+            <option value="" disabled>
+            {placeholder || '--- اختر من القائمة ---'}
+            </option>
+            {options.map((opt) => (
+            <option key={opt.value} value={opt.value} className="text-slate-900 py-2">
+                {opt.label}
+            </option>
+            ))}
+        </select>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 material-symbols-outlined text-[20px]">arrow_drop_down</span>
+      </div>
     </div>
   );
 };
