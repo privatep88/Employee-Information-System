@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 
 interface HeaderProps {
-  activeTab?: 'home' | 'data';
-  onTabChange?: (tab: 'home' | 'data') => void;
+  activeTab?: 'home' | 'data' | 'reports';
+  onTabChange?: (tab: 'home' | 'data' | 'reports') => void;
+  expiredCount?: number;
 }
 
-const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: 'home' | 'data') => {} }) => {
+const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab) => {}, expiredCount = 0 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleNavClick = (tab: 'home' | 'data') => {
+  const handleNavClick = (tab: 'home' | 'data' | 'reports') => {
     onTabChange(tab);
     setIsMobileMenuOpen(false);
   };
@@ -86,10 +87,16 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: '
                 <span>بيانات الموظفين</span>
               </button>
               <button
-                className="flex items-center gap-2 text-slate-600 hover:text-primary hover:bg-blue-100 px-4 py-2 rounded-md text-sm font-semibold transition-all"
+                onClick={() => handleNavClick('reports')}
+                className={`relative flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${activeTab === 'reports' ? 'text-white bg-primary shadow-sm hover:bg-primary-hover' : 'text-slate-600 hover:text-primary hover:bg-blue-100'}`}
               >
                 <span className="material-symbols-outlined text-[18px]">bar_chart</span>
                 <span>التقارير</span>
+                {expiredCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] text-white ring-2 ring-white animate-pulse">
+                    {expiredCount > 99 ? '99+' : expiredCount}
+                  </span>
+                )}
               </button>
           </div>
 
@@ -118,6 +125,20 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: '
               >
                 <span className="material-symbols-outlined text-[20px]">group</span>
                 <span>بيانات الموظفين</span>
+              </button>
+              <button
+                onClick={() => handleNavClick('reports')}
+                className={`flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold justify-between ${activeTab === 'reports' ? 'text-primary bg-blue-100' : 'text-slate-700 hover:bg-blue-100'}`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-[20px]">bar_chart</span>
+                  <span>التقارير</span>
+                </div>
+                {expiredCount > 0 && (
+                  <span className="flex h-5 min-w-[1.25rem] px-1.5 items-center justify-center rounded-full bg-red-600 text-[10px] text-white">
+                    {expiredCount}
+                  </span>
+                )}
               </button>
           </div>
         )}

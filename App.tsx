@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { INITIAL_STATE, EmployeeFormData } from './types';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
@@ -8,6 +8,7 @@ import FileUpload from './components/UI/FileUpload';
 import ProfileUpload from './components/UI/ProfileUpload';
 import ConfirmationDialog from './components/UI/ConfirmationDialog';
 import EmployeeList from './components/EmployeeList';
+import Reports from './components/Reports';
 import { NATIONALITIES, MARITAL_STATUSES, DEGREES, LICENSE_TYPES, RELATIONSHIPS } from './constants';
 
 // Map internal keys to display labels for validation messages
@@ -35,7 +36,7 @@ const REQUIRED_FIELD_LABELS: Record<string, string> = {
 };
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'home' | 'data'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'data' | 'reports'>('home');
   const [employees, setEmployees] = useState<EmployeeFormData[]>([]);
   const [formData, setFormData] = useState<EmployeeFormData>(INITIAL_STATE);
   
@@ -60,6 +61,25 @@ const App: React.FC = () => {
 
   const dayNameAr = currentDate.toLocaleDateString('ar-AE', { weekday: 'long' });
   const dayNameEn = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
+
+  // Calculate Total Expired Documents for Badge
+  const totalExpiredCount = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    let count = 0;
+
+    employees.forEach(emp => {
+        // Helper
+        const isExpired = (d: string) => d && new Date(d) < today;
+
+        if (isExpired(emp.passport_expiry)) count++;
+        if (isExpired(emp.emirates_expiry)) count++;
+        if (emp.gcc_id && isExpired(emp.gcc_id_expiry)) count++;
+        if (emp.license_type !== 'none' && isExpired(emp.license_expiry)) count++;
+    });
+
+    return count;
+  }, [employees]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -185,79 +205,10 @@ const App: React.FC = () => {
     }
   }
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Header activeTab={activeTab} onTabChange={setActiveTab} />
-      
-      <main className="flex-1 flex justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-5xl flex flex-col gap-8">
-          
-          {/* Page Title & Date Section */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-300">
-            <div className="flex flex-col gap-2 w-full max-w-2xl">
-              <h1 className="text-2xl md:text-3xl font-extrabold leading-tight tracking-normal text-slate-800">
-                {activeTab === 'home' ? (
-                    <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-[#1e4b8a] text-[32px] md:text-[36px]">badge</span>
-                        <div>
-                            <span className="text-[#1e4b8a]">
-                                {editingIndex !== null ? 'تحديث بيانات الموظف' : 'نموذج بيانات الموظف'}
-                            </span> 
-                            <span className="text-[#1e4b8a] font-light mx-2">|</span> 
-                            <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">
-                                {editingIndex !== null ? 'Update Employee Data' : 'Employee Data Form'}
-                            </span>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-slate-600 text-[32px] md:text-[36px]">folder_shared</span>
-                        <div>
-                             <span>سجلات الموظفين</span> <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Employee Records</span>
-                        </div>
-                    </div>
-                )}
-              </h1>
-              <div className="w-full flex items-start gap-3">
-                  <span className="material-symbols-outlined text-[#7688a3] text-2xl mt-1 shrink-0">info</span>
-                  <div>
-                    <p className="text-[#7688a3] text-base font-medium leading-relaxed">
-                        {activeTab === 'home' 
-                            ? (editingIndex !== null ? "يرجى تعديل البيانات المطلوبة ثم الضغط على تحديث للحفظ." : "يرجى تعبئة النموذج أدناه بدقة عالية لضمان تحديث السجلات.") 
-                            : "قائمة بجميع بيانات الموظفين التي تم إدخالها وحفظها في النظام."}
-                    </p>
-                    <p className="text-[#7688a3] text-sm mt-0.5 text-right font-english" dir="ltr">
-                        {activeTab === 'home' 
-                            ? (editingIndex !== null ? "Please edit the required data and click Update to save." : "Please fill out the form accurately to ensure records update.") 
-                            : "List of all employee data entered and saved in the system."}
-                    </p>
-                  </div>
-              </div>
-            </div>
-
-            {/* Date Display Card - Elegant Official Style */}
-            <div className="shrink-0 relative bg-white rounded-xl border border-blue-100 shadow-card overflow-hidden flex flex-row items-stretch min-w-[220px] group hover:border-blue-300 transition-colors">
-                {/* Accent Strip */}
-                <div className="w-1.5 bg-primary shrink-0"></div>
-                
-                <div className="flex-1 p-3 px-4 flex items-center justify-between gap-4">
-                   <div className="flex flex-col gap-0.5">
-                       <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-english mb-0.5">Today's Date</span>
-                       <div className="text-lg font-black text-slate-800 font-english tracking-widest leading-none" dir="ltr">
-                           {formattedDate}
-                       </div>
-                       <div className="text-xs font-bold text-primary mt-1">
-                           {dayNameAr} <span className="text-slate-300 mx-1">|</span> {dayNameEn}
-                       </div>
-                   </div>
-                   <div className="size-10 rounded-lg bg-blue-50 text-primary flex items-center justify-center shrink-0 border border-blue-100 group-hover:scale-105 transition-transform">
-                       <span className="material-symbols-outlined text-[24px]">calendar_month</span>
-                   </div>
-                </div>
-            </div>
-          </div>
-
-          {activeTab === 'home' ? (
+  const renderContent = () => {
+    switch(activeTab) {
+      case 'home':
+        return (
           /* Form has noValidate to suppress browser popups and allow custom dialog */
           <form onSubmit={handleSubmit} className="flex flex-col gap-8" noValidate>
             
@@ -643,9 +594,100 @@ const App: React.FC = () => {
             </div>
 
           </form>
-          ) : (
-             <EmployeeList employees={employees} onEdit={handleEditEmployee} />
-          )}
+        );
+      case 'data':
+        return <EmployeeList employees={employees} onEdit={handleEditEmployee} />;
+      case 'reports':
+        return <Reports employees={employees} />;
+      default:
+        return null;
+    }
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header activeTab={activeTab} onTabChange={setActiveTab} expiredCount={totalExpiredCount} />
+      
+      <main className="flex-1 flex justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-5xl flex flex-col gap-8">
+          
+          {/* Page Title & Date Section */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-300">
+            <div className="flex flex-col gap-2 w-full max-w-2xl">
+              <h1 className="text-2xl md:text-3xl font-extrabold leading-tight tracking-normal text-slate-800">
+                {activeTab === 'home' ? (
+                    <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-[#1e4b8a] text-[32px] md:text-[36px]">badge</span>
+                        <div>
+                            <span className="text-[#1e4b8a]">
+                                {editingIndex !== null ? 'تحديث بيانات الموظف' : 'نموذج بيانات الموظف'}
+                            </span> 
+                            <span className="text-[#1e4b8a] font-light mx-2">|</span> 
+                            <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">
+                                {editingIndex !== null ? 'Update Employee Data' : 'Employee Data Form'}
+                            </span>
+                        </div>
+                    </div>
+                ) : activeTab === 'data' ? (
+                    <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-slate-600 text-[32px] md:text-[36px]">folder_shared</span>
+                        <div>
+                             <span>سجلات الموظفين</span> <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Employee Records</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-slate-600 text-[32px] md:text-[36px]">bar_chart</span>
+                        <div>
+                             <span>تقارير النظام</span> <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">System Reports</span>
+                        </div>
+                    </div>
+                )}
+              </h1>
+              <div className="w-full flex items-start gap-3">
+                  <span className="material-symbols-outlined text-[#7688a3] text-2xl mt-1 shrink-0">info</span>
+                  <div>
+                    <p className="text-[#7688a3] text-base font-medium leading-relaxed">
+                        {activeTab === 'home' 
+                            ? (editingIndex !== null ? "يرجى تعديل البيانات المطلوبة ثم الضغط على تحديث للحفظ." : "يرجى تعبئة النموذج أدناه بدقة عالية لضمان تحديث السجلات.") 
+                            : activeTab === 'data' 
+                                ? "قائمة بجميع بيانات الموظفين التي تم إدخالها وحفظها في النظام."
+                                : "عرض تفصيلي لجميع المستندات المنتهية وتنبيهات النظام."}
+                    </p>
+                    <p className="text-[#7688a3] text-sm mt-0.5 text-right font-english" dir="ltr">
+                        {activeTab === 'home' 
+                            ? (editingIndex !== null ? "Please edit the required data and click Update to save." : "Please fill out the form accurately to ensure records update.") 
+                            : activeTab === 'data' 
+                                ? "List of all employee data entered and saved in the system."
+                                : "Detailed view of all expired documents and system alerts."}
+                    </p>
+                  </div>
+              </div>
+            </div>
+
+            {/* Date Display Card - Elegant Official Style */}
+            <div className="shrink-0 relative bg-white rounded-xl border border-blue-100 shadow-card overflow-hidden flex flex-row items-stretch min-w-[220px] group hover:border-blue-300 transition-colors">
+                {/* Accent Strip */}
+                <div className="w-1.5 bg-primary shrink-0"></div>
+                
+                <div className="flex-1 p-3 px-4 flex items-center justify-between gap-4">
+                   <div className="flex flex-col gap-0.5">
+                       <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-english mb-0.5">Today's Date</span>
+                       <div className="text-lg font-black text-slate-800 font-english tracking-widest leading-none" dir="ltr">
+                           {formattedDate}
+                       </div>
+                       <div className="text-xs font-bold text-primary mt-1">
+                           {dayNameAr} <span className="text-slate-300 mx-1">|</span> {dayNameEn}
+                       </div>
+                   </div>
+                   <div className="size-10 rounded-lg bg-blue-50 text-primary flex items-center justify-center shrink-0 border border-blue-100 group-hover:scale-105 transition-transform">
+                       <span className="material-symbols-outlined text-[24px]">calendar_month</span>
+                   </div>
+                </div>
+            </div>
+          </div>
+
+          {renderContent()}
         </div>
       </main>
       

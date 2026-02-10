@@ -546,8 +546,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
 
                                 {/* Nationality */}
                                 <div className="col-span-2 text-center text-sm font-semibold text-slate-700 flex flex-col justify-center">
-                                    <span className="font-english truncate">{getEnglishLabel(emp.nationality, NATIONALITIES)}</span>
-                                    <span className="text-xs text-slate-400 truncate">{getLabel(emp.nationality, NATIONALITIES)}</span>
+                                    <span className="truncate">{getLabel(emp.nationality, NATIONALITIES)}</span>
+                                    <span className="text-xs text-slate-400 font-english truncate">{getEnglishLabel(emp.nationality, NATIONALITIES)}</span>
                                 </div>
 
                                 {/* Qualification */}
