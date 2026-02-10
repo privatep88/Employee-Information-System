@@ -130,8 +130,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                     title="المعلومات الشخصية | Personal Information"
                     subtitle="البيانات الأساسية"
                     icon="person"
-                    iconBgClass="bg-blue-50"
-                    iconColorClass="text-primary"
+                    iconBgClass="bg-indigo-50"
+                    iconColorClass="text-indigo-600"
                 >
                     <InfoField label="الجنسية | Nationality" value={getLabel(emp.nationality, NATIONALITIES)} />
                     <InfoField label="الحالة الاجتماعية | Marital Status" value={getLabel(emp.marital_status, MARITAL_STATUSES)} />

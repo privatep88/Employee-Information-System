@@ -198,8 +198,9 @@ const App: React.FC = () => {
               title="المعلومات الشخصية | Personal Information"
               subtitle="البيانات الأساسية للتعريف بالموظف | Basic identification data"
               icon="person"
-              iconBgClass="bg-blue-50"
-              iconColorClass="text-primary"
+              iconBgClass="bg-indigo-50"
+              iconColorClass="text-indigo-600"
+              bgClass="bg-indigo-50"
               headerContent={
                 <ProfileUpload
                     name="profile_picture"
@@ -278,6 +279,8 @@ const App: React.FC = () => {
               icon="school"
               iconBgClass="bg-emerald-50"
               iconColorClass="text-secondary"
+              bgClass="bg-emerald-50"
+              borderColor="border-emerald-900"
             >
               <SelectInput
                 id="degree"
@@ -317,6 +320,7 @@ const App: React.FC = () => {
               icon="contact_phone"
               iconBgClass="bg-purple-50"
               iconColorClass="text-purple-700"
+              bgClass="bg-purple-50"
             >
                <TextInput
                 id="phone"
@@ -351,6 +355,7 @@ const App: React.FC = () => {
               icon="folder_shared"
               iconBgClass="bg-amber-50"
               iconColorClass="text-amber-700"
+              bgClass="bg-amber-50"
             >
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <TextInput
@@ -464,6 +469,7 @@ const App: React.FC = () => {
               icon="emergency"
               iconBgClass="bg-rose-50"
               iconColorClass="text-rose-700"
+              bgClass="bg-rose-50"
             >
                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <TextInput
@@ -503,15 +509,15 @@ const App: React.FC = () => {
             </FormCard>
 
             {/* Declaration & Actions - Legal Style */}
-            <div className="bg-slate-50 border border-slate-300 p-6 rounded-md flex flex-col gap-6 mt-2 relative">
-              <div className="absolute top-0 right-0 w-1 h-full bg-slate-400 rounded-r-md"></div>
+            <div className="bg-blue-50 border border-blue-200 p-6 rounded-md flex flex-col gap-6 mt-2 relative">
+              <div className="absolute top-0 right-0 w-1 h-full bg-blue-600 rounded-r-md"></div>
               
               <div className="flex flex-col gap-2">
-                 <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">إقرار وتعهد | Declaration</h3>
-                 <p className="text-xs text-slate-500">يرجى قراءة النص أدناه والموافقة عليه للمتابعة.</p>
+                 <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wide">إقرار وتعهد | Declaration</h3>
+                 <p className="text-xs text-blue-600">يرجى قراءة النص أدناه والموافقة عليه للمتابعة.</p>
               </div>
 
-              <label className="flex items-start gap-4 cursor-pointer group bg-white p-4 border border-slate-200 rounded hover:border-slate-300 transition-colors">
+              <label className="flex items-start gap-4 cursor-pointer group bg-white p-4 border border-blue-100 rounded hover:border-blue-300 transition-colors shadow-sm">
                 <div className="relative flex items-center pt-1">
                   <input
                     type="checkbox"
@@ -534,11 +540,11 @@ const App: React.FC = () => {
                 </div>
               </label>
 
-              <div className="flex flex-col sm:flex-row items-center gap-4 justify-end pt-4 border-t border-slate-200">
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-end pt-4 border-t border-blue-200">
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="w-full sm:w-auto h-11 px-6 rounded border border-slate-300 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:text-red-700 hover:border-red-200 transition-colors"
+                  className="w-full sm:w-auto h-11 px-6 rounded border border-blue-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:text-red-700 hover:border-red-200 transition-colors"
                 >
                   إلغاء العملية | Cancel
                 </button>
@@ -588,10 +594,10 @@ const App: React.FC = () => {
         title="بيانات ناقصة | Missing Information"
         message={
             <div className="flex flex-col gap-4 text-start">
-                <p className="font-bold text-red-600">يرجى تعبئة الحقول الإلزامية التالية قبل المتابعة:</p>
-                <p className="font-bold text-red-600 text-sm font-english" dir="ltr">Please fill in the following required fields before proceeding:</p>
+                <p className="font-bold text-primary">يرجى تعبئة الحقول الإلزامية التالية قبل المتابعة:</p>
+                <p className="font-bold text-primary text-sm font-english" dir="ltr">Please fill in the following required fields before proceeding:</p>
                 
-                <div className="bg-red-50 p-4 rounded border border-red-200 max-h-[40vh] overflow-y-auto">
+                <div className="bg-slate-50 p-4 rounded border border-slate-200 max-h-[40vh] overflow-y-auto">
                     <ul className="list-disc list-inside space-y-1 text-sm font-semibold text-slate-800">
                         {validationErrors.map((err, index) => (
                             <li key={index}>{err}</li>
@@ -602,7 +608,7 @@ const App: React.FC = () => {
         }
         confirmLabel="موافق | OK"
         showCancel={false}
-        variant="error"
+        variant="primary"
         icon="error"
       />
 

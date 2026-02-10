@@ -67,7 +67,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
             ref={inputRef}
             id={id}
             dir={direction}
-            className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-10 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm text-slate-900 ${isDatePlaceholder ? 'text-slate-400' : ''} ${className || ''}`}
+            className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-10 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm ${isDatePlaceholder ? 'text-slate-400' : 'text-black'} focus:text-black ${className || ''}`}
             onClick={handleInputClick}
             {...props}
           />
@@ -77,7 +77,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
           ref={inputRef}
           id={id}
           dir={direction}
-          className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-3 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm text-slate-900 ${isDatePlaceholder ? 'text-slate-400' : ''} ${className || ''}`}
+          className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-3 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm ${isDatePlaceholder ? 'text-slate-400' : 'text-black'} focus:text-black ${className || ''}`}
           onClick={handleInputClick}
           {...props}
         />

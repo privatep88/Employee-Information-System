@@ -9,7 +9,7 @@ interface ConfirmationDialogProps {
   confirmLabel?: string;
   cancelLabel?: string;
   icon?: string;
-  variant?: 'info' | 'success' | 'warning' | 'error';
+  variant?: 'info' | 'success' | 'warning' | 'error' | 'primary';
   showCancel?: boolean;
 }
 
@@ -51,6 +51,12 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
         iconColor: 'text-red-600',
         buttonBg: 'bg-red-600 hover:bg-red-700',
         barColor: 'bg-red-500'
+    },
+    primary: {
+        iconBg: 'bg-blue-50',
+        iconColor: 'text-primary',
+        buttonBg: 'bg-primary hover:bg-primary-hover',
+        barColor: 'bg-primary'
     }
   }[variant];
 
