@@ -630,16 +630,16 @@ const App: React.FC = () => {
                     </div>
                 ) : activeTab === 'data' ? (
                     <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-slate-600 text-[32px] md:text-[36px]">folder_shared</span>
+                        <span className="material-symbols-outlined text-[#1e4b8a] text-[32px] md:text-[36px]">folder_shared</span>
                         <div>
-                             <span>سجلات الموظفين</span> <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Employee Records</span>
+                             <span className="text-[#1e4b8a]">سجلات الموظفين</span> <span className="text-[#1e4b8a] font-light mx-2">|</span> <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">Employee Records</span>
                         </div>
                     </div>
                 ) : (
                     <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-slate-600 text-[32px] md:text-[36px]">bar_chart</span>
+                        <span className="material-symbols-outlined text-[#1e4b8a] text-[32px] md:text-[36px]">bar_chart</span>
                         <div>
-                             <span>تقارير النظام</span> <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">System Reports</span>
+                             <span className="text-[#1e4b8a]">تقارير النظام</span> <span className="text-[#1e4b8a] font-light mx-2">|</span> <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">System Reports</span>
                         </div>
                     </div>
                 )}
