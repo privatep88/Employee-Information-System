@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  activeTab?: 'home' | 'data';
+  onTabChange?: (tab: 'home' | 'data') => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: 'home' | 'data') => {} }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleNavClick = (tab: 'home' | 'data') => {
+    onTabChange(tab);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <header className="w-full flex flex-col shadow-md font-sans z-50 relative bg-white">
@@ -61,27 +71,26 @@ const Header: React.FC = () => {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex flex-1 justify-end gap-2 items-center">
-              <a
-                href="/"
-                className="flex items-center gap-2 text-white bg-primary shadow-sm px-4 py-2 rounded-md text-sm font-bold transition-all hover:bg-primary-hover hover:shadow-md"
+              <button
+                onClick={() => handleNavClick('home')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${activeTab === 'home' ? 'text-white bg-primary shadow-sm hover:bg-primary-hover' : 'text-slate-600 hover:text-primary hover:bg-slate-50'}`}
               >
                 <span className="material-symbols-outlined text-[18px]">home</span>
                 <span>الرئيسية</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center gap-2 text-slate-600 hover:text-primary hover:bg-slate-50 px-4 py-2 rounded-md text-sm font-semibold transition-all"
+              </button>
+              <button
+                onClick={() => handleNavClick('data')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${activeTab === 'data' ? 'text-white bg-primary shadow-sm hover:bg-primary-hover' : 'text-slate-600 hover:text-primary hover:bg-slate-50'}`}
               >
                 <span className="material-symbols-outlined text-[18px]">group</span>
-                <span>البيانات</span>
-              </a>
-              <a
-                href="#"
+                <span>بيانات الموظفين</span>
+              </button>
+              <button
                 className="flex items-center gap-2 text-slate-600 hover:text-primary hover:bg-slate-50 px-4 py-2 rounded-md text-sm font-semibold transition-all"
               >
                 <span className="material-symbols-outlined text-[18px]">bar_chart</span>
                 <span>التقارير</span>
-              </a>
+              </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -96,22 +105,20 @@ const Header: React.FC = () => {
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-slate-100 bg-white absolute top-full left-0 w-full shadow-lg p-2 flex flex-col gap-1 z-40">
-             <a
-                href="/"
-                className="flex items-center gap-3 text-primary font-bold bg-blue-50 px-4 py-3 rounded text-sm"
-                onClick={() => setIsMobileMenuOpen(false)}
+             <button
+                onClick={() => handleNavClick('home')}
+                className={`flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold ${activeTab === 'home' ? 'text-primary bg-blue-50' : 'text-slate-700 hover:bg-slate-50'}`}
               >
                 <span className="material-symbols-outlined text-[20px]">home</span>
                 <span>الرئيسية</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center gap-3 text-slate-700 hover:bg-slate-50 px-4 py-3 rounded text-sm font-medium transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
+              </button>
+              <button
+                onClick={() => handleNavClick('data')}
+                className={`flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold ${activeTab === 'data' ? 'text-primary bg-blue-50' : 'text-slate-700 hover:bg-slate-50'}`}
               >
                 <span className="material-symbols-outlined text-[20px]">group</span>
-                بيانات الموظفين
-              </a>
+                <span>بيانات الموظفين</span>
+              </button>
           </div>
         )}
       </div>

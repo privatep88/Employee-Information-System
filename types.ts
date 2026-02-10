@@ -1,4 +1,8 @@
+
 export interface EmployeeFormData {
+  // Metadata
+  submission_date?: string;
+
   // Personal Info
   emp_id: string;
   profile_picture: File | null;
