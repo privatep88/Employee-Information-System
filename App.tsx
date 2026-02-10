@@ -11,6 +11,165 @@ import EmployeeList from './components/EmployeeList';
 import Reports from './components/Reports';
 import { NATIONALITIES, MARITAL_STATUSES, DEGREES, LICENSE_TYPES, RELATIONSHIPS } from './constants';
 
+// Dummy Data for demonstration
+const DUMMY_EMPLOYEES: EmployeeFormData[] = [
+  {
+    submission_date: '2023-10-15T08:30:00.000Z',
+    emp_id: 'EMP-1001',
+    profile_picture: null,
+    nationality: 'UAE',
+    name_ar: 'أحمد محمد المنصوري',
+    name_en: 'Ahmed Mohamed Al Mansoori',
+    marital_status: 'married',
+    dob: '1985-05-15',
+    degree: 'ba',
+    specialization: 'Business Administration',
+    education_certificate_file: null,
+    phone: '0501234567',
+    email: 'ahmed.m@example.com',
+    passport_no: 'N12345678',
+    passport_expiry: '2028-05-15',
+    emirates_id: '784-1985-1234567-1',
+    emirates_expiry: '2025-05-15',
+    gcc_id: '',
+    gcc_id_expiry: '',
+    license_type: 'private',
+    license_expiry: '2024-12-30',
+    passport_file: null,
+    eid_file: null,
+    license_file: null,
+    gcc_id_file: null,
+    emergency_name: 'Mohamed Al Mansoori',
+    emergency_relation: 'parent',
+    emergency_phone: '0507654321',
+    declaration_accepted: true,
+  },
+  {
+    submission_date: '2023-11-20T10:15:00.000Z',
+    emp_id: 'EMP-2055',
+    profile_picture: null,
+    nationality: 'GBR',
+    name_ar: 'جون سميث',
+    name_en: 'John Smith',
+    marital_status: 'single',
+    dob: '1990-08-22',
+    degree: 'ma',
+    specialization: 'Computer Science',
+    education_certificate_file: null,
+    phone: '0559876543',
+    email: 'john.smith@example.com',
+    passport_no: 'P987654321',
+    passport_expiry: '2024-01-15', // Expired
+    emirates_id: '784-1990-7654321-2',
+    emirates_expiry: '2024-08-22',
+    gcc_id: '',
+    gcc_id_expiry: '',
+    license_type: 'none',
+    license_expiry: '',
+    passport_file: null,
+    eid_file: null,
+    license_file: null,
+    gcc_id_file: null,
+    emergency_name: 'Sarah Smith',
+    emergency_relation: 'spouse',
+    emergency_phone: '0551122334',
+    declaration_accepted: true,
+  },
+  {
+    submission_date: '2023-09-10T14:45:00.000Z',
+    emp_id: 'EMP-3012',
+    profile_picture: null,
+    nationality: 'EGY',
+    name_ar: 'علي حسن',
+    name_en: 'Ali Hassan',
+    marital_status: 'married',
+    dob: '1982-03-10',
+    degree: 'phd',
+    specialization: 'Civil Engineering',
+    education_certificate_file: null,
+    phone: '0523344556',
+    email: 'ali.hassan@example.com',
+    passport_no: 'A11223344',
+    passport_expiry: '2026-03-10',
+    emirates_id: '784-1982-5566778-3',
+    emirates_expiry: '2023-12-01', // Expired
+    gcc_id: '',
+    gcc_id_expiry: '',
+    license_type: 'heavy',
+    license_expiry: '2025-03-10',
+    passport_file: null,
+    eid_file: null,
+    license_file: null,
+    gcc_id_file: null,
+    emergency_name: 'Hassan Ali',
+    emergency_relation: 'parent',
+    emergency_phone: '0529988776',
+    declaration_accepted: true,
+  },
+  {
+    submission_date: '2023-12-05T09:00:00.000Z',
+    emp_id: 'EMP-4500',
+    profile_picture: null,
+    nationality: 'PAK',
+    name_ar: 'محمد خان',
+    name_en: 'Mohammed Khan',
+    marital_status: 'single',
+    dob: '1995-11-05',
+    degree: 'ba',
+    specialization: 'Information Technology',
+    education_certificate_file: null,
+    phone: '0564433221',
+    email: 'mohammed.k@example.com',
+    passport_no: 'PK55667788',
+    passport_expiry: '2027-11-05',
+    emirates_id: '784-1995-3344556-4',
+    emirates_expiry: '2026-11-05',
+    gcc_id: '',
+    gcc_id_expiry: '',
+    license_type: 'motorcycle',
+    license_expiry: '2023-11-01', // Expired
+    passport_file: null,
+    eid_file: null,
+    license_file: null,
+    gcc_id_file: null,
+    emergency_name: 'Abdul Khan',
+    emergency_relation: 'sibling',
+    emergency_phone: '0567788990',
+    declaration_accepted: true,
+  },
+  {
+    submission_date: '2024-01-10T11:20:00.000Z',
+    emp_id: 'EMP-5020',
+    profile_picture: null,
+    nationality: 'USA',
+    name_ar: 'سارة جونسون',
+    name_en: 'Sarah Johnson',
+    marital_status: 'divorced',
+    dob: '1988-07-20',
+    degree: 'ma',
+    specialization: 'Human Resources',
+    education_certificate_file: null,
+    phone: '0581122334',
+    email: 'sarah.j@example.com',
+    passport_no: 'US99887766',
+    passport_expiry: '2029-07-20',
+    emirates_id: '784-1988-9988776-5',
+    emirates_expiry: '2025-07-20',
+    gcc_id: '',
+    gcc_id_expiry: '',
+    license_type: 'private',
+    license_expiry: '2026-07-20',
+    passport_file: null,
+    eid_file: null,
+    license_file: null,
+    gcc_id_file: null,
+    emergency_name: 'Emily Davis',
+    emergency_relation: 'friend',
+    emergency_phone: '0585544332',
+    declaration_accepted: true,
+  }
+];
+
 // Map internal keys to display labels for validation messages
 const REQUIRED_FIELD_LABELS: Record<string, string> = {
   emp_id: "الرقم الوظيفي | Employee ID",
@@ -37,7 +196,7 @@ const REQUIRED_FIELD_LABELS: Record<string, string> = {
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'home' | 'data' | 'reports'>('home');
-  const [employees, setEmployees] = useState<EmployeeFormData[]>([]);
+  const [employees, setEmployees] = useState<EmployeeFormData[]>(DUMMY_EMPLOYEES);
   const [formData, setFormData] = useState<EmployeeFormData>(INITIAL_STATE);
   
   // Edit Mode State
@@ -45,6 +204,7 @@ const App: React.FC = () => {
   
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showResetConfirmDialog, setShowResetConfirmDialog] = useState(false); // State for Reset Dialog
   
   // Validation State
   const [showErrorDialog, setShowErrorDialog] = useState(false);
@@ -197,13 +357,19 @@ const App: React.FC = () => {
     }, 300);
   };
 
-  const handleReset = () => {
-    if(confirm('هل أنت متأكد من رغبتك في إعادة تعيين النموذج؟ سيتم فقدان جميع البيانات غير المحفوظة.\nAre you sure you want to reset the form? Unsaved data will be lost.')) {
-        setFormData(INITIAL_STATE);
-        setEditingIndex(null);
-        setValidationErrors([]);
-    }
-  }
+  // Trigger Cancel Confirmation Dialog
+  const handleCancelClick = () => {
+    setShowResetConfirmDialog(true);
+  };
+
+  // Actual Reset/Cancel Action
+  const handleConfirmReset = () => {
+    setFormData(INITIAL_STATE);
+    setEditingIndex(null);
+    setValidationErrors([]);
+    setShowResetConfirmDialog(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const renderContent = () => {
     switch(activeTab) {
@@ -577,7 +743,7 @@ const App: React.FC = () => {
               <div className="flex flex-col sm:flex-row items-center gap-4 justify-end pt-4 border-t border-blue-200">
                 <button
                   type="button"
-                  onClick={handleReset}
+                  onClick={handleCancelClick}
                   className="w-full sm:w-auto h-11 px-6 rounded border border-blue-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:text-red-700 hover:border-red-200 transition-colors shadow-sm"
                 >
                   {editingIndex !== null ? 'إلغاء التعديل | Cancel Edit' : 'إلغاء العملية | Cancel'}
@@ -717,6 +883,28 @@ const App: React.FC = () => {
         cancelLabel="تراجع | Cancel"
         variant="primary"
         icon="help"
+      />
+
+      {/* Cancel/Reset Confirmation Dialog (NEW) */}
+      <ConfirmationDialog
+        isOpen={showResetConfirmDialog}
+        onClose={() => setShowResetConfirmDialog(false)}
+        onConfirm={handleConfirmReset}
+        title={editingIndex !== null ? "إلغاء التعديل | Cancel Editing" : "إلغاء العملية | Cancel Operation"}
+        message={
+            <div className="flex flex-col gap-2">
+                <p>
+                    هل أنت متأكد من رغبتك في إلغاء العملية؟ سيتم فقدان جميع البيانات المدخلة غير المحفوظة وإعادة تعيين النموذج.
+                </p>
+                <p className="text-sm font-english opacity-80" dir="ltr">
+                    Are you sure you want to cancel the operation? All unsaved entered data will be lost and the form will be reset.
+                </p>
+            </div>
+        }
+        confirmLabel="نعم، إلغاء | Yes, Cancel"
+        cancelLabel="تراجع | Return"
+        variant="warning"
+        icon="delete_forever"
       />
 
       {/* Error / Validation Dialog */}

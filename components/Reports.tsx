@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { EmployeeFormData } from '../types';
 import { NATIONALITIES, DEGREES } from '../constants';
 
@@ -29,6 +29,7 @@ const getEnglishNationalityLabel = (code: string) => {
 };
 
 const Reports: React.FC<ReportsProps> = ({ employees }) => {
+  const [expirySearchTerm, setExpirySearchTerm] = useState('');
   
   // 1. Calculate expired records
   const expiredRecords = useMemo(() => {
@@ -71,6 +72,21 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
 
     return records;
   }, [employees]);
+
+  // Filter Expired Records based on Search Term
+  const filteredExpiredRecords = useMemo(() => {
+    if (!expirySearchTerm) return expiredRecords;
+    const lowerTerm = expirySearchTerm.toLowerCase();
+
+    return expiredRecords.filter(record => 
+        record.emp_id.toLowerCase().includes(lowerTerm) ||
+        record.name_ar.toLowerCase().includes(lowerTerm) ||
+        record.name_en.toLowerCase().includes(lowerTerm) ||
+        record.doc_type.toLowerCase().includes(lowerTerm) ||
+        getNationalityLabel(record.nationality).toLowerCase().includes(lowerTerm) ||
+        getEnglishNationalityLabel(record.nationality).toLowerCase().includes(lowerTerm)
+    );
+  }, [expiredRecords, expirySearchTerm]);
 
   // 2. Calculate Nationality Statistics
   const nationalityStats = useMemo(() => {
@@ -352,14 +368,28 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
 
         </div>
 
-        {/* Expired Report Table (Existing) */}
+        {/* Expired Report Table */}
         <div className="bg-white rounded-lg shadow-card border border-slate-200 overflow-hidden mt-2">
             <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center gap-2">
                 <span className="material-symbols-outlined text-red-500">warning</span>
                 <h2 className="font-bold text-slate-800 text-sm">تنبيهات انتهاء الصلاحية | Expiry Alerts</h2>
             </div>
             
-            {expiredRecords.length > 0 ? (
+            {/* Search Bar for Expiry Alerts */}
+            <div className="p-3 bg-slate-50 border-b border-slate-200">
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="بحث شامل عن السجلات (الاسم، الرقم، المستند، الجنسية)... | Search Records..."
+                        className="w-full h-10 pr-10 pl-4 rounded-md border-slate-300 text-sm focus:border-red-500 focus:ring-red-500 shadow-sm"
+                        value={expirySearchTerm}
+                        onChange={(e) => setExpirySearchTerm(e.target.value)}
+                    />
+                    <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+                </div>
+            </div>
+
+            {filteredExpiredRecords.length > 0 ? (
                 <div className="overflow-x-auto">
                     <table className="w-full text-right">
                         <thead>
@@ -391,43 +421,58 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {expiredRecords.map((record, idx) => (
+                            {filteredExpiredRecords.map((record, idx) => (
                                 <tr key={idx} className="hover:bg-red-50/30 transition-colors">
                                     <td className="px-6 py-4 text-center">
-                                        <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-slate-100 text-primary font-bold text-xs border border-slate-200 font-english" dir="ltr">
+                                        <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 font-bold text-[11px] border border-slate-200 font-english" dir="ltr">
                                             {record.emp_id}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="size-10 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shrink-0">
+                                            <div className="size-9 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shrink-0">
                                                 {record.profile_picture ? (
                                                     <img src={URL.createObjectURL(record.profile_picture)} alt="" className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <span className="material-symbols-outlined text-slate-400">person</span>
+                                                    <span className="material-symbols-outlined text-slate-400 text-[20px]">person</span>
                                                 )}
                                             </div>
-                                            <div>
-                                                <div className="font-bold text-slate-800">{record.name_ar}</div>
-                                                <div className="text-xs text-slate-500 font-english">{record.name_en}</div>
+                                            <div className="flex flex-col justify-center">
+                                                <div className="font-bold text-slate-900 text-sm leading-tight mb-0.5">{record.name_ar}</div>
+                                                <div className="text-[10px] text-slate-500 font-english font-medium tracking-wide leading-none">{record.name_en}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center font-bold text-slate-700">
-                                        {getNationalityLabel(record.nationality)}
+                                    <td className="px-6 py-4 text-center">
+                                         <div className="flex flex-col items-center justify-center">
+                                            <span className="font-bold text-slate-800 text-sm leading-tight mb-0.5">
+                                                {getNationalityLabel(record.nationality)}
+                                            </span>
+                                            <span className="text-[10px] text-slate-400 font-english font-medium">
+                                                {getEnglishNationalityLabel(record.nationality)}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
-                                            {record.doc_type}
-                                        </span>
+                                        <div className="inline-flex flex-col items-center justify-center px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 min-w-[100px]">
+                                            <span className="text-xs font-bold text-slate-800 leading-tight">
+                                                {record.doc_type.split('|')[0]}
+                                            </span>
+                                            <span className="text-[10px] text-slate-500 font-english leading-tight">
+                                                {record.doc_type.split('|')[1] || ''}
+                                            </span>
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center font-english font-bold text-red-600" dir="ltr">
+                                    <td className="px-6 py-4 text-center font-english font-bold text-red-600 text-sm" dir="ltr">
                                         {new Date(record.expiry_date).toLocaleDateString('en-GB')}
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-200">
                                             <span className="material-symbols-outlined text-[14px]">error</span>
-                                            <span>منتهي | Expired</span>
+                                            <div className="flex flex-col leading-none items-start">
+                                                <span>منتهي</span>
+                                                <span className="font-english text-[9px]">Expired</span>
+                                            </div>
                                         </span>
                                     </td>
                                 </tr>
@@ -437,9 +482,19 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                 </div>
             ) : (
                 <div className="py-12 flex flex-col items-center justify-center text-slate-400">
-                    <span className="material-symbols-outlined text-[64px] text-emerald-100 mb-4">check_circle</span>
-                    <p className="text-lg font-bold text-slate-600">جميع المستندات سارية الصلاحية</p>
-                    <p className="font-english text-slate-400">All documents are valid</p>
+                    {expiredRecords.length === 0 ? (
+                        <>
+                            <span className="material-symbols-outlined text-[64px] text-emerald-100 mb-4">check_circle</span>
+                            <p className="text-lg font-bold text-slate-600">جميع المستندات سارية الصلاحية</p>
+                            <p className="font-english text-slate-400">All documents are valid</p>
+                        </>
+                    ) : (
+                        <>
+                            <span className="material-symbols-outlined text-[64px] text-slate-200 mb-4">search_off</span>
+                            <p className="text-lg font-bold text-slate-600">لا توجد نتائج مطابقة</p>
+                            <p className="font-english text-slate-400">No matching records found</p>
+                        </>
+                    )}
                 </div>
             )}
         </div>
