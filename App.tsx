@@ -38,6 +38,9 @@ const App: React.FC = () => {
   const [employees, setEmployees] = useState<EmployeeFormData[]>([]);
   const [formData, setFormData] = useState<EmployeeFormData>(INITIAL_STATE);
   
+  // Edit Mode State
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   
@@ -89,6 +92,18 @@ const App: React.FC = () => {
     setFormData(prev => ({ ...prev, profile_picture: null }));
   };
 
+  // Logic to start editing an employee
+  const handleEditEmployee = (emp: EmployeeFormData) => {
+    // Find the index of the employee in the master array
+    const index = employees.indexOf(emp);
+    if (index > -1) {
+        setFormData(emp);
+        setEditingIndex(index);
+        setActiveTab('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   // Validate all required fields
   const validateForm = () => {
     const errors: string[] = [];
@@ -127,16 +142,27 @@ const App: React.FC = () => {
 
   // Called when user confirms inside the dialog
   const handleConfirmSubmission = () => {
-    // Include the actual submission date in the data payload
-    const submissionData = {
-        ...formData,
-        submission_date: currentDate.toISOString()
-    };
-    
-    console.log('Form Submitted with Data:', submissionData);
-    
-    // Add to employees list
-    setEmployees(prev => [submissionData, ...prev]);
+    if (editingIndex !== null) {
+        // Update existing record
+        const updatedEmployees = [...employees];
+        // Keep the original submission date if it exists, otherwise set current
+        const updatedData = {
+            ...formData,
+            submission_date: formData.submission_date || currentDate.toISOString()
+        };
+        updatedEmployees[editingIndex] = updatedData;
+        setEmployees(updatedEmployees);
+        console.log('Record Updated:', updatedData);
+    } else {
+        // Create new record
+        const submissionData = {
+            ...formData,
+            submission_date: currentDate.toISOString()
+        };
+        // Add to employees list (Prepend)
+        setEmployees(prev => [submissionData, ...prev]);
+        console.log('New Record Created:', submissionData);
+    }
 
     setShowConfirmDialog(false);
     
@@ -144,14 +170,16 @@ const App: React.FC = () => {
     setTimeout(() => {
         setActiveTab('data');
         setShowSuccessDialog(true);
-        // Optional: Reset form
+        // Reset form and edit state
         setFormData(INITIAL_STATE);
+        setEditingIndex(null);
     }, 300);
   };
 
   const handleReset = () => {
-    if(confirm('Are you sure you want to reset the form?')) {
+    if(confirm('هل أنت متأكد من رغبتك في إعادة تعيين النموذج؟ سيتم فقدان جميع البيانات غير المحفوظة.\nAre you sure you want to reset the form? Unsaved data will be lost.')) {
         setFormData(INITIAL_STATE);
+        setEditingIndex(null);
         setValidationErrors([]);
     }
   }
@@ -171,7 +199,13 @@ const App: React.FC = () => {
                     <div className="flex items-center gap-3">
                         <span className="material-symbols-outlined text-[#1e4b8a] text-[32px] md:text-[36px]">badge</span>
                         <div>
-                            <span className="text-[#1e4b8a]">نموذج بيانات الموظف</span> <span className="text-[#1e4b8a] font-light mx-2">|</span> <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">Employee Data Form</span>
+                            <span className="text-[#1e4b8a]">
+                                {editingIndex !== null ? 'تحديث بيانات الموظف' : 'نموذج بيانات الموظف'}
+                            </span> 
+                            <span className="text-[#1e4b8a] font-light mx-2">|</span> 
+                            <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">
+                                {editingIndex !== null ? 'Update Employee Data' : 'Employee Data Form'}
+                            </span>
                         </div>
                     </div>
                 ) : (
@@ -187,10 +221,14 @@ const App: React.FC = () => {
                   <span className="material-symbols-outlined text-[#7688a3] text-2xl mt-1 shrink-0">info</span>
                   <div>
                     <p className="text-[#7688a3] text-base font-medium leading-relaxed">
-                        {activeTab === 'home' ? "يرجى تعبئة النموذج أدناه بدقة عالية لضمان تحديث السجلات." : "قائمة بجميع بيانات الموظفين التي تم إدخالها وحفظها في النظام."}
+                        {activeTab === 'home' 
+                            ? (editingIndex !== null ? "يرجى تعديل البيانات المطلوبة ثم الضغط على تحديث للحفظ." : "يرجى تعبئة النموذج أدناه بدقة عالية لضمان تحديث السجلات.") 
+                            : "قائمة بجميع بيانات الموظفين التي تم إدخالها وحفظها في النظام."}
                     </p>
                     <p className="text-[#7688a3] text-sm mt-0.5 text-right font-english" dir="ltr">
-                        {activeTab === 'home' ? "Please fill out the form accurately to ensure records update." : "List of all employee data entered and saved in the system."}
+                        {activeTab === 'home' 
+                            ? (editingIndex !== null ? "Please edit the required data and click Update to save." : "Please fill out the form accurately to ensure records update.") 
+                            : "List of all employee data entered and saved in the system."}
                     </p>
                   </div>
               </div>
@@ -564,22 +602,22 @@ const App: React.FC = () => {
                   onClick={handleReset}
                   className="w-full sm:w-auto h-11 px-6 rounded border border-blue-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:text-red-700 hover:border-red-200 transition-colors shadow-sm"
                 >
-                  إلغاء العملية | Cancel
+                  {editingIndex !== null ? 'إلغاء التعديل | Cancel Edit' : 'إلغاء العملية | Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={!formData.declaration_accepted}
                   className={`w-full sm:w-auto h-11 px-8 rounded bg-primary text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 ${!formData.declaration_accepted ? 'opacity-50 cursor-not-allowed bg-slate-400' : 'hover:bg-primary-hover hover:shadow'}`}
                 >
-                  <span className="material-symbols-outlined text-[18px]">save</span>
-                  حفظ البيانات | Save Data
+                  <span className="material-symbols-outlined text-[18px]">{editingIndex !== null ? 'update' : 'save'}</span>
+                  {editingIndex !== null ? 'تحديث البيانات | Update Data' : 'حفظ البيانات | Save Data'}
                 </button>
               </div>
             </div>
 
           </form>
           ) : (
-             <EmployeeList employees={employees} />
+             <EmployeeList employees={employees} onEdit={handleEditEmployee} />
           )}
         </div>
       </main>
@@ -591,16 +629,24 @@ const App: React.FC = () => {
         isOpen={showConfirmDialog}
         onClose={() => setShowConfirmDialog(false)}
         onConfirm={handleConfirmSubmission}
-        title="تأكيد حفظ البيانات"
+        title={editingIndex !== null ? "تأكيد تحديث البيانات" : "تأكيد حفظ البيانات"}
         message={
             <div className="flex flex-col gap-2">
-                <p>هل أنت متأكد من مراجعة البيانات بشكل دقيق وترغب في حفظ وإرسال النموذج؟</p>
-                <p className="text-sm font-english opacity-80" dir="ltr">Are you sure you reviewed the data accurately and want to save and submit the form?</p>
+                <p>
+                    {editingIndex !== null 
+                        ? "هل أنت متأكد من مراجعة التعديلات وترغب في تحديث بيانات الموظف؟" 
+                        : "هل أنت متأكد من مراجعة البيانات بشكل دقيق وترغب في حفظ وإرسال النموذج؟"}
+                </p>
+                <p className="text-sm font-english opacity-80" dir="ltr">
+                    {editingIndex !== null
+                        ? "Are you sure you reviewed the changes and want to update the employee data?"
+                        : "Are you sure you reviewed the data accurately and want to save and submit the form?"}
+                </p>
             </div>
         }
-        confirmLabel="نعم، إرسال | Yes, Submit"
+        confirmLabel={editingIndex !== null ? "نعم، تحديث | Yes, Update" : "نعم، إرسال | Yes, Submit"}
         cancelLabel="تراجع | Cancel"
-        variant="warning"
+        variant="primary"
         icon="help"
       />
 
@@ -626,7 +672,7 @@ const App: React.FC = () => {
         }
         confirmLabel="موافق | OK"
         showCancel={false}
-        variant="primary"
+        variant="error"
         icon="error"
       />
 
@@ -635,11 +681,11 @@ const App: React.FC = () => {
         isOpen={showSuccessDialog}
         onClose={() => setShowSuccessDialog(false)}
         onConfirm={() => setShowSuccessDialog(false)}
-        title="تم الإرسال بنجاح"
+        title={editingIndex !== null ? "تم التحديث بنجاح" : "تم الإرسال بنجاح"}
         message={
             <div className="flex flex-col gap-2">
-                <p>تم حفظ وإرسال بياناتك بنجاح إلى قسم الموارد البشرية.</p>
-                <p className="text-sm font-english opacity-80" dir="ltr">Your data has been successfully saved and submitted to the HR department.</p>
+                <p>{editingIndex !== null ? "تم تحديث بيانات الموظف بنجاح في السجلات." : "تم حفظ وإرسال بياناتك بنجاح إلى قسم الموارد البشرية."}</p>
+                <p className="text-sm font-english opacity-80" dir="ltr">{editingIndex !== null ? "Employee data has been successfully updated in the records." : "Your data has been successfully saved and submitted to the HR department."}</p>
             </div>
         }
         confirmLabel="إغلاق | Close"

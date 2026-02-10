@@ -90,7 +90,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                 {showCancel && (
                   <button
                       onClick={onClose}
-                      className="h-12 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95"
+                      className="h-12 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-all active:scale-95"
                   >
                       {cancelLabel}
                   </button>
