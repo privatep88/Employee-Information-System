@@ -56,15 +56,15 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: '
         </div>
       </div>
 
-      {/* Secondary Navigation Bar - Clean White with Bottom Border */}
-      <div className="w-full bg-white border-b border-slate-200">
+      {/* Secondary Navigation Bar - Elegant Light Blue Theme */}
+      <div className="w-full bg-blue-50 border-b border-blue-200">
         <div className="container mx-auto px-4 md:px-8 py-3 flex items-center justify-between whitespace-nowrap">
           {/* System Title */}
           <div className="flex items-center gap-3 text-text-main">
-            <div className="w-1 h-8 bg-primary rounded-full"></div>
+            <div className="w-1 h-8 bg-primary rounded-full shadow-sm"></div>
             <div>
-              <h2 className="text-lg font-bold leading-tight text-slate-800">
-                نظام معلومات الموظفين <span className="hidden sm:inline text-slate-400 mx-2">|</span> <span className="block sm:inline font-english text-base font-medium text-slate-600">Employee Information System</span>
+              <h2 className="text-lg font-bold leading-tight text-[#163a6e]">
+                نظام معلومات الموظفين <span className="hidden sm:inline text-[#163a6e] opacity-50 mx-2">|</span> <span className="block sm:inline font-english text-base font-medium text-[#163a6e]">Employee Information System</span>
               </h2>
             </div>
           </div>
@@ -73,20 +73,20 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: '
           <div className="hidden lg:flex flex-1 justify-end gap-2 items-center">
               <button
                 onClick={() => handleNavClick('home')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${activeTab === 'home' ? 'text-white bg-primary shadow-sm hover:bg-primary-hover' : 'text-slate-600 hover:text-primary hover:bg-slate-50'}`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${activeTab === 'home' ? 'text-white bg-primary shadow-sm hover:bg-primary-hover' : 'text-slate-600 hover:text-primary hover:bg-blue-100'}`}
               >
                 <span className="material-symbols-outlined text-[18px]">home</span>
                 <span>الرئيسية</span>
               </button>
               <button
                 onClick={() => handleNavClick('data')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${activeTab === 'data' ? 'text-white bg-primary shadow-sm hover:bg-primary-hover' : 'text-slate-600 hover:text-primary hover:bg-slate-50'}`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${activeTab === 'data' ? 'text-white bg-primary shadow-sm hover:bg-primary-hover' : 'text-slate-600 hover:text-primary hover:bg-blue-100'}`}
               >
                 <span className="material-symbols-outlined text-[18px]">group</span>
                 <span>بيانات الموظفين</span>
               </button>
               <button
-                className="flex items-center gap-2 text-slate-600 hover:text-primary hover:bg-slate-50 px-4 py-2 rounded-md text-sm font-semibold transition-all"
+                className="flex items-center gap-2 text-slate-600 hover:text-primary hover:bg-blue-100 px-4 py-2 rounded-md text-sm font-semibold transition-all"
               >
                 <span className="material-symbols-outlined text-[18px]">bar_chart</span>
                 <span>التقارير</span>
@@ -96,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: '
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden flex size-9 items-center justify-center rounded bg-slate-100 border border-slate-200 text-slate-600 hover:bg-slate-200 transition-all"
+            className="lg:hidden flex size-9 items-center justify-center rounded bg-white border border-blue-200 text-slate-600 hover:bg-blue-100 transition-all shadow-sm"
           >
             <span className="material-symbols-outlined">{isMobileMenuOpen ? 'close' : 'menu'}</span>
           </button>
@@ -104,17 +104,17 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_: '
 
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-slate-100 bg-white absolute top-full left-0 w-full shadow-lg p-2 flex flex-col gap-1 z-40">
+          <div className="lg:hidden border-t border-blue-200 bg-blue-50 absolute top-full left-0 w-full shadow-lg p-2 flex flex-col gap-1 z-40">
              <button
                 onClick={() => handleNavClick('home')}
-                className={`flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold ${activeTab === 'home' ? 'text-primary bg-blue-50' : 'text-slate-700 hover:bg-slate-50'}`}
+                className={`flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold ${activeTab === 'home' ? 'text-primary bg-blue-100' : 'text-slate-700 hover:bg-blue-100'}`}
               >
                 <span className="material-symbols-outlined text-[20px]">home</span>
                 <span>الرئيسية</span>
               </button>
               <button
                 onClick={() => handleNavClick('data')}
-                className={`flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold ${activeTab === 'data' ? 'text-primary bg-blue-50' : 'text-slate-700 hover:bg-slate-50'}`}
+                className={`flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold ${activeTab === 'data' ? 'text-primary bg-blue-100' : 'text-slate-700 hover:bg-blue-100'}`}
               >
                 <span className="material-symbols-outlined text-[20px]">group</span>
                 <span>بيانات الموظفين</span>

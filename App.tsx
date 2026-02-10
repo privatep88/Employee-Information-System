@@ -94,6 +94,11 @@ const App: React.FC = () => {
     const errors: string[] = [];
     
     Object.entries(REQUIRED_FIELD_LABELS).forEach(([key, label]) => {
+      // Conditional validation: Driving license file is only required if license type is not "none"
+      if (key === 'license_file' && formData.license_type === 'none') {
+        return;
+      }
+
       const value = formData[key as keyof EmployeeFormData];
       if (!value) {
         errors.push(label);
@@ -163,7 +168,7 @@ const App: React.FC = () => {
             <div className="flex flex-col gap-2 w-full max-w-2xl">
               <h1 className="text-2xl md:text-3xl font-extrabold leading-tight tracking-normal text-slate-800">
                 {activeTab === 'home' ? (
-                    <>نموذج بيانات الموظف <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Employee Data Form</span></>
+                    <><span className="text-[#1e4b8a]">نموذج بيانات الموظف</span> <span className="text-[#1e4b8a] font-light mx-2">|</span> <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">Employee Data Form</span></>
                 ) : (
                     <>سجلات الموظفين <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Employee Records</span></>
                 )}
@@ -178,13 +183,24 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Date Display Card - Compact Official Style */}
-            <div className="shrink-0 flex flex-col items-center justify-center bg-white p-3 rounded border border-slate-300 shadow-sm min-w-[180px]">
-                <div className="text-lg font-bold text-slate-800 font-sans tracking-widest" dir="ltr">
-                    {formattedDate}
-                </div>
-                <div className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full mt-1">
-                    {dayNameAr} | {dayNameEn}
+            {/* Date Display Card - Elegant Official Style */}
+            <div className="shrink-0 relative bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden flex flex-row items-stretch min-w-[220px] group hover:border-blue-300 transition-colors">
+                {/* Accent Strip */}
+                <div className="w-1.5 bg-primary shrink-0"></div>
+                
+                <div className="flex-1 p-3 px-4 flex items-center justify-between gap-4">
+                   <div className="flex flex-col gap-0.5">
+                       <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-english mb-0.5">Today's Date</span>
+                       <div className="text-lg font-black text-slate-800 font-english tracking-widest leading-none" dir="ltr">
+                           {formattedDate}
+                       </div>
+                       <div className="text-xs font-bold text-primary mt-1">
+                           {dayNameAr} <span className="text-slate-300 mx-1">|</span> {dayNameEn}
+                       </div>
+                   </div>
+                   <div className="size-10 rounded-lg bg-blue-50 text-primary flex items-center justify-center shrink-0 border border-blue-100 group-hover:scale-105 transition-transform">
+                       <span className="material-symbols-outlined text-[24px]">calendar_month</span>
+                   </div>
                 </div>
             </div>
           </div>
@@ -270,6 +286,30 @@ const App: React.FC = () => {
                 icon="calendar_today"
                 required
               />
+              <TextInput
+                id="phone"
+                name="phone"
+                type="tel"
+                label="رقم الهاتف | Phone Number"
+                placeholder="05xxxxxxxx"
+                value={formData.phone}
+                onChange={handleInputChange}
+                required
+                icon="call"
+                dir="ltr"
+              />
+               <TextInput
+                id="email"
+                name="email"
+                type="email"
+                label="البريد الإلكتروني | Email"
+                placeholder="email@example.com"
+                value={formData.email}
+                onChange={handleInputChange}
+                icon="mail"
+                dir="ltr"
+                // Optional as requested
+              />
             </FormCard>
 
             {/* 2. Educational Qualifications */}
@@ -313,42 +353,7 @@ const App: React.FC = () => {
               </div>
             </FormCard>
 
-            {/* 3. Contact Information */}
-            <FormCard
-              title="معلومات الاتصال | Contact Information"
-              subtitle="وسائل التواصل المباشرة | Direct contact methods"
-              icon="contact_phone"
-              iconBgClass="bg-purple-50"
-              iconColorClass="text-purple-700"
-              bgClass="bg-purple-50"
-            >
-               <TextInput
-                id="phone"
-                name="phone"
-                type="tel"
-                label="رقم الهاتف | Phone Number"
-                placeholder="05xxxxxxxx"
-                value={formData.phone}
-                onChange={handleInputChange}
-                required
-                icon="call"
-                dir="ltr"
-              />
-               <TextInput
-                id="email"
-                name="email"
-                type="email"
-                label="البريد الإلكتروني | Email"
-                placeholder="email@example.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                icon="mail"
-                dir="ltr"
-                // Optional as requested
-              />
-            </FormCard>
-
-            {/* 4. Official Documents */}
+            {/* 3. Official Documents */}
             <FormCard
               title="المستندات الرسمية | Official Documents"
               subtitle="أرقام الهوية والجوازات | ID and Passport numbers"
@@ -458,11 +463,11 @@ const App: React.FC = () => {
                   icon="directions_car"
                   currentFile={formData.license_file}
                   onFileSelect={handleFileChange}
-                  required
+                  required={formData.license_type !== 'none'}
               />
             </FormCard>
 
-            {/* 5. Emergency Contact */}
+            {/* 4. Emergency Contact */}
             <FormCard
               title="جهة الاتصال في حالات الطوارئ | Emergency Contact Details"
               subtitle="للاتصال عند الضرورة القصوى | For urgent contact only"
@@ -522,11 +527,11 @@ const App: React.FC = () => {
                   <input
                     type="checkbox"
                     name="declaration_accepted"
-                    className="peer size-5 cursor-pointer appearance-none rounded border border-slate-400 bg-white checked:border-primary checked:bg-primary transition-all shadow-sm"
+                    className="peer size-5 cursor-pointer appearance-none rounded border border-slate-400 bg-white checked:border-primary checked:bg-white transition-all shadow-sm"
                     checked={formData.declaration_accepted}
                     onChange={handleInputChange}
                   />
-                  <span className="material-symbols-outlined absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[calc(50%-2px)] text-sm text-white opacity-0 peer-checked:opacity-100 pointer-events-none">
+                  <span className="material-symbols-outlined absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[calc(50%-2px)] text-sm text-primary opacity-0 peer-checked:opacity-100 pointer-events-none">
                     check
                   </span>
                 </div>

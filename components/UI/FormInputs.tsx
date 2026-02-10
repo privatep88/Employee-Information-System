@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useFormCardTheme } from './FormCard';
 
 interface InputBaseProps {
   label: React.ReactNode;
@@ -13,12 +14,17 @@ interface TextInputProps extends InputBaseProps, Omit<React.InputHTMLAttributes<
 
 export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon, className, labelClassName, dir, ...props }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { inputFocusClass, fileText } = useFormCardTheme(); // Consume theme
   
   // Logic to handle placeholder color for date inputs
   const isDateType = ['date', 'month', 'week', 'time', 'datetime-local'].includes(props.type || '');
   const hasValue = props.value !== '' && props.value !== undefined && props.value !== null;
   const isDatePlaceholder = isDateType && !hasValue;
   const direction = isDateType ? 'ltr' : dir;
+
+  // Extract the text color class (e.g., text-indigo-600) to apply to the icon on hover/active
+  const iconHoverClass = `group-hover:${fileText.replace('text-', 'text-')}`; 
+  const iconFocusWithinClass = `group-focus-within:${fileText.replace('text-', 'text-')}`; 
 
   const openPicker = () => {
     if (inputRef.current) {
@@ -58,7 +64,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
       {icon ? (
         <div className="relative">
           <span 
-            className={`absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors material-symbols-outlined text-[20px] z-10 ${isDateType ? 'cursor-pointer hover:text-primary' : 'pointer-events-none'}`}
+            className={`absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors material-symbols-outlined text-[20px] z-10 ${iconFocusWithinClass} ${isDateType ? `cursor-pointer ${iconHoverClass}` : 'pointer-events-none'}`}
             onClick={isDateType ? handleIconClick : undefined}
           >
             {icon}
@@ -67,7 +73,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
             ref={inputRef}
             id={id}
             dir={direction}
-            className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-10 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm ${isDatePlaceholder ? 'text-slate-400' : 'text-black'} focus:text-black ${className || ''}`}
+            className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:ring-1 h-10 px-10 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm ${inputFocusClass} ${isDatePlaceholder ? 'text-slate-400' : 'text-black'} focus:text-black ${className || ''}`}
             onClick={handleInputClick}
             {...props}
           />
@@ -77,7 +83,7 @@ export const TextInput: React.FC<TextInputProps> = ({ label, id, required, icon,
           ref={inputRef}
           id={id}
           dir={direction}
-          className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-3 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm ${isDatePlaceholder ? 'text-slate-400' : 'text-black'} focus:text-black ${className || ''}`}
+          className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:ring-1 h-10 px-3 placeholder:text-slate-400 placeholder:text-sm transition-colors shadow-sm font-semibold text-center text-sm ${inputFocusClass} ${isDatePlaceholder ? 'text-slate-400' : 'text-black'} focus:text-black ${className || ''}`}
           onClick={handleInputClick}
           {...props}
         />
@@ -103,6 +109,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   ...props
 }) => {
   const isPlaceholder = !value;
+  const { inputFocusClass } = useFormCardTheme(); // Consume theme
 
   return (
     <div className="flex flex-col gap-1.5 group">
@@ -114,7 +121,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
         <select
             id={id}
             value={value}
-            className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary h-10 px-3 transition-colors shadow-sm cursor-pointer font-semibold text-center text-sm appearance-none ${
+            className={`w-full rounded-md border border-slate-300 bg-white focus:bg-white focus:ring-1 h-10 px-3 transition-colors shadow-sm cursor-pointer font-semibold text-center text-sm appearance-none ${inputFocusClass} ${
             isPlaceholder ? 'text-slate-400' : 'text-slate-900'
             } ${className || ''}`}
             {...props}

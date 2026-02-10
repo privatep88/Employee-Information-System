@@ -118,7 +118,9 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                          </span>
                          <span className="inline-flex items-center gap-1.5 bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1 rounded text-xs font-bold">
                             <span className="material-symbols-outlined text-[16px]">event_available</span>
-                            <span dir="ltr">{new Date(emp.submission_date || '').toLocaleDateString('en-GB')}</span>
+                            <span dir="ltr">
+                                {emp.submission_date ? new Date(emp.submission_date).toLocaleDateString('en-GB') : '-'}
+                            </span>
                          </span>
                     </div>
                 </div>
@@ -136,6 +138,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                     <InfoField label="الجنسية | Nationality" value={getLabel(emp.nationality, NATIONALITIES)} />
                     <InfoField label="الحالة الاجتماعية | Marital Status" value={getLabel(emp.marital_status, MARITAL_STATUSES)} />
                     <InfoField label="تاريخ الميلاد | Date of Birth" value={emp.dob} />
+                    <InfoField label="رقم الهاتف | Phone" value={emp.phone} dir="ltr" />
+                    <InfoField label="البريد الإلكتروني | Email" value={emp.email} dir="ltr" />
                 </FormCard>
 
                 {/* Educational Qualifications */}
@@ -151,18 +155,6 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees }) => {
                     <div className="md:col-span-2">
                          <FileDisplay label="صورة المؤهل العلمي | Education Certificate" file={emp.education_certificate_file} />
                     </div>
-                </FormCard>
-
-                {/* Contact Information */}
-                <FormCard
-                    title="معلومات الاتصال | Contact Info"
-                    subtitle="أرقام التواصل"
-                    icon="contact_phone"
-                    iconBgClass="bg-purple-50"
-                    iconColorClass="text-purple-700"
-                >
-                    <InfoField label="رقم الهاتف | Phone" value={emp.phone} dir="ltr" />
-                    <InfoField label="البريد الإلكتروني | Email" value={emp.email} dir="ltr" />
                 </FormCard>
 
                 {/* Official Documents */}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useFormCardTheme } from './FormCard';
 
 interface FileUploadProps {
   label: string;
@@ -21,6 +22,9 @@ const FileUpload: React.FC<FileUploadProps> = ({
   required,
   onFileSelect
 }) => {
+  // Use the context to get colors matching the parent card
+  const { fileActiveBorder, fileActiveBg, fileIconBg, fileText } = useFormCardTheme();
+
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1">
@@ -40,12 +44,12 @@ const FileUpload: React.FC<FileUploadProps> = ({
           htmlFor={id}
           className={`flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-md transition-all cursor-pointer group-hover:bg-slate-50 ${
             currentFile 
-            ? 'border-primary bg-blue-50/50' 
+            ? `${fileActiveBorder} ${fileActiveBg}` 
             : 'border-slate-300 bg-white hover:border-slate-400'
           }`}
         >
           <div className="flex items-center gap-3 px-4">
-            <div className={`size-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${currentFile ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400 group-hover:text-slate-600'}`}>
+            <div className={`size-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${currentFile ? `${fileIconBg} text-white` : 'bg-slate-100 text-slate-400 group-hover:text-slate-600'}`}>
                 <span className="material-symbols-outlined text-[20px]">
                 {currentFile ? 'check' : icon}
                 </span>
@@ -53,7 +57,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
             <div className="flex flex-col text-start">
                  {currentFile ? (
                     <>
-                        <span className="text-xs font-bold text-primary truncate max-w-[150px] sm:max-w-[200px]">{currentFile.name}</span>
+                        <span className={`text-xs font-bold truncate max-w-[150px] sm:max-w-[200px] ${fileText}`}>{currentFile.name}</span>
                         <span className="text-[10px] text-green-600 font-bold">تم إرفاق الملف بنجاح</span>
                     </>
                  ) : (
