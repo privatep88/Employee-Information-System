@@ -793,8 +793,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                 </div>
 
                  {/* Name - Sortable */}
-                 <div onClick={() => handleSort('name_ar')} className="py-4 px-2 text-right cursor-pointer hover:bg-slate-100 transition-colors group select-none">
-                    <div className="flex items-center justify-start gap-1">
+                 <div onClick={() => handleSort('name_ar')} className="py-4 px-2 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                    <div className="flex items-center justify-center gap-1">
                         <div className="font-english mb-0.5">FULL NAME</div>
                         <SortIcon columnKey="name_ar" />
                     </div>
@@ -862,14 +862,14 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                                     </span>
                                 </div>
 
-                                {/* Full Name */}
+                                {/* Full Name - Right Aligned as requested */}
                                 <div className="flex items-center justify-start gap-3 text-right">
                                     <div className={`size-9 rounded-full flex items-center justify-center text-xs font-bold tracking-wider shrink-0 ${colorClass}`}>
                                         {initials}
                                     </div>
-                                    <div className="flex flex-col min-w-0">
+                                    <div className="flex flex-col min-w-0 items-start">
                                         <span className="font-bold text-slate-800 break-words leading-snug">{emp.name_ar}</span>
-                                        <span className="text-xs text-slate-500 font-medium font-english break-words leading-snug" dir="ltr">{emp.name_en}</span>
+                                        <span className="text-xs text-slate-500 font-medium font-english break-words leading-snug text-right" dir="ltr">{emp.name_en}</span>
                                     </div>
                                 </div>
 

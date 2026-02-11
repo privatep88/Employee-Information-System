@@ -573,8 +573,8 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                 </th>
 
                                 {/* Name - Sortable */}
-                                <th onClick={() => handleSort('name_ar')} className="px-2 py-4 cursor-pointer hover:bg-slate-100 transition-colors group select-none">
-                                    <div className="flex items-center gap-1">
+                                <th onClick={() => handleSort('name_ar')} className="px-2 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                    <div className="flex items-center justify-center gap-1">
                                          <div className="flex flex-col">
                                             <div className="font-english mb-1">EMPLOYEE</div>
                                             <div>الموظف</div>
