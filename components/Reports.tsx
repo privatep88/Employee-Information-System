@@ -283,8 +283,8 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                 <div className="p-6 flex-1 overflow-y-auto max-h-[350px]">
                     {nationalityStats.length > 0 ? (
                         <div className="flex flex-col gap-4">
-                            {nationalityStats.map((stat) => (
-                                <div key={stat.code} className="flex flex-col gap-1">
+                            {nationalityStats.map((stat, idx) => (
+                                <div key={idx} className="flex flex-col gap-1">
                                     <div className="flex justify-between items-end text-xs font-bold text-slate-700">
                                         <div className="flex flex-col">
                                             <span>{stat.labelAr}</span>
@@ -324,8 +324,8 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                 <div className="p-6 flex-1 overflow-y-auto max-h-[350px]">
                     {educationStats.length > 0 ? (
                         <div className="flex flex-col gap-4">
-                            {educationStats.map((stat) => (
-                                <div key={stat.value} className="flex flex-col gap-1">
+                            {educationStats.map((stat, idx) => (
+                                <div key={idx} className="flex flex-col gap-1">
                                     <div className="flex justify-between items-end text-xs font-bold text-slate-700">
                                         <div className="flex flex-col">
                                             <span>{stat.label.split('|')[0]}</span>
@@ -448,15 +448,15 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-right">
                         <thead>
-                            <tr className="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">
+                            <tr className="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b border-slate-200 whitespace-nowrap">
                                 {/* Sequence (Static) */}
-                                <th className="px-4 py-4 text-center w-12 bg-slate-100/50">
+                                <th className="px-2 py-4 text-center w-12 bg-slate-100/50">
                                     <div className="font-english mb-1">#</div>
                                     <div>م</div>
                                 </th>
 
                                 {/* ID - Sortable */}
-                                <th onClick={() => handleSort('emp_id')} className="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                <th onClick={() => handleSort('emp_id')} className="px-2 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
                                     <div className="flex flex-col items-center justify-center gap-1">
                                         <div className="flex items-center gap-1">
                                             <div className="font-english mb-1">ID</div>
@@ -467,7 +467,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                 </th>
 
                                 {/* Name - Sortable */}
-                                <th onClick={() => handleSort('name_ar')} className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                <th onClick={() => handleSort('name_ar')} className="px-2 py-4 cursor-pointer hover:bg-slate-100 transition-colors group select-none">
                                     <div className="flex items-center gap-1">
                                          <div className="flex flex-col">
                                             <div className="font-english mb-1">EMPLOYEE</div>
@@ -478,7 +478,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                 </th>
 
                                 {/* Nationality - Sortable */}
-                                <th onClick={() => handleSort('nationality')} className="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                <th onClick={() => handleSort('nationality')} className="px-2 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
                                     <div className="flex flex-col items-center justify-center gap-1">
                                         <div className="flex items-center gap-1">
                                             <div className="font-english mb-1">NATIONALITY</div>
@@ -489,7 +489,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                 </th>
 
                                 {/* Document Type - Sortable */}
-                                <th onClick={() => handleSort('doc_type')} className="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                <th onClick={() => handleSort('doc_type')} className="px-2 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
                                     <div className="flex flex-col items-center justify-center gap-1">
                                         <div className="flex items-center gap-1">
                                             <div className="font-english mb-1">DOCUMENT</div>
@@ -500,7 +500,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                 </th>
 
                                 {/* Expiry Date - Sortable */}
-                                <th onClick={() => handleSort('expiry_date')} className="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                <th onClick={() => handleSort('expiry_date')} className="px-2 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
                                     <div className="flex flex-col items-center justify-center gap-1">
                                         <div className="flex items-center gap-1">
                                             <div className="font-english mb-1">EXPIRY DATE</div>
@@ -511,7 +511,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                 </th>
 
                                 {/* Status (Static) */}
-                                <th className="px-6 py-4 text-center">
+                                <th className="px-2 py-4 text-center">
                                     <div className="font-english mb-1">STATUS</div>
                                     <div>الحالة</div>
                                 </th>
@@ -519,16 +519,16 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                             {sortedExpiredRecords.map((record, idx) => (
-                                <tr key={`${record.emp_id}-${record.doc_type}`} className="hover:bg-red-50/30 transition-colors">
-                                    <td className="px-4 py-4 text-center font-bold text-slate-400 text-xs bg-slate-50/30">
+                                <tr key={idx} className="hover:bg-red-50/30 transition-colors whitespace-nowrap">
+                                    <td className="px-2 py-4 text-center font-bold text-slate-400 text-xs bg-slate-50/30">
                                         {idx + 1}
                                     </td>
-                                    <td className="px-6 py-4 text-center">
+                                    <td className="px-2 py-4 text-center">
                                         <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 font-bold text-[11px] border border-slate-200 font-english" dir="ltr">
                                             {record.emp_id}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-2 py-4">
                                         <div className="flex items-center gap-3">
                                             <div className="size-9 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 shrink-0">
                                                 {record.profile_picture ? (
@@ -543,7 +543,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center">
+                                    <td className="px-2 py-4 text-center">
                                          <div className="flex flex-col items-center justify-center">
                                             <span className="font-bold text-slate-800 text-sm leading-tight mb-0.5">
                                                 {getNationalityLabel(record.nationality)}
@@ -553,7 +553,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center">
+                                    <td className="px-2 py-4 text-center">
                                         <div className="inline-flex flex-col items-center justify-center px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 min-w-[100px]">
                                             <span className="text-xs font-bold text-slate-800 leading-tight">
                                                 {record.doc_type.split('|')[0]}
@@ -563,10 +563,10 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-center font-english font-bold text-red-600 text-sm" dir="ltr">
+                                    <td className="px-2 py-4 text-center font-english font-bold text-red-600 text-sm" dir="ltr">
                                         {new Date(record.expiry_date).toLocaleDateString('en-GB')}
                                     </td>
-                                    <td className="px-6 py-4 text-center">
+                                    <td className="px-2 py-4 text-center">
                                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700 border border-red-200">
                                             <span className="material-symbols-outlined text-[14px]">error</span>
                                             <div className="flex flex-col leading-none items-start">
