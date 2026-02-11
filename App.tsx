@@ -10,6 +10,7 @@ import ConfirmationDialog from './components/UI/ConfirmationDialog';
 import EmployeeList from './components/EmployeeList';
 import ArchiveList from './components/ArchiveList';
 import Reports from './components/Reports';
+import LoginPage from './components/LoginPage';
 import { NATIONALITIES, MARITAL_STATUSES, DEGREES, LICENSE_TYPES, RELATIONSHIPS } from './constants';
 
 // Dummy Data for demonstration
@@ -196,6 +197,8 @@ const REQUIRED_FIELD_LABELS: Record<string, string> = {
 };
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Auth State
+
   const [activeTab, setActiveTab] = useState<'home' | 'data' | 'reports' | 'archive'>('home');
   const [employees, setEmployees] = useState<EmployeeFormData[]>(DUMMY_EMPLOYEES);
   const [archivedEmployees, setArchivedEmployees] = useState<EmployeeFormData[]>([]);
@@ -249,6 +252,11 @@ const App: React.FC = () => {
 
     return count;
   }, [employees]);
+
+  // LOGIN HANDLER
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -840,6 +848,12 @@ const App: React.FC = () => {
       default:
         return null;
     }
+  }
+
+  // --- RENDER LOGIN OR APP ---
+
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={handleLoginSuccess} />;
   }
 
   return (
