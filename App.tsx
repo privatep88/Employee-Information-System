@@ -198,7 +198,7 @@ const REQUIRED_FIELD_LABELS: Record<string, string> = {
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'home' | 'data' | 'reports' | 'archive'>('home');
   const [employees, setEmployees] = useState<EmployeeFormData[]>(DUMMY_EMPLOYEES);
-  const [archivedEmployees, setArchivedEmployees] = useState<EmployeeFormData[]>([]); // New Archive State
+  const [archivedEmployees, setArchivedEmployees] = useState<EmployeeFormData[]>([]);
   const [formData, setFormData] = useState<EmployeeFormData>(INITIAL_STATE);
   
   // Edit Mode State
@@ -285,7 +285,7 @@ const App: React.FC = () => {
   // Logic to start editing an employee
   const handleEditEmployee = (emp: EmployeeFormData) => {
     // Find the index of the employee in the master array
-    const index = employees.indexOf(emp);
+    const index = employees.findIndex(e => e.emp_id === emp.emp_id);
     if (index > -1) {
         setFormData(emp);
         setEditingIndex(index);
@@ -327,7 +327,12 @@ const App: React.FC = () => {
   const handleConfirmRestore = () => {
       if (employeeToProcess) {
           setArchivedEmployees(prev => prev.filter(e => e.emp_id !== employeeToProcess.emp_id));
-          setEmployees(prev => [employeeToProcess, ...prev]);
+          
+          // Fix: Remove deleted_at property when restoring
+          const restoredEmp = { ...employeeToProcess };
+          delete restoredEmp.deleted_at;
+
+          setEmployees(prev => [restoredEmp, ...prev]);
           setEmployeeToProcess(null);
           setShowRestoreConfirmDialog(false);
       }
@@ -434,6 +439,7 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // IF AUTHENTICATED, SHOW DASHBOARD
   const renderContent = () => {
     switch(activeTab) {
       case 'home':

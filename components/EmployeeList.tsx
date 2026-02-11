@@ -742,7 +742,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                         const colorClass = colors[idx % colors.length];
 
                         return (
-                            <div key={idx} className="grid grid-cols-[2rem_6rem_3fr_1.5fr_1.5fr_1.2fr_8rem] items-center py-4 px-2 hover:bg-slate-50 transition-colors group">
+                            <div key={emp.emp_id} className="grid grid-cols-[2rem_6rem_3fr_1.5fr_1.5fr_1.2fr_8rem] items-center py-4 px-2 hover:bg-slate-50 transition-colors group">
                                 {/* Sequence */}
                                 <div className="flex justify-center border-l border-slate-100/60">
                                     <span className="text-xs font-bold text-slate-400 font-english">
