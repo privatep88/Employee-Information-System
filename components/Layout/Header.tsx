@@ -49,10 +49,10 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab
               </div>
               <div className="flex flex-col items-start justify-center">
                 <h1 className="text-xl font-bold tracking-wide text-white uppercase font-english leading-none drop-shadow-sm">
-                  SAAED
+                  SMART
                 </h1>
                 <span className="text-[10px] tracking-widest text-blue-200 uppercase font-english mt-0.5 opacity-90">
-                  Traffic Systems
+                  SERVICES SYSTEM
                 </span>
               </div>
           </div>
