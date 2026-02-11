@@ -1,3 +1,4 @@
+
 export const NATIONALITIES = [
   { value: 'UAE', label: 'الإمارات العربية المتحدة | United Arab Emirates' },
   { value: 'AFG', label: 'أفغانستان | Afghanistan' },
@@ -204,6 +205,7 @@ export const DEGREES = [
   { value: 'primary', label: 'ابتدائي | Primary School' },
   { value: 'middle', label: 'إعدادي | Middle School' },
   { value: 'hs', label: 'ثانوية عامة | High School' },
+  { value: 'diploma', label: 'دبلوم | Diploma' },
   { value: 'ba', label: 'بكالوريوس | Bachelor' },
   { value: 'ma', label: 'ماجستير | Master' },
   { value: 'phd', label: 'دكتوراه | PhD' },
