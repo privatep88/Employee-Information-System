@@ -4,9 +4,10 @@ interface HeaderProps {
   activeTab?: 'home' | 'data' | 'reports' | 'archive';
   onTabChange?: (tab: 'home' | 'data' | 'reports' | 'archive') => void;
   expiredCount?: number;
+  onLogout?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab) => {}, expiredCount = 0 }) => {
+const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab) => {}, expiredCount = 0, onLogout }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleNavClick = (tab: 'home' | 'data' | 'reports' | 'archive') => {
@@ -62,17 +63,23 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab
             <div className="text-xs md:text-sm font-medium text-blue-200/80">قسم شؤون الموظفين</div>
           </div>
 
-          {/* Contact Us - Left (End in RTL) */}
-          <div className="flex items-center order-3">
-            <button className="group flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-all cursor-pointer shadow-sm backdrop-blur-sm">
-              <div className="size-6 rounded-full bg-white/90 flex items-center justify-center">
-                <span className="material-symbols-outlined text-blue-900 text-[16px]">support_agent</span>
-              </div>
-              <div className="flex flex-col items-start">
-                <span className="text-xs font-bold text-white leading-none">تواصل معنا</span>
-                <span className="text-[9px] uppercase tracking-wider text-blue-200 font-english leading-none mt-0.5">Contact Us</span>
-              </div>
-            </button>
+          {/* Contact Us & Logout - Left (End in RTL) */}
+          <div className="flex items-center gap-3 order-3">
+            {onLogout && (
+              <button 
+                onClick={onLogout}
+                className="group flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer shadow-sm backdrop-blur-sm"
+                title="تسجيل الخروج"
+              >
+                <div className="size-6 rounded-full bg-white/10 border border-white/10 flex items-center justify-center group-hover:bg-red-500/80 group-hover:border-red-500 transition-colors">
+                  <span className="material-symbols-outlined text-white text-[16px]">power_settings_new</span>
+                </div>
+                <div className="hidden sm:flex flex-col items-start">
+                  <span className="text-xs font-bold text-white leading-none">خروج</span>
+                  <span className="text-[9px] uppercase tracking-wider text-blue-200 font-english leading-none mt-0.5 opacity-80">Logout</span>
+                </div>
+              </button>
+            )}
           </div>
 
         </div>
@@ -176,6 +183,16 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab
                 <span className="material-symbols-outlined text-[20px]">inventory_2</span>
                 <span>الأرشيف</span>
               </button>
+              
+              {onLogout && (
+                 <button
+                    onClick={onLogout}
+                    className="flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold text-red-600 hover:bg-red-50 mt-1 border-t border-slate-200"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">logout</span>
+                    <span>تسجيل الخروج</span>
+                  </button>
+              )}
           </div>
         )}
       </div>

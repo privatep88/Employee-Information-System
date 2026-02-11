@@ -258,6 +258,16 @@ const App: React.FC = () => {
     setIsAuthenticated(true);
   };
 
+  // LOGOUT HANDLER
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    // Reset States
+    setActiveTab('home');
+    setEditingIndex(null);
+    setFormData(INITIAL_STATE);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
@@ -858,7 +868,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header activeTab={activeTab} onTabChange={setActiveTab} expiredCount={totalExpiredCount} />
+      <Header activeTab={activeTab} onTabChange={setActiveTab} expiredCount={totalExpiredCount} onLogout={handleLogout} />
       
       <main className="flex-1 flex justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-5xl flex flex-col gap-8">
