@@ -129,28 +129,6 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
     if (profilePreview) URL.revokeObjectURL(profilePreview);
   };
 
-  const handlePrint = () => {
-      window.print();
-  };
-
-  const handleExport = () => {
-      if (employees.length === 0) return;
-      
-      const headers = ['Employee ID,Arabic Name,English Name,Nationality,Deleted Date'];
-      const csvContent = employees.map(emp => {
-          return `${emp.emp_id},"${emp.name_ar}","${emp.name_en}",${emp.nationality},${emp.deleted_at || ''}`;
-      }).join('\n');
-      
-      const blob = new Blob(['\uFEFF' + headers + '\n' + csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `archive_records_${new Date().toISOString().slice(0,10)}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-  };
-
   // Logic similar to EmployeeList for sorting/filtering
   const filteredEmployees = useMemo(() => {
       return employees.filter(emp => 
@@ -192,6 +170,97 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
       direction = 'desc';
     }
     setSortConfig({ key, direction });
+  };
+
+  const handlePrint = () => {
+      if (viewMode === 'detail') {
+          window.print();
+          return;
+      }
+
+      if (sortedEmployees.length === 0) return;
+
+      const printWindow = window.open('', '_blank', 'width=1000,height=800');
+      if (!printWindow) {
+          alert('Please allow popups to print the report.');
+          return;
+      }
+
+      const html = `
+        <!DOCTYPE html>
+        <html dir="rtl" lang="ar">
+        <head>
+            <title>Archive Records</title>
+            <style>
+                body { font-family: sans-serif; padding: 20px; }
+                h2 { text-align: center; margin-bottom: 20px; color: #1e293b; }
+                table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: right; }
+                th { background-color: #f1f5f9; color: #475569; font-weight: bold; text-transform: uppercase; }
+                tr:nth-child(even) { background-color: #f8fafc; }
+                .text-center { text-align: center; }
+                .text-red { color: #dc2626; font-weight: bold; }
+                .sub-text { font-size: 10px; color: #64748b; display: block; margin-top: 2px; }
+            </style>
+        </head>
+        <body>
+            <h2>سجلات الأرشيف | Archived Records</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">ID</th>
+                        <th>الموظف | Employee</th>
+                        <th class="text-center">الجنسية | Nationality</th>
+                        <th class="text-center">تاريخ الحذف | Deleted Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${sortedEmployees.map((emp, idx) => `
+                        <tr>
+                            <td class="text-center">${idx + 1}</td>
+                            <td class="text-center" dir="ltr"><b>${emp.emp_id}</b></td>
+                            <td>
+                                <b>${emp.name_ar}</b>
+                                <span class="sub-text">${emp.name_en}</span>
+                            </td>
+                            <td class="text-center">
+                                ${getLabel(emp.nationality, NATIONALITIES)}
+                            </td>
+                            <td class="text-center text-red" dir="ltr">
+                                ${emp.deleted_at ? new Date(emp.deleted_at).toLocaleDateString('en-GB') : '-'}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            <script>
+                window.onload = function() { window.print(); window.setTimeout(function() { window.close(); }, 500); }
+            </script>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+  };
+
+  const handleExport = () => {
+      if (sortedEmployees.length === 0) return;
+      
+      const headers = ['Employee ID,Arabic Name,English Name,Nationality,Deleted Date'];
+      const csvContent = sortedEmployees.map(emp => {
+          return `${emp.emp_id},"${emp.name_ar}","${emp.name_en}",${getLabel(emp.nationality, NATIONALITIES)},${emp.deleted_at || ''}`;
+      }).join('\n');
+      
+      const blob = new Blob(['\uFEFF' + headers + '\n' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `archive_records_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
   };
 
   // Render Detailed View

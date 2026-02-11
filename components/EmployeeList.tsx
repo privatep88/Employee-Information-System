@@ -328,6 +328,96 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
       );
   };
 
+  const handlePrint = () => {
+      if (sortedEmployees.length === 0) return;
+
+      const printWindow = window.open('', '_blank', 'width=1000,height=800');
+      if (!printWindow) {
+          alert('Please allow popups to print the report.');
+          return;
+      }
+
+      const html = `
+        <!DOCTYPE html>
+        <html dir="rtl" lang="ar">
+        <head>
+            <title>Employee Records</title>
+            <style>
+                body { font-family: sans-serif; padding: 20px; }
+                h2 { text-align: center; margin-bottom: 20px; color: #1e293b; }
+                table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: right; }
+                th { background-color: #f1f5f9; color: #475569; font-weight: bold; text-transform: uppercase; }
+                tr:nth-child(even) { background-color: #f8fafc; }
+                .text-center { text-align: center; }
+                .text-left { text-align: left; }
+                .sub-text { font-size: 10px; color: #64748b; display: block; margin-top: 2px; }
+            </style>
+        </head>
+        <body>
+            <h2>سجلات الموظفين | Employee Records</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">ID</th>
+                        <th>الموظف | Employee</th>
+                        <th class="text-center">الجنسية | Nationality</th>
+                        <th class="text-center">المؤهل | Qualification</th>
+                        <th class="text-center">تاريخ الإدخال | Submission Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${sortedEmployees.map((emp, idx) => `
+                        <tr>
+                            <td class="text-center">${idx + 1}</td>
+                            <td class="text-center" dir="ltr"><b>${emp.emp_id}</b></td>
+                            <td>
+                                <b>${emp.name_ar}</b>
+                                <span class="sub-text">${emp.name_en}</span>
+                            </td>
+                            <td class="text-center">
+                                ${getLabel(emp.nationality, NATIONALITIES)}
+                            </td>
+                            <td class="text-center">
+                                ${getLabel(emp.degree, DEGREES)}
+                            </td>
+                            <td class="text-center" dir="ltr">
+                                ${emp.submission_date ? new Date(emp.submission_date).toLocaleDateString('en-GB') : '-'}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            <script>
+                window.onload = function() { window.print(); window.setTimeout(function() { window.close(); }, 500); }
+            </script>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+  };
+
+  const handleExport = () => {
+      if (sortedEmployees.length === 0) return;
+      
+      const headers = ['Employee ID,Arabic Name,English Name,Nationality,Qualification,Submission Date'];
+      const csvContent = sortedEmployees.map(emp => {
+          return `${emp.emp_id},"${emp.name_ar}","${emp.name_en}",${getLabel(emp.nationality, NATIONALITIES)},${getLabel(emp.degree, DEGREES)},${emp.submission_date || ''}`;
+      }).join('\n');
+      
+      const blob = new Blob(['\uFEFF' + headers + '\n' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `employee_records_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  };
+
   // --- DETAILED VIEW RENDER ---
   if (viewMode === 'detail' && selectedEmp) {
       return (
@@ -489,6 +579,24 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
   // --- LIST VIEW RENDER ---
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        
+        {/* Actions Row (Print/Export) - Moved outside filter card, aligned to left (end in RTL) */}
+        <div className="flex items-center justify-end gap-3">
+             <button 
+                onClick={handlePrint}
+                className="h-10 px-5 rounded-md border border-slate-300 bg-white text-slate-600 font-bold text-sm flex items-center gap-2 hover:bg-slate-50 hover:text-slate-800 transition-colors shadow-sm"
+            >
+                <span className="material-symbols-outlined text-[20px]">print</span>
+                <span>طباعة السجلات</span>
+            </button>
+            <button 
+                onClick={handleExport}
+                className="h-10 px-5 rounded-md border border-slate-300 bg-white text-slate-600 font-bold text-sm flex items-center gap-2 hover:bg-slate-50 hover:text-slate-800 transition-colors shadow-sm"
+            >
+                <span className="material-symbols-outlined text-[20px]">file_download</span>
+                <span>تصدير Excel</span>
+            </button>
+        </div>
         
         {/* Top Filter Card */}
         <div className="bg-white p-5 rounded-lg shadow-card border-t-4 border-primary">

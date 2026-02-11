@@ -217,7 +217,75 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
   }, [employees]);
 
   const handlePrint = () => {
-      window.print();
+      if (sortedExpiredRecords.length === 0) return;
+
+      const printWindow = window.open('', '_blank', 'width=1000,height=800');
+      if (!printWindow) {
+          alert('Please allow popups to print the report.');
+          return;
+      }
+
+      const html = `
+        <!DOCTYPE html>
+        <html dir="rtl" lang="ar">
+        <head>
+            <title>Expiry Alerts Report</title>
+            <style>
+                body { font-family: sans-serif; padding: 20px; }
+                h2 { text-align: center; margin-bottom: 20px; color: #1e293b; }
+                table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: right; }
+                th { background-color: #f1f5f9; color: #475569; font-weight: bold; text-transform: uppercase; }
+                tr:nth-child(even) { background-color: #f8fafc; }
+                .text-center { text-align: center; }
+                .text-red { color: #dc2626; font-weight: bold; }
+                .sub-text { font-size: 10px; color: #64748b; display: block; margin-top: 2px; }
+            </style>
+        </head>
+        <body>
+            <h2>تنبيهات انتهاء الصلاحية | Expiry Alerts</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">ID</th>
+                        <th>الموظف | Employee</th>
+                        <th class="text-center">الجنسية | Nationality</th>
+                        <th class="text-center">المستند | Document</th>
+                        <th class="text-center">تاريخ الانتهاء | Expiry Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${sortedExpiredRecords.map((rec, idx) => `
+                        <tr>
+                            <td class="text-center">${idx + 1}</td>
+                            <td class="text-center" dir="ltr"><b>${rec.emp_id}</b></td>
+                            <td>
+                                <b>${rec.name_ar}</b>
+                                <span class="sub-text">${rec.name_en}</span>
+                            </td>
+                            <td class="text-center">
+                                ${getNationalityLabel(rec.nationality)}
+                            </td>
+                            <td class="text-center">
+                                ${rec.doc_type}
+                            </td>
+                            <td class="text-center text-red" dir="ltr">
+                                ${new Date(rec.expiry_date).toLocaleDateString('en-GB')}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            <script>
+                window.onload = function() { window.print(); window.setTimeout(function() { window.close(); }, 500); }
+            </script>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
   };
 
   const handleExport = () => {
