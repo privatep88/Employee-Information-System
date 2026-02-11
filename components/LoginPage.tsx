@@ -168,7 +168,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     if (username === 'user' && password === 'user') {
       onLogin();
     } else {
-      setError('اسم المستخدم أو كلمة المرور غير صحيحة');
+      setError('اسم المستخدم أو كلمة المرور غير صحيحة | Invalid username or password');
     }
   };
 
@@ -210,20 +210,29 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
              </div>
 
              <div className="mb-10 text-center md:text-right">
-                 <h2 className="text-3xl font-bold text-white mb-2">تسجيل الدخول</h2>
-                 <p className="text-slate-400 text-sm">مرحباً بك مجدداً في لوحة التحكم</p>
+                 <h2 className="text-3xl font-bold text-white mb-2 flex flex-col md:flex-row items-center md:items-baseline gap-2">
+                    <span>تسجيل الدخول</span>
+                    <span className="text-xl font-normal text-slate-500 font-english">| Login</span>
+                 </h2>
+                 <p className="text-slate-400 text-sm">
+                    مرحباً بك مجدداً في لوحة التحكم
+                    <span className="font-english opacity-70 mx-1">| Welcome back</span>
+                 </p>
              </div>
 
              <form onSubmit={handleLogin} className="flex flex-col gap-6">
                  {/* Username */}
                  <div className="flex flex-col gap-2 group">
-                     <label className="text-xs font-bold text-slate-400 group-focus-within:text-blue-400 transition-colors">اسم المستخدم</label>
+                     <label className="text-xs font-bold text-slate-400 group-focus-within:text-blue-400 transition-colors">
+                        اسم المستخدم
+                        <span className="font-english font-normal text-[10px] text-slate-500 mx-1">| Username</span>
+                     </label>
                      <div className="relative">
                          <input 
                             type="text" 
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            placeholder="أدخل اسم المستخدم"
+                            placeholder="أدخل اسم المستخدم | Enter Username"
                             className="w-full h-12 bg-[#1e293b] border border-slate-700 rounded-lg pr-11 pl-4 text-white text-sm placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none"
                          />
                          <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors">person</span>
@@ -233,19 +242,31 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                  {/* Password */}
                  <div className="flex flex-col gap-2 group">
                      <div className="flex justify-between items-center">
-                        <label className="text-xs font-bold text-slate-400 group-focus-within:text-blue-400 transition-colors">كلمة المرور</label>
-                        <a href="#" className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors">نسيت كلمة المرور؟</a>
+                        <label className="text-xs font-bold text-slate-400 group-focus-within:text-blue-400 transition-colors">
+                            كلمة المرور
+                            <span className="font-english font-normal text-[10px] text-slate-500 mx-1">| Password</span>
+                        </label>
                      </div>
                      <div className="relative">
                          <input 
                             type="password" 
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="أدخل كلمة المرور"
+                            placeholder="أدخل كلمة المرور | Enter Password"
                             className="w-full h-12 bg-[#1e293b] border border-slate-700 rounded-lg pr-11 pl-4 text-white text-sm placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none font-sans"
                             style={{ fontFamily: 'sans-serif' }}
                          />
                          <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors">lock</span>
+                     </div>
+                     <div className="flex justify-between items-center mt-1">
+                        <label className="flex items-center gap-2 cursor-pointer group select-none">
+                             <input 
+                                type="checkbox" 
+                                className="w-3.5 h-3.5 rounded border-slate-600 bg-[#1e293b] text-blue-600 focus:ring-offset-[#0f172a] focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer"
+                             />
+                             <span className="text-[11px] text-slate-400 group-hover:text-blue-400 transition-colors font-english tracking-wide">Remember Me | تذكرني</span>
+                        </label>
+                        <a href="#" className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors">نسيت كلمة المرور؟ | Forgot Password?</a>
                      </div>
                  </div>
 
@@ -259,14 +280,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     type="submit"
                     className="mt-2 h-12 w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold rounded-lg shadow-lg shadow-blue-900/50 hover:shadow-blue-600/30 transition-all active:scale-95 flex items-center justify-center gap-2"
                  >
-                     <span>دخول للنظام</span>
+                     <span>دخول للنظام | Login</span>
                      <span className="material-symbols-outlined text-[20px] rtl:rotate-180">arrow_forward</span>
                  </button>
              </form>
 
              <div className="mt-12 text-center">
                  <p className="text-[10px] text-slate-600 font-english uppercase tracking-widest">
-                     SAAHER SMART SERVICES SYSTEM © 2026
+                     SMART SERVICES SYSTEM © 2026
                  </p>
              </div>
         </div>
