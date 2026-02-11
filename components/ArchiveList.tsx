@@ -436,7 +436,7 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                                 <span className="material-symbols-outlined text-[16px]">badge</span>
                                 <span dir="ltr">{selectedEmp.emp_id}</span>
                             </span>
-                             <span className="inline-flex items-center gap-1.5 bg-slate-200 text-slate-600 border border-slate-300 px-3 py-1 rounded text-xs font-bold print:bg-transparent print:border-slate-800 print:text-slate-800">
+                             <span className="inline-flex items-center gap-1.5 bg-slate-200 text-slate-600 border border-slate-200 px-3 py-1 rounded text-xs font-bold print:bg-transparent print:border-slate-800 print:text-slate-800">
                                 <span className="material-symbols-outlined text-[16px]">event_available</span>
                                 <span dir="ltr">
                                     {selectedEmp.submission_date ? new Date(selectedEmp.submission_date).toLocaleDateString('en-GB') : '-'}
