@@ -304,7 +304,14 @@ const App: React.FC = () => {
   const handleConfirmDelete = () => {
     if (employeeToProcess) {
         setEmployees(prev => prev.filter(e => e.emp_id !== employeeToProcess.emp_id));
-        setArchivedEmployees(prev => [employeeToProcess, ...prev]);
+        
+        // Add deleted_at timestamp
+        const archivedRecord = {
+            ...employeeToProcess,
+            deleted_at: new Date().toISOString()
+        };
+        
+        setArchivedEmployees(prev => [archivedRecord, ...prev]);
         setEmployeeToProcess(null);
         setShowDeleteConfirmDialog(false);
     }

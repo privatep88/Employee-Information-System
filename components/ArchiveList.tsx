@@ -151,6 +151,9 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
         } else if (sortConfig.key === 'degree') {
              aValue = getLabel(a.degree, DEGREES);
              bValue = getLabel(b.degree, DEGREES);
+        } else if (sortConfig.key === 'deleted_at') {
+             aValue = a.deleted_at ? new Date(a.deleted_at).getTime() : 0;
+             bValue = b.deleted_at ? new Date(b.deleted_at).getTime() : 0;
         }
 
         if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -242,6 +245,14 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                                     {selectedEmp.submission_date ? new Date(selectedEmp.submission_date).toLocaleDateString('en-GB') : '-'}
                                 </span>
                              </span>
+                             {selectedEmp.deleted_at && (
+                                <span className="inline-flex items-center gap-1.5 bg-red-100 text-red-700 border border-red-200 px-3 py-1 rounded text-xs font-bold">
+                                    <span className="material-symbols-outlined text-[16px]">delete_history</span>
+                                    <span dir="ltr">
+                                        Deleted: {new Date(selectedEmp.deleted_at).toLocaleDateString('en-GB')}
+                                    </span>
+                                </span>
+                             )}
                         </div>
                     </div>
                 </div>
@@ -351,18 +362,19 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
         </div>
 
         <div className="bg-white rounded-lg shadow-card border border-slate-200 overflow-hidden">
-            <div className="grid grid-cols-[3rem_1fr_1fr_1fr_8rem] bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <div className="grid grid-cols-[3rem_1fr_1.5fr_1fr_1.2fr_8rem] bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
                 <div className="py-4 px-2 text-center">#</div>
                 <div onClick={() => handleSort('emp_id')} className="py-4 px-4 cursor-pointer hover:bg-slate-100 text-center">ID / الرقم</div>
                 <div onClick={() => handleSort('name_ar')} className="py-4 px-4 cursor-pointer hover:bg-slate-100 text-right">Name / الاسم</div>
                 <div onClick={() => handleSort('nationality')} className="py-4 px-4 cursor-pointer hover:bg-slate-100 text-center">Nat / الجنسية</div>
+                <div onClick={() => handleSort('deleted_at')} className="py-4 px-4 cursor-pointer hover:bg-slate-100 text-center">Deleted / الحذف</div>
                 <div className="py-4 px-4 text-center">Actions / الإجراءات</div>
             </div>
 
             {sortedEmployees.length > 0 ? (
                 <div className="divide-y divide-slate-100">
                     {sortedEmployees.map((emp, idx) => (
-                        <div key={idx} className="grid grid-cols-[3rem_1fr_1fr_1fr_8rem] items-center py-4 hover:bg-red-50/10 transition-colors group">
+                        <div key={idx} className="grid grid-cols-[3rem_1fr_1.5fr_1fr_1.2fr_8rem] items-center py-4 hover:bg-red-50/10 transition-colors group">
                              <div className="text-center text-slate-400 font-bold text-xs">{idx + 1}</div>
                              <div className="text-center font-english text-xs font-bold text-slate-600">{emp.emp_id}</div>
                              <div className="text-right px-4">
@@ -370,6 +382,9 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                                 <div className="font-english text-xs text-slate-400">{emp.name_en}</div>
                              </div>
                              <div className="text-center text-xs font-bold text-slate-500">{getLabel(emp.nationality, NATIONALITIES)}</div>
+                             <div className="text-center text-xs font-bold text-red-400 font-english">
+                                {emp.deleted_at ? new Date(emp.deleted_at).toLocaleDateString('en-GB') : '-'}
+                             </div>
                              <div className="flex items-center justify-center gap-2">
                                 <button 
                                     onClick={() => onRestore(emp)}

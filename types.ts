@@ -2,6 +2,7 @@
 export interface EmployeeFormData {
   // Metadata
   submission_date?: string;
+  deleted_at?: string; // Field to track when the record was archived
 
   // Personal Info
   emp_id: string;
