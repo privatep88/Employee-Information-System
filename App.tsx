@@ -202,10 +202,13 @@ const App: React.FC = () => {
   // Edit Mode State
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   
+  // Dialog States
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [showResetConfirmDialog, setShowResetConfirmDialog] = useState(false); // State for Reset Dialog
-  
+  const [showResetConfirmDialog, setShowResetConfirmDialog] = useState(false);
+  const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] = useState(false); // New Delete Dialog State
+  const [employeeToDelete, setEmployeeToDelete] = useState<EmployeeFormData | null>(null); // To store emp pending deletion
+
   // Validation State
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
@@ -282,6 +285,21 @@ const App: React.FC = () => {
         setEditingIndex(index);
         setActiveTab('home');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Logic to initiate delete
+  const handleDeleteClick = (emp: EmployeeFormData) => {
+    setEmployeeToDelete(emp);
+    setShowDeleteConfirmDialog(true);
+  };
+
+  // Logic to confirm delete
+  const handleConfirmDelete = () => {
+    if (employeeToDelete) {
+        setEmployees(prev => prev.filter(e => e.emp_id !== employeeToDelete.emp_id));
+        setEmployeeToDelete(null);
+        setShowDeleteConfirmDialog(false);
     }
   };
 
@@ -762,7 +780,7 @@ const App: React.FC = () => {
           </form>
         );
       case 'data':
-        return <EmployeeList employees={employees} onEdit={handleEditEmployee} />;
+        return <EmployeeList employees={employees} onEdit={handleEditEmployee} onDelete={handleDeleteClick} />;
       case 'reports':
         return <Reports employees={employees} />;
       default:
@@ -905,6 +923,31 @@ const App: React.FC = () => {
         cancelLabel="تراجع | Return"
         variant="warning"
         icon="delete_forever"
+      />
+
+       {/* Delete Confirmation Dialog */}
+       <ConfirmationDialog
+        isOpen={showDeleteConfirmDialog}
+        onClose={() => setShowDeleteConfirmDialog(false)}
+        onConfirm={handleConfirmDelete}
+        title="تأكيد حذف السجل | Confirm Delete"
+        message={
+            <div className="flex flex-col gap-2">
+                <p className="font-bold text-red-600">
+                    تحذير: هذا الإجراء لا يمكن التراجع عنه.
+                </p>
+                <p>
+                    هل أنت متأكد من رغبتك في حذف سجل الموظف <span className="font-bold text-slate-800">{employeeToDelete?.name_ar}</span> نهائياً من النظام؟
+                </p>
+                <p className="text-sm font-english opacity-80" dir="ltr">
+                    Warning: This action cannot be undone. Are you sure you want to permanently delete this employee record?
+                </p>
+            </div>
+        }
+        confirmLabel="نعم، حذف | Yes, Delete"
+        cancelLabel="تراجع | Cancel"
+        variant="error"
+        icon="delete"
       />
 
       {/* Error / Validation Dialog */}

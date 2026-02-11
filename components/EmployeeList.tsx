@@ -6,6 +6,7 @@ import { NATIONALITIES, MARITAL_STATUSES, DEGREES, LICENSE_TYPES, RELATIONSHIPS 
 interface EmployeeListProps {
   employees: EmployeeFormData[];
   onEdit: (emp: EmployeeFormData) => void;
+  onDelete: (emp: EmployeeFormData) => void;
 }
 
 const getLabel = (value: string, options: { value: string; label: string }[]) => {
@@ -178,7 +179,7 @@ const FileViewerModal: React.FC<{ file: File; onClose: () => void }> = ({ file, 
     );
 };
 
-const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
+const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete }) => {
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
   const [selectedEmp, setSelectedEmp] = useState<EmployeeFormData | null>(null);
   const [selectedEmpIndex, setSelectedEmpIndex] = useState<number>(-1);
@@ -345,16 +346,27 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
                     <span className="material-symbols-outlined rtl:rotate-180">arrow_forward</span>
                     <span>العودة للقائمة | Back to List</span>
                 </button>
-                <button
-                    onClick={() => {
-                        onEdit(selectedEmp);
-                        handleBackToList(); // Optional: Close details view after clicking edit
-                    }}
-                    className="flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700 transition-colors font-bold px-4 py-2 rounded shadow-sm"
-                >
-                    <span className="material-symbols-outlined text-[20px]">edit</span>
-                    <span>تحرير السجل | Edit Record</span>
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                           onDelete(selectedEmp);
+                        }}
+                         className="flex items-center gap-2 text-red-600 hover:bg-red-50 border border-red-200 transition-colors font-bold px-4 py-2 rounded shadow-sm"
+                    >
+                         <span className="material-symbols-outlined text-[20px]">delete</span>
+                         <span>حذف | Delete</span>
+                    </button>
+                    <button
+                        onClick={() => {
+                            onEdit(selectedEmp);
+                            handleBackToList(); // Optional: Close details view after clicking edit
+                        }}
+                        className="flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700 transition-colors font-bold px-4 py-2 rounded shadow-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">edit</span>
+                        <span>تحرير السجل | Edit Record</span>
+                    </button>
+                </div>
             </div>
 
             {/* Header Card */}
@@ -664,6 +676,16 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
 
                                 {/* Actions */}
                                 <div className="flex items-center justify-center gap-2">
+                                    <button 
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Stop row click propagation if needed
+                                            onDelete(emp);
+                                        }}
+                                        className="text-red-500 hover:bg-red-50 p-1.5 rounded-full transition-colors" 
+                                        title="Delete Record"
+                                    >
+                                        <span className="material-symbols-outlined text-[20px]">delete</span>
+                                    </button>
                                     <button 
                                         onClick={() => onEdit(emp)}
                                         className="text-blue-500 hover:bg-blue-50 p-1.5 rounded-full transition-colors" 
