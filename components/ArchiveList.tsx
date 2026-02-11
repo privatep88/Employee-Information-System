@@ -236,21 +236,86 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                                 <span className="material-symbols-outlined text-[16px]">badge</span>
                                 <span dir="ltr">{selectedEmp.emp_id}</span>
                             </span>
+                             <span className="inline-flex items-center gap-1.5 bg-slate-200 text-slate-600 border border-slate-300 px-3 py-1 rounded text-xs font-bold">
+                                <span className="material-symbols-outlined text-[16px]">event_available</span>
+                                <span dir="ltr">
+                                    {selectedEmp.submission_date ? new Date(selectedEmp.submission_date).toLocaleDateString('en-GB') : '-'}
+                                </span>
+                             </span>
                         </div>
                     </div>
                 </div>
                  
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormCard title="بيانات الموظف" subtitle="للعرض فقط" icon="lock" iconBgClass="bg-slate-200" iconColorClass="text-slate-500">
-                        <InfoField label="الجنسية" value={getLabel(selectedEmp.nationality, NATIONALITIES)} />
-                        <InfoField label="المؤهل" value={getLabel(selectedEmp.degree, DEGREES)} />
-                        <InfoField label="رقم الهاتف" value={selectedEmp.phone} dir="ltr" />
-                        <InfoField label="البريد الإلكتروني" value={selectedEmp.email} dir="ltr" />
+                 <div className="grid grid-cols-1 gap-6">
+                    {/* Personal Information */}
+                    <FormCard
+                        title="المعلومات الشخصية | Personal Information"
+                        subtitle="البيانات الأساسية"
+                        icon="person"
+                        iconBgClass="bg-slate-200"
+                        iconColorClass="text-slate-600"
+                    >
+                        <InfoField label="الجنسية | Nationality" value={getLabel(selectedEmp.nationality, NATIONALITIES)} />
+                        <InfoField label="الحالة الاجتماعية | Marital Status" value={getLabel(selectedEmp.marital_status, MARITAL_STATUSES)} />
+                        <InfoField label="تاريخ الميلاد | Date of Birth" value={formatDateDisplay(selectedEmp.dob)} />
+                        <InfoField label="رقم الهاتف | Phone" value={selectedEmp.phone} dir="ltr" />
+                        <InfoField label="البريد الإلكتروني | Email" value={selectedEmp.email} dir="ltr" />
                     </FormCard>
-                    <FormCard title="المرفقات" subtitle="للعرض فقط" icon="folder" iconBgClass="bg-slate-200" iconColorClass="text-slate-500">
-                         <FileDisplay label="جواز السفر" file={selectedEmp.passport_file} onView={setViewingFile} />
-                         <FileDisplay label="الهوية" file={selectedEmp.eid_file} onView={setViewingFile} />
-                         <FileDisplay label="المؤهل العلمي" file={selectedEmp.education_certificate_file} onView={setViewingFile} />
+
+                    {/* Educational Qualifications */}
+                    <FormCard
+                        title="المؤهلات العلمية | Education"
+                        subtitle="الشهادات والدرجات"
+                        icon="school"
+                        iconBgClass="bg-slate-200"
+                        iconColorClass="text-slate-600"
+                    >
+                        <InfoField label="المؤهل العلمي | Degree" value={getLabel(selectedEmp.degree, DEGREES)} />
+                        <InfoField label="التخصص | Specialization" value={selectedEmp.specialization} />
+                        <div className="md:col-span-2">
+                             <FileDisplay label="صورة المؤهل العلمي | Education Certificate" file={selectedEmp.education_certificate_file} onView={setViewingFile} />
+                        </div>
+                    </FormCard>
+
+                    {/* Official Documents */}
+                    <FormCard
+                        title="المستندات الرسمية | Official Documents"
+                        subtitle="الهويات والجوازات"
+                        icon="folder_shared"
+                        iconBgClass="bg-slate-200"
+                        iconColorClass="text-slate-600"
+                    >
+                        <InfoField label="رقم جواز السفر | Passport No" value={selectedEmp.passport_no} dir="ltr" />
+                        <InfoField label="انتهاء الجواز | Expiry" value={formatDateDisplay(selectedEmp.passport_expiry)} />
+                        
+                        <InfoField label="رقم الهوية | Emirates ID" value={selectedEmp.emirates_id} dir="ltr" />
+                        <InfoField label="انتهاء الهوية | Expiry" value={formatDateDisplay(selectedEmp.emirates_expiry)} />
+                        
+                        <InfoField label="رقم الهوية (خليجي) | GCC ID" value={selectedEmp.gcc_id} dir="ltr" />
+                        <InfoField label="انتهاء الهوية (خليجي) | GCC ID Expiry" value={formatDateDisplay(selectedEmp.gcc_id_expiry)} />
+
+                        <InfoField label="نوع الرخصة | License Type" value={getLabel(selectedEmp.license_type, LICENSE_TYPES)} />
+                        <InfoField label="انتهاء الرخصة | License Expiry" value={formatDateDisplay(selectedEmp.license_expiry)} />
+
+                        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                             <FileDisplay label="صورة جواز السفر | Passport Copy" file={selectedEmp.passport_file} onView={setViewingFile} />
+                             <FileDisplay label="صورة الهوية الإماراتية | EID Copy" file={selectedEmp.eid_file} onView={setViewingFile} />
+                             <FileDisplay label="صورة الهوية الخليجية | GCC ID Copy" file={selectedEmp.gcc_id_file} onView={setViewingFile} />
+                             <FileDisplay label="صورة الرخصة | License Copy" file={selectedEmp.license_file} onView={setViewingFile} />
+                        </div>
+                    </FormCard>
+
+                    {/* Emergency Contact */}
+                    <FormCard
+                        title="جهة الاتصال للطوارئ | Emergency Contact"
+                        subtitle="للاتصال عند الضرورة"
+                        icon="emergency"
+                        iconBgClass="bg-slate-200"
+                        iconColorClass="text-slate-600"
+                    >
+                        <InfoField label="الاسم | Name" value={selectedEmp.emergency_name} />
+                        <InfoField label="الصلة | Relation" value={getLabel(selectedEmp.emergency_relation, RELATIONSHIPS)} />
+                        <InfoField label="رقم الهاتف | Phone" value={selectedEmp.emergency_phone} dir="ltr" />
                     </FormCard>
                  </div>
             </div>
