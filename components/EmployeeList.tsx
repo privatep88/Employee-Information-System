@@ -369,7 +369,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
             {sortedEmployees.length > 0 ? (
                 <div className="divide-y divide-slate-100">
                     {sortedEmployees.map((emp, idx) => (
-                        <div key={idx} className="grid grid-cols-[3rem_1fr_1.5fr_1fr_1.5fr_8rem] items-center py-4 hover:bg-blue-50/10 transition-colors group">
+                        <div key={emp.emp_id} className="grid grid-cols-[3rem_1fr_1.5fr_1fr_1.5fr_8rem] items-center py-4 hover:bg-blue-50/10 transition-colors group">
                              <div className="text-center text-slate-400 font-bold text-xs">{idx + 1}</div>
                              <div className="text-center font-english text-xs font-bold text-slate-600">{emp.emp_id}</div>
                              <div className="text-right px-4">

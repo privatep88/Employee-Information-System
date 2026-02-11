@@ -283,8 +283,8 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                 <div className="p-6 flex-1 overflow-y-auto max-h-[350px]">
                     {nationalityStats.length > 0 ? (
                         <div className="flex flex-col gap-4">
-                            {nationalityStats.map((stat, idx) => (
-                                <div key={idx} className="flex flex-col gap-1">
+                            {nationalityStats.map((stat) => (
+                                <div key={stat.code} className="flex flex-col gap-1">
                                     <div className="flex justify-between items-end text-xs font-bold text-slate-700">
                                         <div className="flex flex-col">
                                             <span>{stat.labelAr}</span>
@@ -324,8 +324,8 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                 <div className="p-6 flex-1 overflow-y-auto max-h-[350px]">
                     {educationStats.length > 0 ? (
                         <div className="flex flex-col gap-4">
-                            {educationStats.map((stat, idx) => (
-                                <div key={idx} className="flex flex-col gap-1">
+                            {educationStats.map((stat) => (
+                                <div key={stat.value} className="flex flex-col gap-1">
                                     <div className="flex justify-between items-end text-xs font-bold text-slate-700">
                                         <div className="flex flex-col">
                                             <span>{stat.label.split('|')[0]}</span>
@@ -519,7 +519,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                             {sortedExpiredRecords.map((record, idx) => (
-                                <tr key={idx} className="hover:bg-red-50/30 transition-colors">
+                                <tr key={`${record.emp_id}-${record.doc_type}`} className="hover:bg-red-50/30 transition-colors">
                                     <td className="px-4 py-4 text-center font-bold text-slate-400 text-xs bg-slate-50/30">
                                         {idx + 1}
                                     </td>

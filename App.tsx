@@ -12,6 +12,9 @@ import ArchiveList from './components/ArchiveList';
 import Reports from './components/Reports';
 import { NATIONALITIES, MARITAL_STATUSES, DEGREES, LICENSE_TYPES, RELATIONSHIPS } from './constants';
 
+// Security: Allowed MIME types
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+
 // Dummy Data for demonstration
 const DUMMY_EMPLOYEES: EmployeeFormData[] = [
   {
@@ -265,9 +268,16 @@ const App: React.FC = () => {
     const { name, files } = e.target;
     if (files && files[0]) {
       const file = files[0];
-      // 5MB limit (5 * 1024 * 1024 bytes)
-      const maxSize = 5 * 1024 * 1024;
       
+      // Security: Validate MIME type
+      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+         alert('نوع الملف غير مدعوم. يرجى تحميل صور (JPG, PNG) أو ملفات PDF فقط.\nUnsupported file type. Please upload images (JPG, PNG) or PDF only.');
+         e.target.value = ''; // Reset input
+         return;
+      }
+
+      // Security: Validate Size (5MB)
+      const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         alert('حجم الملف يتجاوز 5 ميجابايت. يرجى اختيار ملف أصغر.\nFile size exceeds 5MB limit. Please choose a smaller file.');
         e.target.value = ''; // Reset the input to allow re-selecting
@@ -359,7 +369,8 @@ const App: React.FC = () => {
       }
 
       const value = formData[key as keyof EmployeeFormData];
-      if (!value) {
+      // Check for empty strings or null/undefined
+      if (!value || (typeof value === 'string' && value.trim() === '')) {
         errors.push(label);
       }
     });
@@ -386,12 +397,21 @@ const App: React.FC = () => {
 
   // Called when user confirms inside the dialog
   const handleConfirmSubmission = () => {
+    // Sanitize string inputs (trim)
+    const sanitizedData = { ...formData };
+    (Object.keys(sanitizedData) as Array<keyof EmployeeFormData>).forEach((key) => {
+        if (typeof sanitizedData[key] === 'string') {
+            // @ts-ignore
+            sanitizedData[key] = (sanitizedData[key] as string).trim();
+        }
+    });
+
     if (editingIndex !== null) {
         // Update existing record
         const updatedEmployees = [...employees];
         // Keep the original submission date if it exists, otherwise set current
         const updatedData = {
-            ...formData,
+            ...sanitizedData,
             submission_date: formData.submission_date || currentDate.toISOString()
         };
         updatedEmployees[editingIndex] = updatedData;
@@ -400,7 +420,7 @@ const App: React.FC = () => {
     } else {
         // Create new record
         const submissionData = {
-            ...formData,
+            ...sanitizedData,
             submission_date: currentDate.toISOString()
         };
         // Add to employees list (Prepend)
