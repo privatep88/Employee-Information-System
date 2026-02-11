@@ -16,20 +16,41 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab
 
   return (
     <header className="w-full flex flex-col shadow-md font-sans z-50 relative bg-white">
-      {/* Top Department Bar - Institutional Navy Blue */}
-      <div className="bg-[#1e293b] text-white py-3 px-4 md:px-8 border-b border-slate-600 relative overflow-hidden">
-        <div className="container mx-auto relative flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Top Department Bar - Artistic Dark Blue Geometric Theme */}
+      <div 
+        className="text-white py-3 px-4 md:px-8 border-b border-blue-900/30 relative overflow-hidden transition-all duration-500"
+        style={{
+            backgroundColor: '#020617', // Deep Dark Navy
+            backgroundImage: `
+                radial-gradient(circle at 50% -20%, #172554 0%, #020617 80%),
+                
+                /* Abstract Geometric Shapes (Triangles/Polygons) */
+                linear-gradient(30deg, rgba(255,255,255,0.02) 0%, transparent 40%),
+                linear-gradient(-30deg, rgba(255,255,255,0.02) 0%, transparent 40%),
+                
+                /* Decorative Pattern: Intersecting Circles/Arcs */
+                radial-gradient(circle at 0% 50%, rgba(255,255,255,0.03) 0%, transparent 20%),
+                radial-gradient(circle at 100% 50%, rgba(255,255,255,0.03) 0%, transparent 20%),
+                
+                /* Geometric Grid with Rotation (Diamond/Rhombus feel) */
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 30px),
+                repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 30px)
+            `,
+            backgroundSize: '100% 100%, 100% 100%, 100% 100%, 50% 100%, 50% 100%, 100% 100%, 100% 100%'
+        }}
+      >
+        <div className="container mx-auto relative flex flex-col md:flex-row items-center justify-between gap-4 z-10">
           
           {/* Logo / Brand Name - Right (Start in RTL) */}
           <div className="flex items-center gap-3 select-none order-1">
-              <div className="relative flex items-center justify-center size-10 rounded bg-white border border-slate-200 shadow-sm">
-                <span className="material-symbols-outlined text-[24px] text-primary">traffic</span>
+              <div className="relative flex items-center justify-center size-10 rounded bg-white/10 border border-white/20 shadow-sm backdrop-blur-sm">
+                <span className="material-symbols-outlined text-[24px] text-blue-100">traffic</span>
               </div>
               <div className="flex flex-col items-start justify-center">
-                <h1 className="text-xl font-bold tracking-wide text-white uppercase font-english leading-none">
+                <h1 className="text-xl font-bold tracking-wide text-white uppercase font-english leading-none drop-shadow-sm">
                   SAAED
                 </h1>
-                <span className="text-[10px] tracking-widest text-slate-300 uppercase font-english mt-0.5">
+                <span className="text-[10px] tracking-widest text-blue-200 uppercase font-english mt-0.5 opacity-90">
                   Traffic Systems
                 </span>
               </div>
@@ -37,19 +58,19 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab
 
           {/* Center Department Info */}
           <div className="flex flex-col items-center justify-center text-center order-2">
-            <div className="text-base md:text-lg font-bold text-white leading-tight">ادارة الموارد البشرية</div>
-            <div className="text-xs md:text-sm font-medium text-slate-300">قسم شؤون الموظفين</div>
+            <div className="text-base md:text-lg font-bold text-white leading-tight drop-shadow-md">ادارة الموارد البشرية</div>
+            <div className="text-xs md:text-sm font-medium text-blue-200/80">قسم شؤون الموظفين</div>
           </div>
 
           {/* Contact Us - Left (End in RTL) */}
           <div className="flex items-center order-3">
-            <button className="group flex items-center gap-3 px-4 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 transition-all cursor-pointer shadow-sm">
-              <div className="size-6 rounded-full bg-white flex items-center justify-center">
-                <span className="material-symbols-outlined text-black text-[16px]">support_agent</span>
+            <button className="group flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-all cursor-pointer shadow-sm backdrop-blur-sm">
+              <div className="size-6 rounded-full bg-white/90 flex items-center justify-center">
+                <span className="material-symbols-outlined text-blue-900 text-[16px]">support_agent</span>
               </div>
               <div className="flex flex-col items-start">
                 <span className="text-xs font-bold text-white leading-none">تواصل معنا</span>
-                <span className="text-[9px] uppercase tracking-wider text-slate-300 font-english leading-none mt-0.5">Contact Us</span>
+                <span className="text-[9px] uppercase tracking-wider text-blue-200 font-english leading-none mt-0.5">Contact Us</span>
               </div>
             </button>
           </div>
