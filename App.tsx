@@ -657,31 +657,32 @@ const App: React.FC = () => {
                   icon="calendar_today"
                   // Optional as requested
                 />
-                <SelectInput
-                  id="license_type"
-                  name="license_type"
-                  label="نوع الرخصة | License Type"
-                  placeholder="--- اختر النوع ---"
-                  value={formData.license_type}
-                  onChange={handleInputChange}
-                  options={LICENSE_TYPES}
-                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
-                  required
-                />
-                <TextInput
-                  id="license_expiry"
-                  name="license_expiry"
-                  type="date"
-                  label="تاريخ انتهاء الرخصة | License Expiry"
-                  value={formData.license_expiry}
-                  onChange={handleInputChange}
-                  className="cursor-pointer"
-                  labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
-                  icon="calendar_today"
-                  required={formData.license_type !== 'none'}
-                  disabled={formData.license_type === 'none'}
-                  containerClassName="md:col-span-2"
-                />
+                <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <SelectInput
+                      id="license_type"
+                      name="license_type"
+                      label="نوع الرخصة | License Type"
+                      placeholder="--- اختر النوع ---"
+                      value={formData.license_type}
+                      onChange={handleInputChange}
+                      options={LICENSE_TYPES}
+                      labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
+                      required
+                    />
+                    <TextInput
+                      id="license_expiry"
+                      name="license_expiry"
+                      type="date"
+                      label="تاريخ انتهاء الرخصة | License Expiry"
+                      value={formData.license_expiry}
+                      onChange={handleInputChange}
+                      className="cursor-pointer"
+                      labelClassName="min-h-[1.5rem] flex items-end pb-0.5"
+                      icon="calendar_today"
+                      required={formData.license_type !== 'none'}
+                      disabled={formData.license_type === 'none'}
+                    />
+                </div>
               </div>
               
               <FileUpload
