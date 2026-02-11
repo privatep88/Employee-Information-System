@@ -31,6 +31,9 @@ const getEnglishNationalityLabel = (code: string) => {
 const Reports: React.FC<ReportsProps> = ({ employees }) => {
   const [expirySearchTerm, setExpirySearchTerm] = useState('');
   
+  // Sorting State
+  const [sortConfig, setSortConfig] = useState<{ key: keyof ExpiredRecord; direction: 'asc' | 'desc' } | null>(null);
+  
   // 1. Calculate expired records
   const expiredRecords = useMemo(() => {
     const today = new Date();
@@ -87,6 +90,58 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
         getEnglishNationalityLabel(record.nationality).toLowerCase().includes(lowerTerm)
     );
   }, [expiredRecords, expirySearchTerm]);
+
+  // Apply Sorting to Filtered Records
+  const sortedExpiredRecords = useMemo(() => {
+    let sortableItems = [...filteredExpiredRecords];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        let aValue: any = a[sortConfig.key];
+        let bValue: any = b[sortConfig.key];
+
+        // Special handling for nationality label sort
+        if (sortConfig.key === 'nationality') {
+             aValue = getNationalityLabel(a.nationality);
+             bValue = getNationalityLabel(b.nationality);
+        }
+        
+        // Handle dates
+        if (sortConfig.key === 'expiry_date') {
+             aValue = new Date(aValue).getTime();
+             bValue = new Date(bValue).getTime();
+        }
+
+        if (aValue < bValue) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [filteredExpiredRecords, sortConfig]);
+
+  const handleSort = (key: keyof ExpiredRecord) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Helper for sort icon
+  const SortIcon = ({ columnKey }: { columnKey: string }) => {
+      if (sortConfig?.key !== columnKey) {
+          return <span className="material-symbols-outlined text-[16px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">unfold_more</span>;
+      }
+      return (
+          <span className="material-symbols-outlined text-[16px] text-red-500">
+              {sortConfig.direction === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'}
+          </span>
+      );
+  };
 
   // 2. Calculate Nationality Statistics
   const nationalityStats = useMemo(() => {
@@ -389,35 +444,73 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                 </div>
             </div>
 
-            {filteredExpiredRecords.length > 0 ? (
+            {sortedExpiredRecords.length > 0 ? (
                 <div className="overflow-x-auto">
                     <table className="w-full text-right">
                         <thead>
                             <tr className="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">
+                                {/* Sequence (Static) */}
                                 <th className="px-4 py-4 text-center w-12 bg-slate-100/50">
                                     <div className="font-english mb-1">#</div>
                                     <div>م</div>
                                 </th>
-                                <th className="px-6 py-4 text-center">
-                                    <div className="font-english mb-1">ID</div>
-                                    <div>الرقم الوظيفي</div>
+
+                                {/* ID - Sortable */}
+                                <th onClick={() => handleSort('emp_id')} className="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                    <div className="flex flex-col items-center justify-center gap-1">
+                                        <div className="flex items-center gap-1">
+                                            <div className="font-english mb-1">ID</div>
+                                            <SortIcon columnKey="emp_id" />
+                                        </div>
+                                        <div>الرقم الوظيفي</div>
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4">
-                                    <div className="font-english mb-1">EMPLOYEE</div>
-                                    <div>الموظف</div>
+
+                                {/* Name - Sortable */}
+                                <th onClick={() => handleSort('name_ar')} className="px-6 py-4 cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                    <div className="flex items-center gap-1">
+                                         <div className="flex flex-col">
+                                            <div className="font-english mb-1">EMPLOYEE</div>
+                                            <div>الموظف</div>
+                                         </div>
+                                         <SortIcon columnKey="name_ar" />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 text-center">
-                                    <div className="font-english mb-1">NATIONALITY</div>
-                                    <div>الجنسية</div>
+
+                                {/* Nationality - Sortable */}
+                                <th onClick={() => handleSort('nationality')} className="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                    <div className="flex flex-col items-center justify-center gap-1">
+                                        <div className="flex items-center gap-1">
+                                            <div className="font-english mb-1">NATIONALITY</div>
+                                            <SortIcon columnKey="nationality" />
+                                        </div>
+                                        <div>الجنسية</div>
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 text-center">
-                                    <div className="font-english mb-1">DOCUMENT</div>
-                                    <div>المستند المنتهي</div>
+
+                                {/* Document Type - Sortable */}
+                                <th onClick={() => handleSort('doc_type')} className="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                    <div className="flex flex-col items-center justify-center gap-1">
+                                        <div className="flex items-center gap-1">
+                                            <div className="font-english mb-1">DOCUMENT</div>
+                                            <SortIcon columnKey="doc_type" />
+                                        </div>
+                                        <div>المستند المنتهي</div>
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 text-center">
-                                    <div className="font-english mb-1">EXPIRY DATE</div>
-                                    <div>تاريخ الانتهاء</div>
+
+                                {/* Expiry Date - Sortable */}
+                                <th onClick={() => handleSort('expiry_date')} className="px-6 py-4 text-center cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                                    <div className="flex flex-col items-center justify-center gap-1">
+                                        <div className="flex items-center gap-1">
+                                            <div className="font-english mb-1">EXPIRY DATE</div>
+                                            <SortIcon columnKey="expiry_date" />
+                                        </div>
+                                        <div>تاريخ الانتهاء</div>
+                                    </div>
                                 </th>
+
+                                {/* Status (Static) */}
                                 <th className="px-6 py-4 text-center">
                                     <div className="font-english mb-1">STATUS</div>
                                     <div>الحالة</div>
@@ -425,7 +518,7 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {filteredExpiredRecords.map((record, idx) => (
+                            {sortedExpiredRecords.map((record, idx) => (
                                 <tr key={idx} className="hover:bg-red-50/30 transition-colors">
                                     <td className="px-4 py-4 text-center font-bold text-slate-400 text-xs bg-slate-50/30">
                                         {idx + 1}
