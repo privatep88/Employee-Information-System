@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { EmployeeFormData } from '../types';
 import FormCard from './UI/FormCard';
 import { NATIONALITIES, MARITAL_STATUSES, DEGREES, LICENSE_TYPES, RELATIONSHIPS } from '../constants';
@@ -189,6 +189,9 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
 
+  // Sorting State
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
   const [filterNationality, setFilterNationality] = useState('');
@@ -215,40 +218,87 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
     if (profilePreview) URL.revokeObjectURL(profilePreview);
   };
 
-  // Filter Logic
-  const filteredEmployees = employees.filter(emp => {
-    const matchesSearch = 
-        emp.name_ar.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.emp_id.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesNat = filterNationality ? emp.nationality === filterNationality : true;
-    const matchesDeg = filterDegree ? emp.degree === filterDegree : true;
-
-    // Expiry Logic
-    let matchesExpiry = true;
-    if (filterExpiry) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const isExpired = (dateStr: string) => {
-            if (!dateStr) return false; // Treat missing date as not expired for this logic, or handle otherwise
-            return new Date(dateStr) < today;
-        };
-
-        const passportExpired = isExpired(emp.passport_expiry);
-        const eidExpired = isExpired(emp.emirates_expiry);
-        const hasExpiredDoc = passportExpired || eidExpired;
-
-        if (filterExpiry === 'valid') {
-            matchesExpiry = !hasExpiredDoc;
-        } else if (filterExpiry === 'expired') {
-            matchesExpiry = hasExpiredDoc;
-        }
+  // Handle Sorting Click
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
     }
+    setSortConfig({ key, direction });
+  };
 
-    return matchesSearch && matchesNat && matchesDeg && matchesExpiry;
-  });
+  // Filter Logic
+  const filteredEmployees = useMemo(() => {
+      return employees.filter(emp => {
+        const matchesSearch = 
+            emp.name_ar.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            emp.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            emp.emp_id.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const matchesNat = filterNationality ? emp.nationality === filterNationality : true;
+        const matchesDeg = filterDegree ? emp.degree === filterDegree : true;
+
+        // Expiry Logic
+        let matchesExpiry = true;
+        if (filterExpiry) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const isExpired = (dateStr: string) => {
+                if (!dateStr) return false;
+                return new Date(dateStr) < today;
+            };
+
+            const passportExpired = isExpired(emp.passport_expiry);
+            const eidExpired = isExpired(emp.emirates_expiry);
+            const hasExpiredDoc = passportExpired || eidExpired;
+
+            if (filterExpiry === 'valid') {
+                matchesExpiry = !hasExpiredDoc;
+            } else if (filterExpiry === 'expired') {
+                matchesExpiry = hasExpiredDoc;
+            }
+        }
+
+        return matchesSearch && matchesNat && matchesDeg && matchesExpiry;
+      });
+  }, [employees, searchTerm, filterNationality, filterDegree, filterExpiry]);
+
+  // Apply Sorting to Filtered Data
+  const sortedEmployees = useMemo(() => {
+    let sortableItems = [...filteredEmployees];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        let aValue: any = a[sortConfig.key as keyof EmployeeFormData];
+        let bValue: any = b[sortConfig.key as keyof EmployeeFormData];
+
+        // Special handling for labels (Nationality & Degree) to sort by Arabic Text
+        if (sortConfig.key === 'nationality') {
+             aValue = getLabel(a.nationality, NATIONALITIES);
+             bValue = getLabel(b.nationality, NATIONALITIES);
+        } else if (sortConfig.key === 'degree') {
+             aValue = getLabel(a.degree, DEGREES);
+             bValue = getLabel(b.degree, DEGREES);
+        } else if (sortConfig.key === 'submission_date') {
+             aValue = aValue ? new Date(aValue).getTime() : 0;
+             bValue = bValue ? new Date(bValue).getTime() : 0;
+        }
+
+        // Handle nulls
+        if (aValue === null || aValue === undefined) aValue = '';
+        if (bValue === null || bValue === undefined) bValue = '';
+
+        if (aValue < bValue) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [filteredEmployees, sortConfig]);
 
   // Reset pagination when filters change
   useEffect(() => {
@@ -256,11 +306,23 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
   }, [searchTerm, filterNationality, filterDegree, filterExpiry]);
 
   // Pagination Logic
-  const totalItems = filteredEmployees.length;
+  const totalItems = sortedEmployees.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentTableData = filteredEmployees.slice(startIndex, startIndex + itemsPerPage);
+  const currentTableData = sortedEmployees.slice(startIndex, startIndex + itemsPerPage);
+
+  // Helper to render sort icon
+  const SortIcon = ({ columnKey }: { columnKey: string }) => {
+      if (sortConfig?.key !== columnKey) {
+          return <span className="material-symbols-outlined text-[16px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">unfold_more</span>;
+      }
+      return (
+          <span className="material-symbols-outlined text-[16px] text-primary">
+              {sortConfig.direction === 'asc' ? 'arrow_drop_up' : 'arrow_drop_down'}
+          </span>
+      );
+  };
 
   // --- DETAILED VIEW RENDER ---
   if (viewMode === 'detail' && selectedEmp) {
@@ -485,37 +547,61 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit }) => {
 
         {/* Table/List View */}
         <div className="bg-white rounded-lg shadow-card border border-slate-200 overflow-hidden">
-            {/* Table Header - Custom Grid Template */}
-            <div className="grid grid-cols-[2rem_6rem_3fr_1.5fr_1.5fr_1.2fr_5rem] bg-slate-50 py-4 px-6 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                 {/* Sequence */}
-                 <div className="text-center border-l border-slate-200/60">
+            {/* Table Header - Clickable for Sorting */}
+            <div className="grid grid-cols-[2rem_6rem_3fr_1.5fr_1.5fr_1.2fr_5rem] bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                 {/* Sequence (Static) */}
+                 <div className="py-4 px-6 text-center border-l border-slate-200/60">
                     <div className="font-english mb-0.5">#</div>
                     <div className="text-[10px]">م</div>
                 </div>
 
-                 {/* ID */}
-                 <div className="text-center">
-                    <div className="font-english mb-0.5">ID</div>
+                 {/* ID - Sortable */}
+                 <div onClick={() => handleSort('emp_id')} className="py-4 px-2 text-center cursor-pointer hover:bg-slate-100 transition-colors group flex flex-col items-center justify-center select-none">
+                    <div className="flex items-center gap-1">
+                         <div className="font-english mb-0.5">ID</div>
+                         <SortIcon columnKey="emp_id" />
+                    </div>
                     <div className="text-[10px]">الرقم</div>
                 </div>
 
-                 <div className="text-right">
-                    <div className="font-english mb-0.5">FULL NAME</div>
+                 {/* Name - Sortable */}
+                 <div onClick={() => handleSort('name_ar')} className="py-4 px-6 text-right cursor-pointer hover:bg-slate-100 transition-colors group select-none">
+                    <div className="flex items-center justify-end gap-1">
+                        <div className="font-english mb-0.5">FULL NAME</div>
+                        <SortIcon columnKey="name_ar" />
+                    </div>
                     <div className="text-[10px]">الاسم الكامل</div>
                 </div>
-                <div className="text-center">
-                    <div className="font-english mb-0.5">NATIONALITY</div>
+
+                {/* Nationality - Sortable */}
+                <div onClick={() => handleSort('nationality')} className="py-4 px-2 text-center cursor-pointer hover:bg-slate-100 transition-colors group flex flex-col items-center justify-center select-none">
+                    <div className="flex items-center gap-1">
+                        <div className="font-english mb-0.5">NATIONALITY</div>
+                        <SortIcon columnKey="nationality" />
+                    </div>
                     <div className="text-[10px]">الجنسية</div>
                 </div>
-                <div className="text-center">
-                    <div className="font-english mb-0.5">QUALIFICATION</div>
+
+                {/* Qualification - Sortable */}
+                <div onClick={() => handleSort('degree')} className="py-4 px-2 text-center cursor-pointer hover:bg-slate-100 transition-colors group flex flex-col items-center justify-center select-none">
+                     <div className="flex items-center gap-1">
+                        <div className="font-english mb-0.5">QUALIFICATION</div>
+                        <SortIcon columnKey="degree" />
+                    </div>
                     <div className="text-[10px]">المؤهل العلمي</div>
                 </div>
-                <div className="text-center">
-                    <div className="font-english mb-0.5">DATE</div>
+
+                {/* Date - Sortable */}
+                <div onClick={() => handleSort('submission_date')} className="py-4 px-2 text-center cursor-pointer hover:bg-slate-100 transition-colors group flex flex-col items-center justify-center select-none">
+                    <div className="flex items-center gap-1">
+                        <div className="font-english mb-0.5">DATE</div>
+                        <SortIcon columnKey="submission_date" />
+                    </div>
                     <div className="text-[10px]">تاريخ الإدخال</div>
                 </div>
-                <div className="text-center">
+
+                {/* Actions (Static) */}
+                <div className="py-4 px-6 text-center">
                     <div className="mb-0.5">ACTIONS</div>
                     <div className="text-[10px]">الإجراءات</div>
                 </div>
