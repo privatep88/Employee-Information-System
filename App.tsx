@@ -8,6 +8,7 @@ import FileUpload from './components/UI/FileUpload';
 import ProfileUpload from './components/UI/ProfileUpload';
 import ConfirmationDialog from './components/UI/ConfirmationDialog';
 import EmployeeList from './components/EmployeeList';
+import ArchiveList from './components/ArchiveList';
 import Reports from './components/Reports';
 import { NATIONALITIES, MARITAL_STATUSES, DEGREES, LICENSE_TYPES, RELATIONSHIPS } from './constants';
 
@@ -195,8 +196,9 @@ const REQUIRED_FIELD_LABELS: Record<string, string> = {
 };
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'home' | 'data' | 'reports'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'data' | 'reports' | 'archive'>('home');
   const [employees, setEmployees] = useState<EmployeeFormData[]>(DUMMY_EMPLOYEES);
+  const [archivedEmployees, setArchivedEmployees] = useState<EmployeeFormData[]>([]); // New Archive State
   const [formData, setFormData] = useState<EmployeeFormData>(INITIAL_STATE);
   
   // Edit Mode State
@@ -206,8 +208,12 @@ const App: React.FC = () => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showResetConfirmDialog, setShowResetConfirmDialog] = useState(false);
-  const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] = useState(false); // New Delete Dialog State
-  const [employeeToDelete, setEmployeeToDelete] = useState<EmployeeFormData | null>(null); // To store emp pending deletion
+  
+  const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] = useState(false); // Archive confirmation
+  const [showRestoreConfirmDialog, setShowRestoreConfirmDialog] = useState(false); // Restore confirmation
+  const [showPermanentDeleteConfirmDialog, setShowPermanentDeleteConfirmDialog] = useState(false); // Permanent Delete confirmation
+
+  const [employeeToProcess, setEmployeeToProcess] = useState<EmployeeFormData | null>(null); // Shared state for delete/restore actions
 
   // Validation State
   const [showErrorDialog, setShowErrorDialog] = useState(false);
@@ -288,19 +294,51 @@ const App: React.FC = () => {
     }
   };
 
-  // Logic to initiate delete
+  // Logic to initiate Soft Delete (Move to Archive)
   const handleDeleteClick = (emp: EmployeeFormData) => {
-    setEmployeeToDelete(emp);
+    setEmployeeToProcess(emp);
     setShowDeleteConfirmDialog(true);
   };
 
-  // Logic to confirm delete
+  // Confirm Soft Delete
   const handleConfirmDelete = () => {
-    if (employeeToDelete) {
-        setEmployees(prev => prev.filter(e => e.emp_id !== employeeToDelete.emp_id));
-        setEmployeeToDelete(null);
+    if (employeeToProcess) {
+        setEmployees(prev => prev.filter(e => e.emp_id !== employeeToProcess.emp_id));
+        setArchivedEmployees(prev => [employeeToProcess, ...prev]);
+        setEmployeeToProcess(null);
         setShowDeleteConfirmDialog(false);
     }
+  };
+
+  // Logic to initiate Restore
+  const handleRestoreClick = (emp: EmployeeFormData) => {
+    setEmployeeToProcess(emp);
+    setShowRestoreConfirmDialog(true);
+  };
+
+  // Confirm Restore
+  const handleConfirmRestore = () => {
+      if (employeeToProcess) {
+          setArchivedEmployees(prev => prev.filter(e => e.emp_id !== employeeToProcess.emp_id));
+          setEmployees(prev => [employeeToProcess, ...prev]);
+          setEmployeeToProcess(null);
+          setShowRestoreConfirmDialog(false);
+      }
+  };
+
+  // Logic to initiate Permanent Delete
+  const handlePermanentDeleteClick = (emp: EmployeeFormData) => {
+      setEmployeeToProcess(emp);
+      setShowPermanentDeleteConfirmDialog(true);
+  };
+
+  // Confirm Permanent Delete
+  const handleConfirmPermanentDelete = () => {
+      if (employeeToProcess) {
+          setArchivedEmployees(prev => prev.filter(e => e.emp_id !== employeeToProcess.emp_id));
+          setEmployeeToProcess(null);
+          setShowPermanentDeleteConfirmDialog(false);
+      }
   };
 
   // Validate all required fields
@@ -783,6 +821,8 @@ const App: React.FC = () => {
         return <EmployeeList employees={employees} onEdit={handleEditEmployee} onDelete={handleDeleteClick} />;
       case 'reports':
         return <Reports employees={employees} />;
+      case 'archive':
+        return <ArchiveList employees={archivedEmployees} onRestore={handleRestoreClick} onPermanentDelete={handlePermanentDeleteClick} />;
       default:
         return null;
     }
@@ -819,11 +859,18 @@ const App: React.FC = () => {
                              <span className="text-[#1e4b8a]">سجلات الموظفين</span> <span className="text-[#1e4b8a] font-light mx-2">|</span> <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">Employee Records</span>
                         </div>
                     </div>
-                ) : (
+                ) : activeTab === 'reports' ? (
                     <div className="flex items-center gap-3">
                         <span className="material-symbols-outlined text-[#1e4b8a] text-[32px] md:text-[36px]">bar_chart</span>
                         <div>
                              <span className="text-[#1e4b8a]">تقارير النظام</span> <span className="text-[#1e4b8a] font-light mx-2">|</span> <span className="font-english font-medium text-[#1e4b8a] text-xl md:text-2xl">System Reports</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex items-center gap-3">
+                        <span className="material-symbols-outlined text-slate-600 text-[32px] md:text-[36px]">inventory_2</span>
+                        <div>
+                             <span className="text-slate-600">أرشيف السجلات</span> <span className="text-slate-400 font-light mx-2">|</span> <span className="font-english font-medium text-slate-600 text-xl md:text-2xl">Records Archive</span>
                         </div>
                     </div>
                 )}
@@ -836,14 +883,18 @@ const App: React.FC = () => {
                             ? (editingIndex !== null ? "يرجى تعديل البيانات المطلوبة ثم الضغط على تحديث للحفظ." : "يرجى تعبئة النموذج أدناه بدقة عالية لضمان تحديث السجلات.") 
                             : activeTab === 'data' 
                                 ? "قائمة بجميع بيانات الموظفين التي تم إدخالها وحفظها في النظام."
-                                : "عرض تفصيلي لجميع المستندات المنتهية وتنبيهات النظام."}
+                                : activeTab === 'reports' 
+                                  ? "عرض تفصيلي لجميع المستندات المنتهية وتنبيهات النظام."
+                                  : "قائمة بالسجلات المحذوفة مع إمكانية استعادتها أو حذفها نهائياً."}
                     </p>
                     <p className="text-[#7688a3] text-sm mt-0.5 text-right font-english" dir="ltr">
                         {activeTab === 'home' 
                             ? (editingIndex !== null ? "Please edit the required data and click Update to save." : "Please fill out the form accurately to ensure records update.") 
                             : activeTab === 'data' 
                                 ? "List of all employee data entered and saved in the system."
-                                : "Detailed view of all expired documents and system alerts."}
+                                : activeTab === 'reports'
+                                  ? "Detailed view of all expired documents and system alerts."
+                                  : "List of deleted records with options to restore or permanently delete."}
                     </p>
                   </div>
               </div>
@@ -925,29 +976,73 @@ const App: React.FC = () => {
         icon="delete_forever"
       />
 
-       {/* Delete Confirmation Dialog */}
+       {/* Archive (Soft Delete) Confirmation Dialog */}
        <ConfirmationDialog
         isOpen={showDeleteConfirmDialog}
         onClose={() => setShowDeleteConfirmDialog(false)}
         onConfirm={handleConfirmDelete}
-        title="تأكيد حذف السجل | Confirm Delete"
+        title="تأكيد أرشفة السجل | Archive Record"
         message={
             <div className="flex flex-col gap-2">
-                <p className="font-bold text-red-600">
-                    تحذير: هذا الإجراء لا يمكن التراجع عنه.
-                </p>
                 <p>
-                    هل أنت متأكد من رغبتك في حذف سجل الموظف <span className="font-bold text-slate-800">{employeeToDelete?.name_ar}</span> نهائياً من النظام؟
+                    هل أنت متأكد من رغبتك في حذف هذا السجل؟ سيتم نقله إلى <strong>الأرشيف</strong> ويمكنك استعادته لاحقاً.
                 </p>
                 <p className="text-sm font-english opacity-80" dir="ltr">
-                    Warning: This action cannot be undone. Are you sure you want to permanently delete this employee record?
+                    Are you sure you want to delete this record? It will be moved to the <strong>Archive</strong> and can be restored later.
                 </p>
             </div>
         }
-        confirmLabel="نعم، حذف | Yes, Delete"
+        confirmLabel="نعم، أرشفة | Yes, Archive"
+        cancelLabel="تراجع | Cancel"
+        variant="warning"
+        icon="archive"
+      />
+
+      {/* Restore Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={showRestoreConfirmDialog}
+        onClose={() => setShowRestoreConfirmDialog(false)}
+        onConfirm={handleConfirmRestore}
+        title="استعادة السجل | Restore Record"
+        message={
+            <div className="flex flex-col gap-2">
+                <p>
+                    هل أنت متأكد من رغبتك في استعادة هذا السجل إلى قائمة الموظفين النشطة؟
+                </p>
+                <p className="text-sm font-english opacity-80" dir="ltr">
+                    Are you sure you want to restore this record to the active employees list?
+                </p>
+            </div>
+        }
+        confirmLabel="نعم، استعادة | Yes, Restore"
+        cancelLabel="إلغاء | Cancel"
+        variant="success"
+        icon="restore_from_trash"
+      />
+
+      {/* Permanent Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={showPermanentDeleteConfirmDialog}
+        onClose={() => setShowPermanentDeleteConfirmDialog(false)}
+        onConfirm={handleConfirmPermanentDelete}
+        title="حذف نهائي | Permanent Delete"
+        message={
+            <div className="flex flex-col gap-2">
+                <p className="font-bold text-red-600">
+                    تحذير: سيتم حذف البيانات نهائياً ولا يمكن استرجاعها!
+                </p>
+                <p>
+                    هل أنت متأكد من رغبتك في حذف سجل الموظف <span className="font-bold text-slate-800">{employeeToProcess?.name_ar}</span> بشكل دائم؟
+                </p>
+                <p className="text-sm font-english opacity-80" dir="ltr">
+                    Warning: Data will be permanently deleted and cannot be recovered! Are you sure?
+                </p>
+            </div>
+        }
+        confirmLabel="حذف نهائي | Delete Forever"
         cancelLabel="تراجع | Cancel"
         variant="error"
-        icon="delete"
+        icon="delete_forever"
       />
 
       {/* Error / Validation Dialog */}

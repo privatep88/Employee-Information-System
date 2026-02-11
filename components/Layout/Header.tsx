@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
 interface HeaderProps {
-  activeTab?: 'home' | 'data' | 'reports';
-  onTabChange?: (tab: 'home' | 'data' | 'reports') => void;
+  activeTab?: 'home' | 'data' | 'reports' | 'archive';
+  onTabChange?: (tab: 'home' | 'data' | 'reports' | 'archive') => void;
   expiredCount?: number;
 }
 
 const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab) => {}, expiredCount = 0 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleNavClick = (tab: 'home' | 'data' | 'reports') => {
+  const handleNavClick = (tab: 'home' | 'data' | 'reports' | 'archive') => {
     onTabChange(tab);
     setIsMobileMenuOpen(false);
   };
@@ -98,6 +98,14 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab
                   </span>
                 )}
               </button>
+              {/* Archive Tab */}
+              <button
+                onClick={() => handleNavClick('archive')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold transition-all ${activeTab === 'archive' ? 'text-white bg-slate-600 shadow-sm hover:bg-slate-700' : 'text-slate-600 hover:text-slate-800 hover:bg-slate-200'}`}
+              >
+                <span className="material-symbols-outlined text-[18px]">inventory_2</span>
+                <span>الأرشيف</span>
+              </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -139,6 +147,13 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab
                     {expiredCount}
                   </span>
                 )}
+              </button>
+              <button
+                onClick={() => handleNavClick('archive')}
+                className={`flex items-center gap-3 w-full text-right px-4 py-3 rounded text-sm font-bold ${activeTab === 'archive' ? 'text-slate-800 bg-slate-200' : 'text-slate-700 hover:bg-blue-100'}`}
+              >
+                <span className="material-symbols-outlined text-[20px]">inventory_2</span>
+                <span>الأرشيف</span>
               </button>
           </div>
         )}
