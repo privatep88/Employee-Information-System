@@ -329,6 +329,104 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
   };
 
   const handlePrint = () => {
+      // 1. Check if in Detail View - Print Single Record
+      if (viewMode === 'detail' && selectedEmp) {
+          const printWindow = window.open('', '_blank', 'width=1000,height=800');
+          if (!printWindow) {
+              alert('Please allow popups to print the report.');
+              return;
+          }
+
+          const html = `
+            <!DOCTYPE html>
+            <html dir="rtl" lang="ar">
+            <head>
+                <title>Employee Record - ${selectedEmp.emp_id}</title>
+                <style>
+                    body { font-family: sans-serif; padding: 30px; direction: rtl; }
+                    .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1e4b8a; padding-bottom: 20px; }
+                    .header h1 { margin: 0; color: #1e4b8a; font-size: 24px; }
+                    .header h2 { margin: 5px 0 0; color: #64748b; font-size: 18px; font-family: sans-serif; }
+                    
+                    .section { margin-bottom: 20px; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; break-inside: avoid; }
+                    .section-header { background: #f8fafc; padding: 8px 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #334155; font-size: 14px; }
+                    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
+                    
+                    .field { display: flex; flex-direction: column; gap: 2px; }
+                    .label { font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; }
+                    .value { font-size: 13px; color: #0f172a; font-weight: bold; }
+                    
+                    @media print {
+                        body { padding: 0; }
+                        .section { break-inside: avoid; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>${selectedEmp.name_ar}</h1>
+                    <h2 dir="ltr">${selectedEmp.name_en}</h2>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">المعلومات الشخصية | Personal Information</div>
+                    <div class="grid">
+                        <div class="field"><span class="label">الرقم الوظيفي | Employee ID</span><span class="value" dir="ltr">${selectedEmp.emp_id}</span></div>
+                        <div class="field"><span class="label">الجنسية | Nationality</span><span class="value">${getLabel(selectedEmp.nationality, NATIONALITIES)}</span></div>
+                        <div class="field"><span class="label">الحالة الاجتماعية | Marital Status</span><span class="value">${getLabel(selectedEmp.marital_status, MARITAL_STATUSES)}</span></div>
+                        <div class="field"><span class="label">تاريخ الميلاد | Date of Birth</span><span class="value" dir="ltr">${formatDateDisplay(selectedEmp.dob)}</span></div>
+                        <div class="field"><span class="label">رقم الهاتف | Phone Number</span><span class="value" dir="ltr">${selectedEmp.phone}</span></div>
+                        <div class="field"><span class="label">البريد الإلكتروني | Email</span><span class="value" dir="ltr">${selectedEmp.email}</span></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">المؤهلات العلمية | Education</div>
+                    <div class="grid">
+                        <div class="field"><span class="label">المؤهل العلمي | Qualification</span><span class="value">${getLabel(selectedEmp.degree, DEGREES)}</span></div>
+                        <div class="field"><span class="label">التخصص | Specialization</span><span class="value">${selectedEmp.specialization || '-'}</span></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">المستندات الرسمية | Official Documents</div>
+                    <div class="grid">
+                        <div class="field"><span class="label">رقم جواز السفر | Passport No</span><span class="value" dir="ltr">${selectedEmp.passport_no}</span></div>
+                        <div class="field"><span class="label">تاريخ الانتهاء | Expiry Date</span><span class="value" dir="ltr">${formatDateDisplay(selectedEmp.passport_expiry)}</span></div>
+                        
+                        <div class="field"><span class="label">رقم الهوية | Emirates ID</span><span class="value" dir="ltr">${selectedEmp.emirates_id}</span></div>
+                        <div class="field"><span class="label">تاريخ الانتهاء | Expiry Date</span><span class="value" dir="ltr">${formatDateDisplay(selectedEmp.emirates_expiry)}</span></div>
+                        
+                        <div class="field"><span class="label">رقم الهوية (خليجي) | GCC ID</span><span class="value" dir="ltr">${selectedEmp.gcc_id || '-'}</span></div>
+                        <div class="field"><span class="label">تاريخ الانتهاء | Expiry Date</span><span class="value" dir="ltr">${formatDateDisplay(selectedEmp.gcc_id_expiry)}</span></div>
+
+                        <div class="field"><span class="label">نوع الرخصة | License Type</span><span class="value">${getLabel(selectedEmp.license_type, LICENSE_TYPES)}</span></div>
+                        <div class="field"><span class="label">تاريخ الانتهاء | Expiry Date</span><span class="value" dir="ltr">${formatDateDisplay(selectedEmp.license_expiry)}</span></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">جهة الاتصال للطوارئ | Emergency Contact</div>
+                    <div class="grid">
+                        <div class="field"><span class="label">الاسم | Name</span><span class="value">${selectedEmp.emergency_name}</span></div>
+                        <div class="field"><span class="label">الصلة | Relationship</span><span class="value">${getLabel(selectedEmp.emergency_relation, RELATIONSHIPS)}</span></div>
+                        <div class="field"><span class="label">رقم الهاتف | Phone Number</span><span class="value" dir="ltr">${selectedEmp.emergency_phone}</span></div>
+                    </div>
+                </div>
+
+                <script>
+                    window.onload = function() { window.print(); window.setTimeout(function() { window.close(); }, 500); }
+                </script>
+            </body>
+            </html>
+          `;
+          
+          printWindow.document.write(html);
+          printWindow.document.close();
+          return;
+      }
+
+      // 2. Default List Print Logic
       if (sortedEmployees.length === 0) return;
 
       const printWindow = window.open('', '_blank', 'width=1000,height=800');
@@ -440,6 +538,13 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                     <span>العودة للقائمة | Back to List</span>
                 </button>
                 <div className="flex items-center gap-2">
+                    <button
+                        onClick={handlePrint}
+                        className="flex items-center gap-2 text-slate-600 hover:bg-slate-50 border border-slate-200 transition-colors font-bold px-4 py-2 rounded shadow-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">print</span>
+                        <span>طباعة | Print</span>
+                    </button>
                     <button
                         onClick={() => {
                            onDelete(selectedEmp);
