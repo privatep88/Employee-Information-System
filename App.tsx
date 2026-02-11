@@ -444,7 +444,7 @@ const App: React.FC = () => {
             {/* 1. Personal Information */}
             <FormCard
               title="المعلومات الشخصية | Personal Information"
-              subtitle="البيانات الأساسية للتعريف بالموظف | Basic identification data"
+              subtitle={<span className="text-[#312e81]">البيانات الأساسية للتعريف بالموظف | Basic identification data</span>}
               icon="person"
               iconBgClass="bg-indigo-50"
               iconColorClass="text-indigo-600"
@@ -547,7 +547,7 @@ const App: React.FC = () => {
             {/* 2. Educational Qualifications */}
             <FormCard
               title="المؤهلات العلمية | Educational Qualifications"
-              subtitle="الشهادات والدرجات الأكاديمية | Academic certificates and degrees"
+              subtitle={<span className="text-[#128571]">الشهادات والدرجات الأكاديمية | Academic certificates and degrees</span>}
               icon="school"
               iconBgClass="bg-emerald-50"
               iconColorClass="text-secondary"
@@ -587,8 +587,8 @@ const App: React.FC = () => {
 
             {/* 3. Official Documents */}
             <FormCard
-              title="المستندات الرسمية | Official Documents"
-              subtitle="أرقام الهوية والجوازات | ID and Passport numbers"
+              title={<span className="text-[#9e4513]">المستندات الرسمية | Official Documents</span>}
+              subtitle={<span className="text-[#9e4513]">أرقام الهوية والجوازات | ID and Passport numbers</span>}
               icon="folder_shared"
               iconBgClass="bg-amber-50"
               iconColorClass="text-amber-700"
@@ -729,7 +729,7 @@ const App: React.FC = () => {
             {/* 4. Emergency Contact */}
             <FormCard
               title="جهة الاتصال في حالات الطوارئ | Emergency Contact Details"
-              subtitle="للاتصال عند الضرورة القصوى | For urgent contact only"
+              subtitle={<span className="text-[#881337]">للاتصال عند الضرورة القصوى | For urgent contact only</span>}
               icon="emergency"
               iconBgClass="bg-rose-50"
               iconColorClass="text-rose-700"

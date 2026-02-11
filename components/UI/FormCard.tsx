@@ -24,8 +24,8 @@ export const FormCardContext = createContext<FormCardTheme>(defaultTheme);
 export const useFormCardTheme = () => useContext(FormCardContext);
 
 interface FormCardProps {
-  title: string;
-  subtitle: string;
+  title: React.ReactNode;
+  subtitle: React.ReactNode;
   icon: string;
   iconBgClass: string;
   iconColorClass: string;
@@ -142,7 +142,7 @@ const FormCard: React.FC<FormCardProps> = ({
             </div>
             <div>
               <h2 className={`text-lg font-bold leading-snug ${titleTextColorClass}`}>{title}</h2>
-              <p className="text-xs text-slate-500 font-medium">{subtitle}</p>
+              <div className="text-xs text-[#7688a3] font-medium">{subtitle}</div>
             </div>
           </div>
           {headerContent && (
