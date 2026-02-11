@@ -85,7 +85,7 @@ const FileViewerModal: React.FC<{ file: File; onClose: () => void }> = ({ file, 
     const isImage = file.type.startsWith('image/');
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4 print:hidden">
             <button onClick={onClose} className="absolute top-4 right-4 size-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center z-50">
                 <span className="material-symbols-outlined">close</span>
             </button>
@@ -127,6 +127,28 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
     setViewMode('list');
     setSelectedEmp(null);
     if (profilePreview) URL.revokeObjectURL(profilePreview);
+  };
+
+  const handlePrint = () => {
+      window.print();
+  };
+
+  const handleExport = () => {
+      if (employees.length === 0) return;
+      
+      const headers = ['Employee ID,Arabic Name,English Name,Nationality,Deleted Date'];
+      const csvContent = employees.map(emp => {
+          return `${emp.emp_id},"${emp.name_ar}","${emp.name_en}",${emp.nationality},${emp.deleted_at || ''}`;
+      }).join('\n');
+      
+      const blob = new Blob(['\uFEFF' + headers + '\n' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `archive_records_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
   };
 
   // Logic similar to EmployeeList for sorting/filtering
@@ -184,7 +206,7 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
         )}
         
         <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-300">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between print:hidden">
                 <button 
                     onClick={handleBackToList}
                     className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors font-bold px-4 py-2 bg-white rounded shadow-sm border border-slate-200"
@@ -193,6 +215,13 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                     <span>العودة للأرشيف | Back to Archive</span>
                 </button>
                 <div className="flex items-center gap-2">
+                    <button
+                        onClick={handlePrint}
+                        className="flex items-center gap-2 text-slate-600 hover:bg-slate-50 border border-slate-200 transition-colors font-bold px-4 py-2 rounded shadow-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">print</span>
+                        <span>طباعة | Print</span>
+                    </button>
                     <button
                         onClick={() => {
                             onRestore(selectedEmp);
@@ -217,10 +246,10 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
             </div>
 
             {/* Read Only Details */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 opacity-90">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 opacity-90 print:opacity-100 print:bg-white print:border-0">
                  {/* Header Card */}
                 <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
-                    <div className="size-24 rounded-lg border-2 border-slate-200 shadow-sm overflow-hidden shrink-0 bg-white grayscale">
+                    <div className="size-24 rounded-lg border-2 border-slate-200 shadow-sm overflow-hidden shrink-0 bg-white grayscale print:border-slate-800">
                         {profilePreview ? (
                             <img src={profilePreview} className="w-full h-full object-cover" alt="Profile" />
                         ) : (
@@ -235,18 +264,18 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                             <h3 className="text-lg font-bold text-slate-500 font-english text-center md:text-right" dir="ltr">{selectedEmp.name_en}</h3>
                         </div>
                         <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-1">
-                            <span className="inline-flex items-center gap-1.5 bg-slate-200 text-slate-600 border border-slate-300 px-3 py-1 rounded text-xs font-bold">
+                            <span className="inline-flex items-center gap-1.5 bg-slate-200 text-slate-600 border border-slate-300 px-3 py-1 rounded text-xs font-bold print:bg-transparent print:border-slate-800 print:text-slate-800">
                                 <span className="material-symbols-outlined text-[16px]">badge</span>
                                 <span dir="ltr">{selectedEmp.emp_id}</span>
                             </span>
-                             <span className="inline-flex items-center gap-1.5 bg-slate-200 text-slate-600 border border-slate-300 px-3 py-1 rounded text-xs font-bold">
+                             <span className="inline-flex items-center gap-1.5 bg-slate-200 text-slate-600 border border-slate-300 px-3 py-1 rounded text-xs font-bold print:bg-transparent print:border-slate-800 print:text-slate-800">
                                 <span className="material-symbols-outlined text-[16px]">event_available</span>
                                 <span dir="ltr">
                                     {selectedEmp.submission_date ? new Date(selectedEmp.submission_date).toLocaleDateString('en-GB') : '-'}
                                 </span>
                              </span>
                              {selectedEmp.deleted_at && (
-                                <span className="inline-flex items-center gap-1.5 bg-red-100 text-red-700 border border-red-200 px-3 py-1 rounded text-xs font-bold">
+                                <span className="inline-flex items-center gap-1.5 bg-red-100 text-red-700 border border-red-200 px-3 py-1 rounded text-xs font-bold print:bg-transparent print:border-red-800 print:text-red-800">
                                     <span className="material-symbols-outlined text-[16px]">delete_history</span>
                                     <span dir="ltr">
                                         Deleted: {new Date(selectedEmp.deleted_at).toLocaleDateString('en-GB')}
@@ -283,7 +312,7 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                     >
                         <InfoField label="المؤهل العلمي | Degree" value={getLabel(selectedEmp.degree, DEGREES)} />
                         <InfoField label="التخصص | Specialization" value={selectedEmp.specialization} />
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-2 print:hidden">
                              <FileDisplay label="صورة المؤهل العلمي | Education Certificate" file={selectedEmp.education_certificate_file} onView={setViewingFile} />
                         </div>
                     </FormCard>
@@ -308,7 +337,7 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                         <InfoField label="نوع الرخصة | License Type" value={getLabel(selectedEmp.license_type, LICENSE_TYPES)} />
                         <InfoField label="انتهاء الرخصة | License Expiry" value={formatDateDisplay(selectedEmp.license_expiry)} />
 
-                        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 print:hidden">
                              <FileDisplay label="صورة جواز السفر | Passport Copy" file={selectedEmp.passport_file} onView={setViewingFile} />
                              <FileDisplay label="صورة الهوية الإماراتية | EID Copy" file={selectedEmp.eid_file} onView={setViewingFile} />
                              <FileDisplay label="صورة الهوية الخليجية | GCC ID Copy" file={selectedEmp.gcc_id_file} onView={setViewingFile} />
@@ -339,25 +368,44 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="bg-white p-5 rounded-lg shadow-card border-t-4 border-slate-500">
-             <div className="flex items-center gap-4">
-                 <div className="md:col-span-1">
-                    <div className="size-11 rounded-md bg-slate-100 text-slate-600 flex items-center justify-center">
-                        <span className="material-symbols-outlined">inventory_2</span>
+             <div className="flex flex-col md:flex-row items-end gap-4">
+                 <div className="flex items-center gap-4 flex-1 w-full">
+                     <div className="shrink-0">
+                        <div className="size-11 rounded-md bg-slate-100 text-slate-600 flex items-center justify-center">
+                            <span className="material-symbols-outlined">inventory_2</span>
+                        </div>
                     </div>
-                </div>
-                <div className="flex-1">
-                    <label className="text-xs font-bold text-slate-500 mb-1 block text-left" dir="ltr">Search Archived Records</label>
-                    <div className="relative">
-                        <input 
-                            type="text" 
-                            placeholder="البحث في الأرشيف..."
-                            className="w-full h-11 rounded-md border-slate-300 pr-4 pl-10 text-sm font-semibold focus:border-slate-500 focus:ring-slate-500"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <div className="flex-1">
+                        <label className="text-xs font-bold text-slate-500 mb-1 block text-left" dir="ltr">Search Archived Records</label>
+                        <div className="relative">
+                            <input 
+                                type="text" 
+                                placeholder="البحث في الأرشيف..."
+                                className="w-full h-11 rounded-md border-slate-300 pr-4 pl-10 text-sm font-semibold focus:border-slate-500 focus:ring-slate-500"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                        </div>
                     </div>
-                </div>
+                 </div>
+
+                 <div className="flex items-center gap-2 shrink-0">
+                    <button 
+                        onClick={handlePrint}
+                        className="h-11 px-4 rounded-md border border-slate-300 bg-white text-slate-600 font-bold text-sm flex items-center gap-2 hover:bg-slate-50 hover:text-slate-800 transition-colors shadow-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">print</span>
+                        <span className="hidden sm:inline">طباعة القائمة</span>
+                    </button>
+                    <button 
+                        onClick={handleExport}
+                        className="h-11 px-4 rounded-md border border-slate-300 bg-white text-slate-600 font-bold text-sm flex items-center gap-2 hover:bg-slate-50 hover:text-slate-800 transition-colors shadow-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">file_download</span>
+                        <span className="hidden sm:inline">تصدير Excel</span>
+                    </button>
+                 </div>
              </div>
         </div>
 

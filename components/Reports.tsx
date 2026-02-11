@@ -216,6 +216,28 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
       return { totalFiles, pdfCount, imageCount, categoryCounts };
   }, [employees]);
 
+  const handlePrint = () => {
+      window.print();
+  };
+
+  const handleExport = () => {
+      if (sortedExpiredRecords.length === 0) return;
+      
+      const headers = ['Employee ID,Arabic Name,English Name,Nationality,Document,Expiry Date'];
+      const csvContent = sortedExpiredRecords.map(rec => {
+          return `${rec.emp_id},"${rec.name_ar}","${rec.name_en}",${getNationalityLabel(rec.nationality)},"${rec.doc_type}",${rec.expiry_date}`;
+      }).join('\n');
+      
+      const blob = new Blob(['\uFEFF' + headers + '\n' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `expiry_alerts_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  };
+
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
         
@@ -431,17 +453,33 @@ const Reports: React.FC<ReportsProps> = ({ employees }) => {
             </div>
             
             {/* Search Bar for Expiry Alerts */}
-            <div className="p-3 bg-slate-50 border-b border-slate-200">
-                <div className="relative">
+            <div className="p-3 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row items-center gap-3">
+                <div className="relative flex-1 w-full">
                     <input
                         type="text"
                         placeholder="بحث شامل عن السجلات (الاسم، الرقم، المستند، الجنسية)... | Search Records..."
-                        className="w-full h-10 pr-10 pl-4 rounded-md border-slate-300 text-sm focus:border-red-500 focus:ring-red-500 shadow-sm"
+                        className="w-full h-11 pr-10 pl-4 rounded-md border-slate-300 text-sm focus:border-red-500 focus:ring-red-500 shadow-sm"
                         value={expirySearchTerm}
                         onChange={(e) => setExpirySearchTerm(e.target.value)}
                     />
                     <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
                 </div>
+                <div className="flex items-center gap-2 shrink-0 w-full md:w-auto">
+                    <button 
+                        onClick={handlePrint}
+                        className="h-11 px-4 flex-1 md:flex-none rounded-md border border-slate-300 bg-white text-slate-600 font-bold text-sm flex items-center justify-center gap-2 hover:bg-slate-50 hover:text-slate-800 transition-colors shadow-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">print</span>
+                        <span className="hidden sm:inline">طباعة القائمة</span>
+                    </button>
+                    <button 
+                        onClick={handleExport}
+                        className="h-11 px-4 flex-1 md:flex-none rounded-md border border-slate-300 bg-white text-slate-600 font-bold text-sm flex items-center justify-center gap-2 hover:bg-slate-50 hover:text-slate-800 transition-colors shadow-sm"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">file_download</span>
+                        <span className="hidden sm:inline">تصدير Excel</span>
+                    </button>
+                 </div>
             </div>
 
             {sortedExpiredRecords.length > 0 ? (
