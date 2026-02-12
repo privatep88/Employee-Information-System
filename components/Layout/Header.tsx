@@ -40,6 +40,23 @@ const Header: React.FC<HeaderProps> = ({ activeTab = 'home', onTabChange = (_tab
             backgroundSize: '100% 100%, 100% 100%, 100% 100%, 50% 100%, 50% 100%, 100% 100%, 100% 100%'
         }}
       >
+        {/* Transparent Stars Overlay */}
+        <div className="absolute inset-0 z-0 opacity-30 pointer-events-none" style={{
+            backgroundImage: 'radial-gradient(white 1px, transparent 1px), radial-gradient(white 1.5px, transparent 1.5px)',
+            backgroundSize: '50px 50px, 90px 90px',
+            backgroundPosition: '0 0, 25px 25px'
+        }}></div>
+
+        {/* Transparent Geometric Shapes (Hexagons) Overlay */}
+        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L56 15 V45 L30 60 L4 45 V15 Z' fill='none' stroke='%23ffffff' stroke-width='1'/%3E%3C/svg%3E")`,
+            backgroundSize: '60px 60px'
+        }}></div>
+
+        {/* Subtle Glow Orbs for visual depth */}
+        <div className="absolute top-[-50%] left-[20%] w-64 h-64 bg-blue-500/10 rounded-full blur-[60px] pointer-events-none"></div>
+        <div className="absolute bottom-[-50%] right-[10%] w-80 h-80 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+
         <div className="container mx-auto relative flex flex-col md:flex-row items-center justify-between gap-4 z-10">
           
           {/* Logo / Brand Name - Right (Start in RTL) */}
