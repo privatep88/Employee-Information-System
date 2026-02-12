@@ -473,6 +473,7 @@ const App: React.FC = () => {
               iconBgClass="bg-indigo-50"
               iconColorClass="text-indigo-600"
               bgClass="bg-indigo-50"
+              enableDecorations={true}
               headerContent={
                 <ProfileUpload
                     name="profile_picture"
@@ -577,6 +578,7 @@ const App: React.FC = () => {
               iconColorClass="text-secondary"
               bgClass="bg-emerald-50"
               borderColor="border-emerald-900"
+              enableDecorations={true}
             >
               <SelectInput
                 id="degree"
@@ -617,6 +619,7 @@ const App: React.FC = () => {
               iconBgClass="bg-amber-50"
               iconColorClass="text-amber-700"
               bgClass="bg-amber-50"
+              enableDecorations={true}
             >
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <TextInput
@@ -758,6 +761,7 @@ const App: React.FC = () => {
               iconBgClass="bg-rose-50"
               iconColorClass="text-rose-700"
               bgClass="bg-rose-50"
+              enableDecorations={true}
             >
                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <TextInput
@@ -797,15 +801,33 @@ const App: React.FC = () => {
             </FormCard>
 
             {/* Declaration & Actions - Legal Style */}
-            <div className="bg-blue-50 border border-blue-200 p-6 rounded-md flex flex-col gap-6 mt-2 relative shadow-card">
-              <div className="absolute top-0 right-0 w-1 h-full bg-blue-600 rounded-r-md"></div>
+            <div className="bg-blue-50 border border-blue-200 p-6 rounded-md flex flex-col gap-6 mt-2 relative shadow-card overflow-hidden">
               
-              <div className="flex flex-col gap-2">
+              {/* Decorations */}
+              <div className="absolute inset-0 z-0 opacity-[0.07] pointer-events-none" style={{
+                  backgroundImage: `radial-gradient(#1e4b8a 1px, transparent 1px), radial-gradient(#1e4b8a 1.5px, transparent 1.5px)`,
+                  backgroundSize: '50px 50px, 90px 90px',
+                  backgroundPosition: '0 0, 25px 25px'
+              }}></div>
+              <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none" style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L56 15 V45 L30 60 L4 45 V15 Z' fill='none' stroke='%231e4b8a' stroke-width='1'/%3E%3C/svg%3E")`,
+                  backgroundSize: '60px 60px'
+              }}></div>
+              <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{
+                  backgroundImage: `
+                    linear-gradient(30deg, #1e4b8a 0%, transparent 40%),
+                    linear-gradient(-30deg, #1e4b8a 0%, transparent 40%)
+                  `
+              }}></div>
+
+              <div className="absolute top-0 right-0 w-1 h-full bg-blue-600 rounded-r-md z-10"></div>
+              
+              <div className="flex flex-col gap-2 relative z-10">
                  <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wide">إقرار وتعهد | Declaration</h3>
                  <p className="text-xs text-blue-600">يرجى قراءة النص أدناه والموافقة عليه للمتابعة.</p>
               </div>
 
-              <label className="flex items-start gap-4 cursor-pointer group bg-white p-4 border border-blue-100 rounded hover:border-blue-300 transition-colors shadow-sm">
+              <label className="flex items-start gap-4 cursor-pointer group bg-white p-4 border border-blue-100 rounded hover:border-blue-300 transition-colors shadow-sm relative z-10">
                 <div className="relative flex items-center pt-1">
                   <input
                     type="checkbox"
@@ -828,7 +850,7 @@ const App: React.FC = () => {
                 </div>
               </label>
 
-              <div className="flex flex-col sm:flex-row items-center gap-4 justify-end pt-4 border-t border-blue-200">
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-end pt-4 border-t border-blue-200 relative z-10">
                 <button
                   type="button"
                   onClick={handleCancelClick}
