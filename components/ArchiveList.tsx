@@ -282,7 +282,7 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
         } else if (sortConfig.key === 'degree') {
              aValue = getLabel(a.degree, DEGREES);
              bValue = getLabel(b.degree, DEGREES);
-        } else if (sortConfig.key === 'submission_date') {
+        } else if (sortConfig.key === 'deleted_at') {
              aValue = aValue ? new Date(aValue).getTime() : 0;
              bValue = bValue ? new Date(bValue).getTime() : 0;
         }
@@ -461,7 +461,7 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                         <th>الموظف | Employee</th>
                         <th class="text-center">الجنسية | Nationality</th>
                         <th class="text-center">المؤهل | Qualification</th>
-                        <th class="text-center">تاريخ الإدخال | Submission Date</th>
+                        <th class="text-center">تاريخ الحذف | Deleted Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -480,7 +480,7 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                                 ${getLabel(emp.degree, DEGREES)}
                             </td>
                             <td class="text-center" dir="ltr">
-                                ${emp.submission_date ? new Date(emp.submission_date).toLocaleDateString('en-GB') : '-'}
+                                ${emp.deleted_at ? new Date(emp.deleted_at).toLocaleDateString('en-GB') : '-'}
                             </td>
                         </tr>
                     `).join('')}
@@ -500,9 +500,9 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
   const handleExport = () => {
       if (sortedEmployees.length === 0) return;
       
-      const headers = ['Employee ID,Arabic Name,English Name,Nationality,Qualification,Submission Date'];
+      const headers = ['Employee ID,Arabic Name,English Name,Nationality,Qualification,Deleted Date'];
       const csvContent = sortedEmployees.map(emp => {
-          return `${emp.emp_id},"${emp.name_ar}","${emp.name_en}",${getLabel(emp.nationality, NATIONALITIES)},${getLabel(emp.degree, DEGREES)},${emp.submission_date || ''}`;
+          return `${emp.emp_id},"${emp.name_ar}","${emp.name_en}",${getLabel(emp.nationality, NATIONALITIES)},${getLabel(emp.degree, DEGREES)},${emp.deleted_at || ''}`;
       }).join('\n');
       
       const blob = new Blob(['\uFEFF' + headers + '\n' + csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -845,12 +845,12 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
                 </div>
 
                 {/* Date - Sortable */}
-                <div onClick={() => handleSort('submission_date')} className="py-4 px-2 text-center cursor-pointer hover:bg-slate-100 transition-colors group flex flex-col items-center justify-center select-none">
+                <div onClick={() => handleSort('deleted_at')} className="py-4 px-2 text-center cursor-pointer hover:bg-slate-100 transition-colors group flex flex-col items-center justify-center select-none">
                     <div className="flex items-center gap-1">
-                        <div className="font-english mb-0.5">DATE</div>
-                        <SortIcon columnKey="submission_date" />
+                        <div className="font-english mb-0.5">DELETED</div>
+                        <SortIcon columnKey="deleted_at" />
                     </div>
-                    <div className="text-[10px]">تاريخ الإدخال</div>
+                    <div className="text-[10px]">تاريخ الحذف</div>
                 </div>
 
                 {/* Actions (Static) */}
@@ -912,7 +912,7 @@ const ArchiveList: React.FC<ArchiveListProps> = ({ employees, onRestore, onPerma
 
                                 {/* Submission Date */}
                                 <div className="text-center text-xs font-bold text-slate-500 font-english">
-                                    {emp.submission_date ? new Date(emp.submission_date).toLocaleDateString('en-GB') : '-'}
+                                    {emp.deleted_at ? new Date(emp.deleted_at).toLocaleDateString('en-GB') : '-'}
                                 </div>
 
                                 {/* Actions */}
