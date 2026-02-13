@@ -568,8 +568,26 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
             </div>
 
             {/* Header Card */}
-            <div className="bg-white rounded-card shadow-card border-r-4 border-primary p-6 flex flex-col md:flex-row items-center gap-6">
-                <div className="size-24 rounded-lg border-2 border-slate-100 shadow-sm overflow-hidden shrink-0 bg-slate-50">
+            <div className="bg-blue-50 rounded-card shadow-card border-r-4 border-primary p-6 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
+                
+                 {/* Decorations matching Primary Theme */}
+                 <div className="absolute inset-0 z-0 opacity-[0.07] pointer-events-none" style={{
+                     backgroundImage: `radial-gradient(#1e4b8a 1px, transparent 1px), radial-gradient(#1e4b8a 1.5px, transparent 1.5px)`,
+                     backgroundSize: '50px 50px, 90px 90px',
+                     backgroundPosition: '0 0, 25px 25px'
+                 }}></div>
+                 <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none" style={{
+                     backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L56 15 V45 L30 60 L4 45 V15 Z' fill='none' stroke='%231e4b8a' stroke-width='1'/%3E%3C/svg%3E")`,
+                     backgroundSize: '60px 60px'
+                 }}></div>
+                 <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{
+                      backgroundImage: `
+                        linear-gradient(30deg, #1e4b8a 0%, transparent 40%),
+                        linear-gradient(-30deg, #1e4b8a 0%, transparent 40%)
+                      `
+                 }}></div>
+
+                <div className="size-24 rounded-lg border-2 border-slate-100 shadow-sm overflow-hidden shrink-0 bg-white relative z-10">
                     {profilePreview ? (
                         <img src={profilePreview} className="w-full h-full object-cover" alt="Profile" />
                     ) : (
@@ -578,13 +596,13 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                         </div>
                     )}
                 </div>
-                <div className="flex-1 text-center md:text-right flex flex-col gap-2">
+                <div className="flex-1 text-center md:text-right flex flex-col gap-2 relative z-10">
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900 leading-tight">{selectedEmp.name_ar}</h2>
                         <h3 className="text-lg font-bold text-slate-500 font-english text-center md:text-right" dir="ltr">{selectedEmp.name_en}</h3>
                     </div>
                     <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-1">
-                         <span className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-800 border border-blue-100 px-3 py-1 rounded text-xs font-bold">
+                         <span className="inline-flex items-center gap-1.5 bg-blue-100 text-blue-800 border border-blue-200 px-3 py-1 rounded text-xs font-bold">
                             <span className="material-symbols-outlined text-[16px]">badge</span>
                             <span dir="ltr">{selectedEmp.emp_id}</span>
                          </span>
@@ -606,6 +624,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                     icon="person"
                     iconBgClass="bg-indigo-50"
                     iconColorClass="text-indigo-600"
+                    bgClass="bg-[#eef2ff]"
+                    enableDecorations={true}
                 >
                     <InfoField label="الجنسية | Nationality" value={getLabel(selectedEmp.nationality, NATIONALITIES)} />
                     <InfoField label="الحالة الاجتماعية | Marital Status" value={getLabel(selectedEmp.marital_status, MARITAL_STATUSES)} />
@@ -621,6 +641,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                     icon="school"
                     iconBgClass="bg-emerald-50"
                     iconColorClass="text-secondary"
+                    bgClass="bg-[#ebfcf4]"
+                    enableDecorations={true}
                 >
                     <InfoField label="المؤهل العلمي | Degree" value={getLabel(selectedEmp.degree, DEGREES)} />
                     <InfoField label="التخصص | Specialization" value={selectedEmp.specialization} />
@@ -636,6 +658,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                     icon="folder_shared"
                     iconBgClass="bg-amber-50"
                     iconColorClass="text-amber-700"
+                    enableDecorations={true}
                 >
                     <InfoField label="رقم جواز السفر | Passport No" value={selectedEmp.passport_no} dir="ltr" />
                     <InfoField label="انتهاء الجواز | Expiry" value={formatDateDisplay(selectedEmp.passport_expiry)} />
@@ -664,6 +687,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                     icon="emergency"
                     iconBgClass="bg-rose-50"
                     iconColorClass="text-rose-700"
+                    bgClass="bg-[#fdedef]"
+                    enableDecorations={true}
                 >
                     <InfoField label="الاسم | Name" value={selectedEmp.emergency_name} />
                     <InfoField label="الصلة | Relation" value={getLabel(selectedEmp.emergency_relation, RELATIONSHIPS)} />
