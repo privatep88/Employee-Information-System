@@ -658,7 +658,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ employees, onEdit, onDelete
                     icon="folder_shared"
                     iconBgClass="bg-amber-50"
                     iconColorClass="text-amber-700"
-                    bgClass="bg-[#f9efc6]"
+                    bgClass="bg-[#fffbeb]"
                     enableDecorations={true}
                 >
                     <InfoField label="رقم جواز السفر | Passport No" value={selectedEmp.passport_no} dir="ltr" />
