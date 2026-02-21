@@ -66,14 +66,14 @@ const Footer: React.FC = () => {
        
         {/* Links Section */}
         <div className="flex flex-wrap justify-center md:justify-end gap-4 md:gap-8 text-xs md:w-1/3 order-2 md:order-3">
-          <a href="#" className="text-white hover:text-blue-200 transition-colors font-semibold flex items-center gap-2 group">
-             <span className="material-symbols-outlined text-[18px] text-blue-400 group-hover:text-blue-200 transition-colors">headset_mic</span>
-             <div className="flex items-center gap-1 group-hover:translate-y-px transition-transform">
+          <div className="text-white font-semibold flex items-center gap-2">
+             <span className="material-symbols-outlined text-[18px] text-blue-400">headset_mic</span>
+             <div className="flex items-center gap-1">
                 <span>الدعم الفني</span>
                 <span className="text-slate-600 mx-1">|</span>
                 <span className="font-english text-[10px] uppercase tracking-wider">Support</span>
              </div>
-          </a>
+          </div>
         </div>
       </div>
     </footer>
